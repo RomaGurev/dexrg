@@ -1,0 +1,44 @@
+﻿button .svg-search image {
+    filter: invert(100%);
+    transition: 0.15s ease-in-out;
+}
+
+button .svg-search:hover image {
+    filter: invert(0%);
+}
+
+.svg-search image {
+    filter: invert(100%);
+    transition: 0.15s ease-in-out;
+}
+
+.svg-search:hover image {
+    filter: invert(0%);
+}
+
+#returnBlock:hover, #inspectionBlock:hover {
+    cursor: pointer;
+}
+
+#form-select::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+.loading-position {
+    position: fixed;
+    right: 0;
+    z-index: 10;
+    background: #fff;
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.container {
+    max-width: 90% !important;
+}

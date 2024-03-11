@@ -1,0 +1,78 @@
+{
+    "version" : "0.63 от 10.11.2023",
+    "database" : {
+        "db_settings" : "vvk_settings",
+        "db_user" : "med",
+        "db_pass" : "med"
+    },
+    "menuItems" : {
+        "main" : ["Основная", ""],
+        "admin" : ["Управление", "admin"],
+        "complaint" : ["Жалобы", "complaint"],
+        "control" : ["Контроль", "control"],
+        "protocol" : ["Протоколы", "protocol"],
+        "searchDuplicate" : ["Поиск дублей", "conscription/searchDuplicate"],
+        "adjustment" : ["Отработка", "adjustment"],
+        "return" : ["Возврат", "return"],
+        "inspection" : ["Обследования", "inspection"],
+        "pattern" : ["Шаблоны", "pattern"]
+    },
+    "userType" : {
+        "0" : ["Администратор", ["main", "admin", "statistic"]],
+        "1" : ["Невропатолог", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol", "searchDuplicate", "statistic"]],
+        "3" : ["Хирург", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "4" : ["Терапевт", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "5" : ["Стоматолог", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "6" : ["Лор", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "7" : ["Окулист", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "8" : ["Психиатр", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "9" : ["Дерматолог", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]]
+    },
+    "documentType" : {
+        "control" : "Контроль",
+        "return" : "Возврат",
+        "approvement" : "Утверждение",
+        "adjustment" : "Отработка",
+        "inspection" : "Обследование",
+        "complaint" : "Жалоба"
+    },
+    "searchType" : {
+        "name" : "ФИО",
+        "adventDate" : "Дата явки",
+        "controlDate" : "Дата контроля",
+        "creationDate" : "Дата создания",
+        "rvkArticle" : "Статья РВК",
+        "documentType" : "Тип документа",
+        "vk" : "Военкомат",
+        "recipient" : "Получатель",
+        "adventTime" : "Время призыва",
+        "content" : "Краткое содержание",
+        "article" : "Итоговая статья"
+    },
+    "healthCategory" : {
+        "A" : "А - годен к военной службе",
+        "Б" : "Б - годен к военной службе с незначительными ограничениями",
+        "В" : "В - ограниченно годен к военной службе",
+        "Г" : "Г - временно не годен к военной службе",
+        "Д" : "Д - не годен к военной службе"
+    },
+    "healthCategoryFull" : {
+        "А" : "А - годен к военной службе",
+        "А1" : "А1 - годен к военной службе",
+        "А2" : "А2 - годен к военной службе",
+        "А3" : "А3 - годен к военной службе",
+        "А4" : "А4 - годен к военной службе",
+        "Б" : "Б - годен к военной службе с незначительными ограничениями",
+        "Б1" : "Б1 - годен к военной службе с незначительными ограничениями",
+        "Б2" : "Б2 - годен к военной службе с незначительными ограничениями",
+        "Б3" : "Б3 - годен к военной службе с незначительными ограничениями",
+        "Б4" : "Б4 - годен к военной службе с незначительными ограничениями",
+        "В" : "В - ограниченно годен к военной службе",
+        "Г" : "Г - временно не годен к военной службе",
+        "Д" : "Д - не годен к военной службе",
+        "О" : "Подлежит обследованию",
+        "Х" : "Вынесение решения в компетенции хирурга",
+        "My" : "Заполнить свои данные"
+    }
+}
