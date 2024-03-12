@@ -25,7 +25,7 @@ class View
 		внутри которого будет встраиваться вид
 		для отображения контента конкретной страницы.
 		*/
-		$title = "$title - ВВК ОСП";
+		$title = "$title - ВВК";
 		if(!$print_mode)
 			include "application/views/template.php";
 		else
@@ -35,5 +35,11 @@ class View
 	function failAccess() {
 		$data["activeMenuItem"] = "";
 		$this->generateView('failAccess_view.php', "Ошибка доступа", $data);
+	}
+
+	function errorPage($errorMessage = "") {
+		$data["activeMenuItem"] = "";
+		$data["errorMessage"] = $errorMessage;
+		$this->generateView('error_view.php', "Страница не найдена", $data);
 	}
 }

@@ -1,5 +1,6 @@
 {
-    "version" : "0.63 от 10.11.2023",
+    "version" : "0.65",
+    "versionDate" : "12.03.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -19,15 +20,15 @@
     },
     "userType" : {
         "0" : ["Администратор", ["main", "admin", "statistic"]],
-        "1" : ["Невропатолог", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
+        "1" : ["Невропатолог", ["main", "adjustment", "complaint", "return", "pattern"]],
         "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol", "searchDuplicate", "statistic"]],
-        "3" : ["Хирург", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
-        "4" : ["Терапевт", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
-        "5" : ["Стоматолог", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
-        "6" : ["Лор", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
-        "7" : ["Окулист", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
-        "8" : ["Психиатр", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]],
-        "9" : ["Дерматолог", ["main", "adjustment", "complaint", "return", "inspection", "pattern"]]
+        "3" : ["Хирург", ["main", "adjustment", "complaint", "return", "pattern"]],
+        "4" : ["Терапевт", ["main", "adjustment", "complaint", "return", "pattern"]],
+        "5" : ["Стоматолог", ["main", "adjustment", "complaint", "return", "pattern"]],
+        "6" : ["Лор", ["main", "adjustment", "complaint", "return", "pattern"]],
+        "7" : ["Окулист", ["main", "adjustment", "complaint", "return", "pattern"]],
+        "8" : ["Психиатр", ["main", "adjustment", "complaint", "return", "pattern"]],
+        "9" : ["Дерматолог", ["main", "adjustment", "complaint", "return", "pattern"]]
     },
     "documentType" : {
         "control" : "Контроль",
@@ -44,7 +45,7 @@
         "creationDate" : "Дата создания",
         "rvkArticle" : "Статья РВК",
         "documentType" : "Тип документа",
-        "vk" : "Военкомат",
+        "vk" : "Военный комиссариат",
         "recipient" : "Получатель",
         "adventTime" : "Время призыва",
         "content" : "Краткое содержание",
@@ -74,5 +75,19 @@
         "О" : "Подлежит обследованию",
         "Х" : "Вынесение решения в компетенции хирурга",
         "My" : "Заполнить свои данные"
+    },
+    "printValues" : {
+        "%ФИО%" : "name",
+        "%ДАТА_РОЖДЕНИЯ%" : "birthDate", 
+        "%ЖАЛОБЫ%" : "complaint",
+        "%АНАМНЕЗ%" : "anamnez",
+        "%ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%" : "objectData",
+        "%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%" : "specialResult",
+        "%ДИАГНОЗ%" : "diagnosis", 
+        "%ИСХОДЯЩАЯ_СТАТЬЯ%" : "article",
+        "%ГОДНОСТЬ%" : "healtCategory",
+        "%ИМЯ_ВРАЧА%" : "ownerID", 
+        "%ДАТА_ОСВИДЕТЕЛЬСТВОВАНИЯ%" : "creationDate"
     }
+    
 }

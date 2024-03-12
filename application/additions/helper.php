@@ -1,4 +1,5 @@
 <?
+use Vtiful\Kernel\Format;
 /*
 Файл, подключаемый index.php
 > содержит класс Helper и методы упрощающие работу
@@ -16,5 +17,13 @@ class Helper
     {
         $advent = explode("-", Database::getCurrentBase());
         return $advent[1] == "1" ? $advent[0]-1 . "-2" :  $advent[0] . "-1";
+    }
+
+    public static function formatDate($date) {
+        return date('d.m.Y', strtotime($date));
+    }
+
+    public static function getVKNameById($vkId) {
+        return Database::execute("SELECT * FROM vkList WHERE id=:id", ["id" => $vkId])[0];
     }
 }

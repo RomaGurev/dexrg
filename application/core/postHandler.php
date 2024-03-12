@@ -31,13 +31,13 @@ class postHandler
         if ($param['name'] === null || trim($param['name']) === '' || $param['position'] === "")
             return "Некорректные данные";
         else {
-            $quary = "INSERT INTO `staff` (name, position, isEmployed) VALUES (:name, :position, :isEmployed);";
+            $query = "INSERT INTO `staff` (name, position, isEmployed) VALUES (:name, :position, :isEmployed);";
             $dataArr = [
                 "name" => $param['name'],
                 "position" => $param['position'],
                 "isEmployed" => 1
             ];
-            Database::execute($quary, $dataArr);
+            Database::execute($query, $dataArr);
             return "success";
         }
     }
@@ -52,8 +52,8 @@ class postHandler
         elseif (in_array($dbname, Database::getDatabasesList())) {
             return "База данных $dbname уже существует.";
         } else {
-            $quary = 'CREATE DATABASE `' . $dbname . '`;';
-            Database::execute($quary);
+            $query = 'CREATE DATABASE `' . $dbname . '`;';
+            Database::execute($query);
             return Database::initializeNewDatabase($dbname);
         }
 
@@ -82,12 +82,12 @@ class postHandler
         $userID = $param["userID"];
         $currentValue = Database::execute("SELECT isEmployed FROM `staff` WHERE id = :id;", ["id" => $userID])[0]["isEmployed"];
 
-        $quary = "UPDATE staff SET isEmployed = :isEmployed WHERE id = :id;";
+        $query = "UPDATE staff SET isEmployed = :isEmployed WHERE id = :id;";
         $dataArr = [
             "isEmployed" => $currentValue == 1 ? 0 : 1,
             "id" => $userID
         ];
-        $ans = Database::execute($quary, $dataArr);
+        $ans = Database::execute($query, $dataArr);
         return "<div class='alert alert-success mt-2'>Параметры учетной записи успешно сохранены.</div>";
     }
 
@@ -96,30 +96,30 @@ class postHandler
         $userID = $param["userID"];
         $userPosition = $param["userPosition"];
 
-        $quary = "UPDATE staff SET position = :position WHERE id = :id;";
+        $query = "UPDATE staff SET position = :position WHERE id = :id;";
         $dataArr = [
             "position" => $userPosition,
             "id" => $userID
         ];
-        $ans = Database::execute($quary, $dataArr);
+        $ans = Database::execute($query, $dataArr);
         return "<div class='alert alert-success mt-2'>Параметры учетной записи успешно сохранены.</div>";
     }
     //<-------------------------------------Панель администратора------------------------------------->//
 
     //<-------------------------------------Аккаунты пользователей------------------------------------->//
 
-    //Метод входа в аккаунт, вызывается посредством POST-запроса
+    //Метод входа в аккаунт
     static function authUser($param)
     {
         if ($param['position'] === "")
             return "Выберите специальность для авторизации";
         else {
-            $quary = "SELECT id, name FROM `staff` WHERE position=:position AND isEmployed=:isEmployed";
+            $query = "SELECT id, name FROM `staff` WHERE position=:position AND isEmployed=:isEmployed";
             $dataArr = [
                 "position" => $param['position'],
                 "isEmployed" => 1
             ];
-            $ans = Database::execute($quary, $dataArr);
+            $ans = Database::execute($query, $dataArr);
 
             if (count($ans) > 0) {
                 $SPEC_DATA = $ans[0];
@@ -143,7 +143,7 @@ class postHandler
     //<-------------------------------------Аккаунты пользователей------------------------------------->//
 
 
-    //<-------------------------------------Страницы шаблонов------------------------------------->//
+    //<-------------------------------------Страницы шаблонов (pattern)------------------------------------->//
 
     //Метод добавления шаблона
     static function addPattern($param)
@@ -151,7 +151,7 @@ class postHandler
         if ($param['patternName'] === "")
             return "Введите название шаблона";
         else {
-            $quary = "INSERT INTO `patternList` (name, complaint, anamnez, objectData, specialResult, diagnosis, ownerID) VALUES (:name, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :ownerID);";
+            $query = "INSERT INTO `patternList` (name, complaint, anamnez, objectData, specialResult, diagnosis, ownerID) VALUES (:name, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :ownerID);";
             $dataArr = [
                 "name" => $param['patternName'],
                 "complaint" => $param['complaintTextarea'],
@@ -161,7 +161,7 @@ class postHandler
                 "diagnosis" => $param['diagnosisTextarea'],
                 "ownerID" => Profile::$user['id']
             ];
-            Database::execute($quary, $dataArr);
+            Database::execute($query, $dataArr);
             return "reloadPage";
         }
     }
@@ -173,7 +173,7 @@ class postHandler
             return "Введите название шаблона";
         else {
             
-            $quary = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis WHERE id = :id;";
+            $query = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis WHERE id = :id;";
             $dataArr = [
                 "name" => $param['patternName'],
                 "complaint" => $param['complaintTextarea'],
@@ -184,7 +184,7 @@ class postHandler
                 "id" => $param['patternID']
             ];
             
-            Database::execute($quary, $dataArr);
+            Database::execute($query, $dataArr);
             return "reloadPage";
         }
     }
@@ -195,16 +195,90 @@ class postHandler
         if ($param['patternID'] === "")
             return "Ошибка удаления шаблона. ID не найден.";
         else {
-            $quary = "DELETE FROM `patternList` WHERE id=:id AND ownerID=:ownerID";
+            $query = "DELETE FROM `patternList` WHERE id=:id AND ownerID=:ownerID";
             $dataArr = [
                 "id" => $param['patternID'],
                 "ownerID" => Profile::$user['id']
             ];
-            Database::execute($quary, $dataArr);
+            Database::execute($query, $dataArr);
             return "reloadPage";
         }
     }
 
-    //<-------------------------------------Страницы шаблонов------------------------------------->//
+    //<-------------------------------------Страницы шаблонов (pattern)------------------------------------->//
+
+    //<-------------------------------------Страницы добавления призывников (conscription)------------------------------------->//
+
+    static function addConscription($param) 
+    {
+        if ($param['fullName'] === "")
+            return "Введите имя призывника";
+        else {
+            $query = "INSERT INTO `conscript` (documentNumber, ownerID, creationDate, name, birthDate, rvkArticle, article, documentType, vk, healtCategory, adventPeriod, diagnosis, patternID) VALUES (:documentNumber, :ownerID, :creationDate, :name, :birthDate, :rvkArticle, :article, :documentType, :vk, :healtCategory, :adventPeriod, :diagnosis, :patternID);";
+            $dataArr = [
+                "documentNumber" => $param['docNumber'],
+                "ownerID" => Profile::$user['id'],
+                "creationDate" => $param['creationDate'],
+                "name" => $param['fullName'],
+                "birthDate" => $param['birthDate'],
+                "rvkArticle" => $param['rvkArticle'],
+                "article" => $param['article'],
+                "documentType" => $param['documentType'],
+                "vk" => $param['vk'],
+                "healtCategory" => $param['healtCategory'],
+                "adventPeriod" => $param['adventTime'],
+                "diagnosis" => $param['diagnosisTextarea'],
+                "patternID" => $param['pattern']
+            ];
+
+            Database::execute($query, $dataArr, "current");
+            return "reloadPage";
+        }
+    }
+
+    static function editConscription($param) 
+    {
+        if ($param['fullName'] === "")
+            return "Введите имя призывника";
+        else {
+            $query = "UPDATE `conscript` SET documentNumber = :documentNumber, ownerID = :ownerID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, article = :article, documentType = :documentType, vk = :vk, healtCategory = :healtCategory, adventPeriod = :adventPeriod, diagnosis = :diagnosis, patternID = :patternID WHERE id = :id;";
+            $dataArr = [
+                "id" => $param['id'],
+                "documentNumber" => $param['docNumber'],
+                "ownerID" => Profile::$user['id'],
+                "creationDate" => $param['creationDate'],
+                "name" => $param['fullName'],
+                "birthDate" => $param['birthDate'],
+                "rvkArticle" => $param['rvkArticle'],
+                "article" => $param['article'],
+                "documentType" => $param['documentType'],
+                "vk" => $param['vk'],
+                "healtCategory" => $param['healtCategory'],
+                "adventPeriod" => $param['adventTime'],
+                "diagnosis" => $param['diagnosisTextarea'],
+                "patternID" => $param['pattern']
+            ];
+
+            Database::execute($query, $dataArr, "current");
+            return "reloadPage";
+        }
+    }
+
+    static function deleteConscription($param)
+    {
+        if ($param['adjustmentID'] === "")
+            return "Ошибка удаления призывника. ID не найден.";
+        else {
+            $query = "DELETE FROM `conscript` WHERE id=:id AND ownerID=:ownerID";
+            $dataArr = [
+                "id" => $param['adjustmentID'],
+                "ownerID" => Profile::$user['id']
+            ];
+            Database::execute($query, $dataArr, "current");
+            return "reloadPage";
+        }
+    }
+
+    //<-------------------------------------Страницы шаблонов (conscription)------------------------------------->//
 
 }

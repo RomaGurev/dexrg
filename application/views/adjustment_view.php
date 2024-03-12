@@ -12,9 +12,7 @@
             class="btn btn-outline-success mb-3 float-end col-4 col-lg-3">Регистрация призывника</a>
     </div>
 
-    <!--<a href="/" class="btn btn-outline-dark col-6 col-lg-3">Вывести должников</a>-->
-    <!--Тип документа: Контроль, отработка-->
-    
+
     <?
     $adjustmentList = $data['adjustmentList'];
     if (count($adjustmentList) > 0) {
@@ -44,17 +42,21 @@
                     echo "<tr>
                     <td class='lead fs-6 text-center'>" . $value["documentNumber"] . "</td>
                     <td class='lead fs-6'>" . $value["name"] . "</td>
-                    <td class='lead fs-6'>" . $value["creationDate"] . "</td>
+                    <td class='lead fs-6'>" . Helper::formatDate($value["creationDate"]) . "</td>
                     <td class='lead fs-6'>" . $value["rvkArticle"] . "</td>
-                    <td class='lead fs-6'>" . $value["documentType"] . "</td>
-                    <td class='lead fs-6'>" . $value["vk"] . "</td>
-                    <td class='lead fs-6'>" . $value["adventPeriod"] . "</td>
+                    <td class='lead fs-6'>" . Config::getValue("documentType")[$value["documentType"]] . "</td>
+                    <td class='lead fs-6'>" . Helper::getVKNameById($value["vk"])["name"] . "</td>
+                    <td class='lead fs-6'>" . Helper::convertAdventPeriodToString($value["adventPeriod"]) . "</td>
                     <td class='lead fs-6'>" . $value["diagnosis"] . "</td>
                     <td class='lead fs-6'>" . $value["healtCategory"] . "</td>
                     <td class='lead fs-6'>" . $value["article"] . "</td>
-                    <td class='lead fs-6'>$actions</td>
+                    <td class='lead fs-6'>" . 
+                    "<button onclick='printAdjustment(". $value['id'] . ")' class='btn btn-outline-dark w-75 mb-1'>Печать</button>" .
+                    "<button onclick='editAdjustment(". $value['id'] . ")' class='btn btn-outline-dark w-75 mb-1'>Редактировать</button>" . 
+                    "<button onclick='deleteAdjustment(". $value['id'] . ")' class='btn btn-outline-danger w-75 text-center'>Удалить</button>" .
+                    "</td>
                     </tr>";
-                }
+                }  
                 ?>
             </tbody>
         </table>

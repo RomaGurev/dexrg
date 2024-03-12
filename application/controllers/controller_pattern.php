@@ -44,7 +44,7 @@ class Controller_Pattern extends Controller
 				if($data['currentPattern'] != null && $data['currentPattern'][0]['ownerID'] == Profile::$user['id'])
 					$this->view->generateView('pattern/patternEditor_view.php', "Редактирование шаблона", $data);
 				else
-					$this->view->failAccess();
+					$this->view->errorPage('Идентификатор шаблона не найден.');
 			} else {
 				$this->view->generateView('pattern/patternEditor_view.php', "Добавление шаблона");
 			}
@@ -52,5 +52,4 @@ class Controller_Pattern extends Controller
 		else
 			$this->view->failAccess();
 	}
-
 }

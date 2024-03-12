@@ -20,4 +20,5 @@ class Controller_Adjustment extends Controller
 		//WHERE documentType = control OR documentType = adjustment
 		return Database::execute("SELECT * FROM conscript WHERE ownerID=:ownerID", ["ownerID" => Profile::$user["id"]], "current");
 	}
+
 }

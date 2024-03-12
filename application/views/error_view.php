@@ -11,10 +11,16 @@
             <image xlink:href="/images/icons/info-circle.svg" width="100%" height="100%" />
         </svg>
     </div>
-    <div class="col-9 ps-3">
+    <div class="col-9">
         <h3 class="display-6 lh-1 mb-3">Страница не найдена</h3>
         <p class="lead">
-            По данному адресу страница не найдена.<br> В случае проблем обратитесь в 117 кабинет.
+            <? 
+            if($data["errorMessage"] == "") {
+                echo "По данному адресу страница не найдена.";
+            } else {
+                echo $data["errorMessage"];
+            }
+            ?>
         </p>
     </div>
 </div>

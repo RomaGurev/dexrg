@@ -11,6 +11,14 @@ authPosition = function (positionIndex) {
 
 //Вывод графиков на главную страницу авторизованного пользователя
 document.addEventListener('DOMContentLoaded', () => {
+    $.getJSON('/application/additions/statistic.php', function(result) {
+        console.log(result);
+        fillCharts(result);
+    });
+});
+
+function fillCharts(statisticObject) {
+
     new Chart(
         document.querySelector('.chartComplaint1'),
         {
@@ -70,9 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             type: 'doughnut',
             data: {
-                labels: ['Прибыло', 'Не прибыло', 'Утверждено', 'Отработка'],
+                labels: statisticObject["chartAdjustment"]["labels"],
                 datasets: [
-                    { label: 'Контроль', data: [3, 12, 16, 9] }
+                    { data: statisticObject["chartAdjustment"]["data"]}
                 ]
             },
             options: {
@@ -82,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     title: {
                         display: true,
-                        text: 'Контроль - всего: 22'
+                        text: statisticObject["chartAdjustment"]["titleText"]
                     },
                     colors: {
                         forceOverride: true
@@ -90,8 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-    );
-});
+    ); 
+
+}
 
 //Обработка формы авторизации
 $("#authForm").submit(function (event) {
@@ -110,7 +119,7 @@ $("#authForm").submit(function (event) {
         success: function (data) {
             if (data == "reloadPage") {
                 showAlert(true, "Успешная авторизация", "success", "info", "col-8 col-xl-4 mx-auto");
-                setInterval(() => location.reload(), 1000);
+                location.reload();
             } else {
                 showLoading(false);
                 showAlert(true, data, "danger", "", "col-8 col-xl-4 mx-auto");

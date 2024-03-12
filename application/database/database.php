@@ -39,26 +39,26 @@ class Database
     }
 
     //Метод выполнения запроса, возвращает полученный в результат
-    public static function execute($quary, $dataArr = null, $dbname = "")
+    public static function execute($query, $dataArr = null, $dbname = "")
     {
 
         try {
             switch ($dbname) {
                 case "current":
-                    $sth = Database::pdoCurrentBase()->prepare($quary);
+                    $sth = Database::pdoCurrentBase()->prepare($query);
                     $sth->execute($dataArr);
                     $array = $sth->fetchAll(PDO::FETCH_ASSOC);
                     $sth->closeCursor();
                     break;
                 default:
-                    $sth = Database::pdo()->prepare($quary);
+                    $sth = Database::pdo()->prepare($query);
                     $sth->execute($dataArr);
                     $array = $sth->fetchAll(PDO::FETCH_ASSOC);
                     $sth->closeCursor();
                     break;
             }
         } catch (PDOException $exception) {
-            echo "<div class='alert alert-danger'>Запрос: $quary к базе данных $dbname<br>Ошибка: " . $exception->getMessage() . "</div>";
+            echo "<div class='alert alert-danger'>Запрос: $query к базе данных $dbname<br>Ошибка: " . $exception->getMessage() . "</div>";
         }
 
         return $array;

@@ -5,6 +5,7 @@
 */
 ?>
 
+
 <div class="row row-cols-2">
     <div class="col-3">
         <div class="p-4 mb-3 rounded-3 border shadow">
@@ -49,7 +50,7 @@
                 <div class="pt-lg-3 d-flex">
                     <div class="w-50">
                         <p class="lead mb-1">
-                            <b>Всего дел в отработке:</b> 22 <br>
+                            <b>Всего дел в отработке:</b> <? print_r($data["adjustmentChartsInfo"][0]) ?> <br>
                             &nbsp; Контроль - прибыло: 13 <br>
                             &nbsp; Контроль - не прибыло: 2 <br>
                             &nbsp; Утверждено: 5 <br>
