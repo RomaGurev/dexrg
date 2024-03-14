@@ -5,24 +5,16 @@ START TRANSACTION;
 SET time_zone = "+00:00";
         
 CREATE TABLE `conscript` (
-  `id` int(11) NOT NULL UNIQUE,
-  `documentNumber` int(11) NOT NULL,
-  `ownerID` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
+  `creatorID` int(11) NOT NULL,
   `creationDate` varchar(100) NOT NULL,
   `name` varchar(255) NOT NULL,
   `birthDate` varchar(100) NOT NULL,
   `rvkArticle` varchar(10) NOT NULL,
-  `article` varchar(11) NOT NULL,
-  `documentType` varchar(25) NOT NULL,
   `vk` varchar(255) NOT NULL,
-  `healtCategory` varchar(100) NOT NULL,
+  `healthCategory` varchar(100) NOT NULL,
   `adventPeriod` varchar(50) NOT NULL,
-  `diagnosis` varchar(1500) NOT NULL,
-  `complaint` varchar(1000) NOT NULL,
-  `anamnez` varchar(1000) NOT NULL,
-  `objectData` varchar(1500) NOT NULL,
-  `specialResult` varchar(1500) NOT NULL,
-  `patternID` int(11) NOT NULL
+  `inProcess` boolean DEFAULT TRUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
         
 ALTER TABLE `conscript`

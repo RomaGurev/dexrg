@@ -1,22 +1,47 @@
 const isEmpty = str => !str.trim().length;
 
-changeSearchType = function (type, value) {
-    $("#searchInput").attr("placeholder", value + "...");
-    $("#searchType").val(type);
+//Поиск призывника
+$("#searchInput").on("input", function () {
+    let searchValue = $("#searchInput").val().trim();
+    $("#searchResult").empty();
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            searchConscript: {
+                type: $("#searchType").val(),
+                value: searchValue
+            }
+        },
+        success: function (data) {
+            $("#searchResult").append(data);
+            showLoading(false);
+            let newheight = data == "" ? 0 : $('#resizeDiv').height();
+            $("#searchResult").stop().animate({ height: newheight });
+        }
+    });
+});
+
+
+$("#searchType").on("change", function() {
+    $("#searchInput").trigger("input");
+});
+
+$(window).on( "resize", function() {
+    let newheight = $('#resizeDiv').length ? $('#resizeDiv').height() : 0;
+    $("#searchResult").stop().animate({ height: newheight });
+});
+//Поиск призывника
+
+//Открытие модального окна с УКП
+openConscriptModal = function (conscriptID) {
+    alert(conscriptID);
 }
+//Открытие модального окна с УКП
 
-search = function () {
-    let searchType = $("#searchType").val();
-    let searchInput = $("#searchInput");
-
-    if (isEmpty(searchInput.val())) {
-        if (!searchInput.hasClass("is-invalid"))
-            searchInput.addClass("is-invalid");
-    }
-    else
-        location.href = "/search?type=" + searchType + "&value=" + searchInput.val();
-}
-
+//Загрузка
 showLoading = function (state) {
     let spinner = $("#spinner");
     if (state) {
@@ -28,7 +53,9 @@ showLoading = function (state) {
             spinner.addClass("d-none");
     }
 }
+//Загрузка
 
+//Alert
 showAlert = function (state, data = "", type = "success", icon = "info", size = "") {
     let alert = $('#alertResult');
     let iconResult = "";
@@ -50,3 +77,4 @@ showAlert = function (state, data = "", type = "success", icon = "info", size = 
             alert.addClass("d-none");
     }
 }
+//Alert

@@ -38,8 +38,8 @@ class Controller_Print extends Controller
 		$data = Database::execute("SELECT * FROM conscript WHERE id = :id", ["id" => $id], "current")[0];
 
 		$data["ownerID"] = Database::execute("SELECT name FROM staff WHERE id=:id", ["id" => $data["ownerID"]])[0]["name"];
-		$data["birthDate"] = Helper::formatDate($data["birthDate"]);
-		$data["creationDate"] = Helper::formatDate($data["creationDate"]);
+		$data["birthDate"] = Helper::formatDateToView($data["birthDate"]);
+		$data["creationDate"] = Helper::formatDateToView($data["creationDate"]);
 
 		$fileContent = $this->replaceData($data, $fileContent);
 

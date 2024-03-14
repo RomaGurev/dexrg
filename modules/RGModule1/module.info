@@ -1,0 +1,8 @@
+{
+"Author" : "RGNSK",
+"Name": "Название",
+"Info": "Информация",
+
+
+"execFile": "myModule.php"
+}

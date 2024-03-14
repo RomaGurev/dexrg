@@ -42,37 +42,6 @@ $menuItems = Config::getValue("menuItems");
                     </ul>
                 </div>
 
-                <div id="searchFlex" class="ms-auto col-4 col-xl-2 flex-fill">
-                    <form id="searchForm" class="mb-1 mt-1 mt-xxl-0 mb-lg-0 me-lg-0 d-flex">
-                        <input type="search" id="searchInput" class="form-control" placeholder="ФИО..."
-                            style="border-radius: var(--bs-border-radius) 0px 0px var(--bs-border-radius); border-right: 0;">
-                        <input type="text" id="searchType" value="name" style="display: none;">
-
-                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split me-2"
-                            data-bs-toggle="dropdown" aria-expanded="false"
-                            style="border: var(--bs-border-width) solid var(--bs-border-color); border-radius: 0px var(--bs-border-radius) var(--bs-border-radius) 0px;">
-                        </button>
-
-                        
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><span class="dropdown-item-text text-muted">Параметры поиска</span></li>
-                            <?
-                            foreach (Config::getValue("searchType") as $key => $value) {
-                                $values = "'$key', '$value'"; 
-                                echo '<li><a class="dropdown-item" style="cursor:pointer;" onclick="changeSearchType(' . $values . ');">' . $value . '</a></li>';
-                            }
-                            ?>
-                        </ul>
-
-                        <button type="button" title="search_button" onclick="search();" class="btn btn-outline-light svg-search">
-                            <svg width="18" height="18">
-                                <image xlink:href="/images/icons/search.svg" width="18" height="18" />
-                            </svg>
-                        </button>
-
-                    </form>
-                </div>
-
             </div>
 
         <? } else { ?>

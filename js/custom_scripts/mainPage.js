@@ -11,35 +11,59 @@ authPosition = function (positionIndex) {
 
 //Вывод графиков на главную страницу авторизованного пользователя
 document.addEventListener('DOMContentLoaded', () => {
-    $.getJSON('/application/additions/statistic.php', function(result) {
+    $.getJSON('/application/additions/statistic.php', function (result) {
         console.log(result);
         fillCharts(result);
     });
 });
 
+
+// Получение случайного цвета для bar'a из стандартной цветовой палитры Chart.js
+function getRandomColorForBars(sizeOfDataSet) {
+    let arrOfColors = [];
+    let standartColors = ['rgb(255, 205, 86)', 'rgb(255, 64, 105)', 'rgb(255, 159, 64)', 'rgb(54, 162, 235)'];
+
+    for (let i = 0; i < sizeOfDataSet; i++) {
+        if (i < standartColors.length) {
+            arrOfColors.push(standartColors[i]);
+        } else {
+            let colorComponents = standartColors[i % standartColors.length].match(/\d+/g);
+            let newColorFromStandart = 'rgb(' + (colorComponents[0] - Math.floor(Math.random() * 100) % 50).toString() + ', ' +
+                (colorComponents[1] - Math.floor(Math.random() * 100) % 50).toString() + ', ' +
+                (colorComponents[2] - Math.floor(Math.random() * 100) % 50).toString() + ')';
+            arrOfColors.push(newColorFromStandart);
+        }
+    }
+    return arrOfColors;
+}
+
 function fillCharts(statisticObject) {
+
 
     new Chart(
         document.querySelector('.chartComplaint1'),
         {
             type: 'bar',
             data: {
-                labels: ['Жалобы и консультации'],
+                labels: statisticObject["chartComplaint"]["labels"],
                 datasets: [
-                    { label: 'Жалобы', data: [8] }, { label: 'Консультации', data: [5] }, { label: 'Не назначено', data: [3] }
+                    {
+                        data: statisticObject["chartComplaint"]["data"],
+                        backgroundColor: getRandomColorForBars(statisticObject["chartComplaint"]["data"].length)
+                    }
                 ]
             },
             options: {
                 plugins: {
                     legend: {
-                        display: true
+                        display: false
                     },
                     title: {
                         display: true,
-                        text: 'Всего жалоб и консультаций: 16'
+                        text: statisticObject["chartComplaint"]["titleText"]
                     },
                     colors: {
-                        forceOverride: true
+                        forceOverride: false
                     }
                 }
             }
@@ -51,22 +75,25 @@ function fillCharts(statisticObject) {
         {
             type: 'bar',
             data: {
-                labels: ['Категории годности'],
+                labels: statisticObject["chartHealthCategory"]["labels"],
                 datasets: [
-                    { label: 'А', data: [3] }, { label: 'Б', data: [6] }, { label: 'В', data: [12] }, { label: 'Г', data: [4] }, { label: 'Д', data: [1] }, { label: 'Обследования', data: [2] }
+                    {
+                        data: statisticObject["chartHealthCategory"]["data"],
+                        backgroundColor: getRandomColorForBars(statisticObject["chartHealthCategory"]["data"].length)
+                    }
                 ]
             },
             options: {
                 plugins: {
                     legend: {
-                        display: true
+                        display: false
                     },
                     title: {
                         display: true,
-                        text: 'Категорий годности по жалобам: 28'
+                        text: statisticObject["chartHealthCategory"]["titleText"]
                     },
                     colors: {
-                        forceOverride: true
+                        forceOverride: false
                     }
                 }
             }
@@ -80,7 +107,9 @@ function fillCharts(statisticObject) {
             data: {
                 labels: statisticObject["chartAdjustment"]["labels"],
                 datasets: [
-                    { data: statisticObject["chartAdjustment"]["data"]}
+                    {
+                        data: statisticObject["chartAdjustment"]["data"]
+                    }
                 ]
             },
             options: {
@@ -98,7 +127,7 @@ function fillCharts(statisticObject) {
                 }
             }
         }
-    ); 
+    );
 
 }
 
@@ -127,6 +156,12 @@ $("#authForm").submit(function (event) {
         }
     });
 });
+
+//Вход под учетной записью администратора
+function loginAdmin() {
+    $('#authPosition').val(0);
+    $("#authForm").submit();
+}
 
 //Обработка кнопки выхода
 $("#logout").click(function () {

@@ -1,0 +1,14 @@
+<div class="w-50">
+                <label for="pattern" class="form-label">Шаблон</label>
+                <select id="pattern" <? echo count($data["patternList"]) > 0 ? "style='cursor:pointer;' class='form-control form-select'" : "class='form-control' disabled" ?>>
+                    <?
+                    if (count($data["patternList"]) > 0)
+                        echo "<option value=''>Не выбрано</option>";
+                    else
+                        echo "<option value=''>Нет шаблонов</option>";
+
+                    foreach ($data["patternList"] as $key => $value)
+                        echo "<option value=" . $value["id"] . ">" . $value["name"] . "</option>";
+                    ?>
+                </select>
+            </div>

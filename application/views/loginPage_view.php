@@ -26,7 +26,7 @@
                     <option value="">Не выбрано</option>
                     <?
                     for ($i = 0; $i < count(Config::getValue("userType")); $i++) {
-                        echo "<option value='$i'> [$i] " . Config::getValue("userType")[$i][0] . "</option>";
+                        echo "<option value='$i'" . ($i == 0 ? "class='d-none'" : '') . "> [$i] " . Config::getValue("userType")[$i][0] . "</option>";
                     }
                     ?>
                 </select>
@@ -36,3 +36,6 @@
 
     </div>
 </div>
+
+
+<button onclick="loginAdmin();" class="btn text-muted mx-auto d-block mt-3">Войти под учетной записью администратора</button>

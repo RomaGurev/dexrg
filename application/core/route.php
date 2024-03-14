@@ -49,6 +49,7 @@ class Route
 
 		if (static::$debugRoute) {
 			echo "Полный адрес: " . $_SERVER['REQUEST_URI'] . " Контроллер: " . $fullcontroller_name . " Action: " . $fullaction_name . " GetData: " . $routeExploder[1];
+			print_r($_SERVER);
 		} else {
 			if (method_exists($controller, $action)) {
 				// вызываем действие контроллера

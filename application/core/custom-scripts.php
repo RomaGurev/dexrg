@@ -12,7 +12,8 @@ $custom_scripts = [
     ["main", "mainPage.js"],
     ["pattern", "patternPage.js"],
     ["adjustment", "adjustmentPage.js"],
-    ["conscription", "conscriptionPage.js"]
+    ["conscription", "conscriptionPage.js"],
+    ["complaint", "complaintPage.js"]
 ];
 
 for ($i=0; $i < count($custom_scripts); $i++) { 

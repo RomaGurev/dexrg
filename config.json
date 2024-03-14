@@ -1,6 +1,6 @@
 {
-    "version" : "0.65",
-    "versionDate" : "12.03.2024",
+    "version" : "0.66",
+    "versionDate" : "13.03.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -9,10 +9,10 @@
     "menuItems" : {
         "main" : ["Основная", ""],
         "admin" : ["Управление", "admin"],
+        "changeCategory" : ["Изменение категории", "changeCategory"],
         "complaint" : ["Жалобы", "complaint"],
         "control" : ["Контроль", "control"],
         "protocol" : ["Протоколы", "protocol"],
-        "searchDuplicate" : ["Поиск дублей", "conscription/searchDuplicate"],
         "adjustment" : ["Отработка", "adjustment"],
         "return" : ["Возврат", "return"],
         "inspection" : ["Обследования", "inspection"],
@@ -20,15 +20,16 @@
     },
     "userType" : {
         "0" : ["Администратор", ["main", "admin", "statistic"]],
-        "1" : ["Невропатолог", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol", "searchDuplicate", "statistic"]],
-        "3" : ["Хирург", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "4" : ["Терапевт", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "5" : ["Стоматолог", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "6" : ["Лор", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "7" : ["Окулист", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "8" : ["Психиатр", ["main", "adjustment", "complaint", "return", "pattern"]],
-        "9" : ["Дерматолог", ["main", "adjustment", "complaint", "return", "pattern"]]
+        "1" : ["Невропатолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol", "statistic"]],
+        "3" : ["Хирург", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "4" : ["Терапевт", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "5" : ["Стоматолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "6" : ["Лор", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "7" : ["Окулист", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "8" : ["Психиатр", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "9" : ["Дерматолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
+        "10" : ["Медицинская сестра", ["main"]]
     },
     "documentType" : {
         "control" : "Контроль",
@@ -39,17 +40,14 @@
         "complaint" : "Жалоба"
     },
     "searchType" : {
-        "name" : "ФИО",
-        "adventDate" : "Дата явки",
-        "controlDate" : "Дата контроля",
-        "creationDate" : "Дата создания",
-        "rvkArticle" : "Статья РВК",
-        "documentType" : "Тип документа",
-        "vk" : "Военный комиссариат",
-        "recipient" : "Получатель",
-        "adventTime" : "Время призыва",
-        "content" : "Краткое содержание",
-        "article" : "Итоговая статья"
+        "name" : "Поиск по ФИО",
+        "article" : "Поиск по итоговой статье",
+        "rvkArticle" : "Поиск по статье РВК",
+        "id" : "Поиск по уникальному номеру",
+        "birthDate" : "Поиск по дате рождения",
+        "creationDate" : "Поиск по дата создания",
+        "vk" : "Поиск по военному комиссариату",
+        "adventPeriod" : "Поиск по периоду призыва"
     },
     "healthCategory" : {
         "A" : "А - годен к военной службе",

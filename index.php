@@ -19,4 +19,4 @@ require_once 'application/additions/helper.php'; //подключение кла
 
 Profile::authInit(); //инициализация учетных записей
 Route::init(); // инициализация маршрутизатора
-?>
+

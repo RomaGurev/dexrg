@@ -4,8 +4,7 @@
 */
 
 //Обработка добавления призывника
-$("#addConscriptionForm").submit(function (event) {
-
+$("#addConscriptForm").submit(function (event) {
     showLoading(true);
     event.preventDefault();
 
@@ -14,27 +13,25 @@ $("#addConscriptionForm").submit(function (event) {
         method: 'post',
         dataType: 'text',
         data: {
-            addConscription: {
-                docNumber: $('#docNumber').val(),
+            addConscript: {
                 creationDate: $('#creationDate').val(),
-                pattern: $('#pattern').val(),
+                creatorID: $('#creatorID').val(),
                 fullName: $('#fullName').val(),
                 rvkArticle: $('#rvkArticle').val(),
                 birthDate: $('#birthDate').val(),
-                diagnosisTextarea: $('#diagnosisTextarea').val(),
-                article: $('#article').val(),
-                healtCategory: $('#healtCategory').val(),
+                healthCategory: $('#healthCategory').val(),
                 vk: $('#vk').val(),
                 adventTime: $('#adventTime').val(),
-                documentType: $('#documentType').val()
             }
         },
         success: function (data) {
             window.scrollTo(0, 0);
             if (data == "reloadPage") {
                 showAlert(true, "Призывник успешно зарегистрирован");
+                let url = new URL(location.href);
+                let backParam = url.searchParams.get("back"); 
                 setInterval(() =>
-                    location.href = '/' + $('#documentType').val(), 1000
+                    location.href = '/' + backParam, 1000
                 );
             } else {
                 showAlert(true, data, "danger", "");
@@ -45,7 +42,7 @@ $("#addConscriptionForm").submit(function (event) {
 });
 
 //Обработка изменения призывника
-$("#editConscriptionForm").submit(function (event) {
+$("#editConscriptForm").submit(function (event) {
 
     showLoading(true);
     event.preventDefault();
@@ -55,20 +52,16 @@ $("#editConscriptionForm").submit(function (event) {
         method: 'post',
         dataType: 'text',
         data: {
-            editConscription: {
+            editConscript: {
                 id: $('#editID').val(),
-                docNumber: $('#docNumber').val(),
                 creationDate: $('#creationDate').val(),
-                pattern: $('#pattern').val(),
+                creatorID: $('#creatorID').val(),
                 fullName: $('#fullName').val(),
                 rvkArticle: $('#rvkArticle').val(),
                 birthDate: $('#birthDate').val(),
-                diagnosisTextarea: $('#diagnosisTextarea').val(),
-                article: $('#article').val(),
-                healtCategory: $('#healtCategory').val(),
+                healthCategory: $('#healthCategory').val(),
                 vk: $('#vk').val(),
                 adventTime: $('#adventTime').val(),
-                documentType: $('#documentType').val()
             }
         },
         success: function (data) {

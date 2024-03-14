@@ -7,6 +7,8 @@ require_once '../database/database.php';
 require_once '../core/config.php';
 require_once '../core/profile.php';
 require_once '../core/route.php';
+require_once '../additions/conscriptBuilder.php';
+require_once '../additions/helper.php';
 
 Profile::authInit();
 $pHandler = new postHandler();
@@ -16,6 +18,8 @@ if (isset($_POST)) {
     foreach ($_POST as $key => $val) {
         if (method_exists($pHandler, $key))
             echo $pHandler->$key($val);
+        else
+            echo "Обработчик POST запроса не найден.";
     }
 }
 
@@ -172,7 +176,7 @@ class postHandler
         if ($param['patternName'] === "")
             return "Введите название шаблона";
         else {
-            
+
             $query = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis WHERE id = :id;";
             $dataArr = [
                 "name" => $param['patternName'],
@@ -183,7 +187,7 @@ class postHandler
                 "diagnosis" => $param['diagnosisTextarea'],
                 "id" => $param['patternID']
             ];
-            
+
             Database::execute($query, $dataArr);
             return "reloadPage";
         }
@@ -209,26 +213,21 @@ class postHandler
 
     //<-------------------------------------Страницы добавления призывников (conscription)------------------------------------->//
 
-    static function addConscription($param) 
+    static function addConscript($param)
     {
         if ($param['fullName'] === "")
             return "Введите имя призывника";
         else {
-            $query = "INSERT INTO `conscript` (documentNumber, ownerID, creationDate, name, birthDate, rvkArticle, article, documentType, vk, healtCategory, adventPeriod, diagnosis, patternID) VALUES (:documentNumber, :ownerID, :creationDate, :name, :birthDate, :rvkArticle, :article, :documentType, :vk, :healtCategory, :adventPeriod, :diagnosis, :patternID);";
+            $query = "INSERT INTO `conscript` (creatorID, creationDate, name, birthDate, rvkArticle, vk, healthCategory, adventPeriod) VALUES (:creatorID, :creationDate, :name, :birthDate, :rvkArticle, :vk, :healthCategory, :adventPeriod);";
             $dataArr = [
-                "documentNumber" => $param['docNumber'],
-                "ownerID" => Profile::$user['id'],
-                "creationDate" => $param['creationDate'],
+                "creatorID" => Profile::$user['id'],
+                "creationDate" => Helper::formatDateToView($param['creationDate']),
                 "name" => $param['fullName'],
-                "birthDate" => $param['birthDate'],
+                "birthDate" => Helper::formatDateToView($param['birthDate']),
                 "rvkArticle" => $param['rvkArticle'],
-                "article" => $param['article'],
-                "documentType" => $param['documentType'],
                 "vk" => $param['vk'],
-                "healtCategory" => $param['healtCategory'],
-                "adventPeriod" => $param['adventTime'],
-                "diagnosis" => $param['diagnosisTextarea'],
-                "patternID" => $param['pattern']
+                "healthCategory" => $param['healthCategory'],
+                "adventPeriod" => $param['adventTime']
             ];
 
             Database::execute($query, $dataArr, "current");
@@ -236,27 +235,22 @@ class postHandler
         }
     }
 
-    static function editConscription($param) 
+    static function editConscript($param)
     {
         if ($param['fullName'] === "")
             return "Введите имя призывника";
         else {
-            $query = "UPDATE `conscript` SET documentNumber = :documentNumber, ownerID = :ownerID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, article = :article, documentType = :documentType, vk = :vk, healtCategory = :healtCategory, adventPeriod = :adventPeriod, diagnosis = :diagnosis, patternID = :patternID WHERE id = :id;";
+            $query = "UPDATE `conscript` SET creatorID = :creatorID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, vk = :vk, healthCategory = :healthCategory, adventPeriod = :adventPeriod WHERE id = :id;";
             $dataArr = [
                 "id" => $param['id'],
-                "documentNumber" => $param['docNumber'],
-                "ownerID" => Profile::$user['id'],
+                "creatorID" => Profile::$user['id'],
                 "creationDate" => $param['creationDate'],
                 "name" => $param['fullName'],
                 "birthDate" => $param['birthDate'],
                 "rvkArticle" => $param['rvkArticle'],
-                "article" => $param['article'],
-                "documentType" => $param['documentType'],
                 "vk" => $param['vk'],
-                "healtCategory" => $param['healtCategory'],
-                "adventPeriod" => $param['adventTime'],
-                "diagnosis" => $param['diagnosisTextarea'],
-                "patternID" => $param['pattern']
+                "healthCategory" => $param['healthCategory'],
+                "adventPeriod" => $param['adventTime']
             ];
 
             Database::execute($query, $dataArr, "current");
@@ -264,21 +258,68 @@ class postHandler
         }
     }
 
-    static function deleteConscription($param)
+    static function deleteConscript($param)
     {
-        if ($param['adjustmentID'] === "")
+        if ($param['complaintID'] === "")
             return "Ошибка удаления призывника. ID не найден.";
         else {
-            $query = "DELETE FROM `conscript` WHERE id=:id AND ownerID=:ownerID";
+            $query = "DELETE FROM `conscript` WHERE id=:id";
             $dataArr = [
-                "id" => $param['adjustmentID'],
-                "ownerID" => Profile::$user['id']
+                "id" => $param['complaintID'],
             ];
             Database::execute($query, $dataArr, "current");
             return "reloadPage";
         }
     }
-
     //<-------------------------------------Страницы шаблонов (conscription)------------------------------------->//
+
+    //<-------------------------------------Поиск на сайте------------------------------------->//
+
+    static function searchConscript($param)
+    {
+        $valueLength = mb_strlen($param['value'], "UTF-8");
+
+        if ($valueLength >= 3) {
+
+            if($param['type'] == "vk") {
+
+                $testArr = [
+                    "Барабинский",
+                ];
+
+                //echo '/' . $param['value'] . '(\W+)/i';
+                $keys = array_column(Helper::getVKNames(), 'name');
+                
+                $matches  = preg_grep ('#((?i)' . trim($param['value']) . '(\W+))#i', $testArr);
+                print_r($keys);
+                print_r($matches);
+            }
+
+            
+
+            $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 3";
+
+            $ans = Database::execute($query, null, "current");
+
+            if (count($ans) == 0)
+                return "<div id='resizeDiv' class='lead'>Учетные карты не найдены. Необходимо зарегистрировать призывника.</div>";
+            else {
+
+                $result = "<div id='resizeDiv' class='d-grid gap-2'>";
+                foreach ($ans as $conscript)
+                    $result .= ConscriptBuilder::getConscriptCard($conscript);
+                $result .= "</div>";
+
+                return $result;
+            }
+
+        } else {
+            if($valueLength == 0)
+                return "";
+            return "<div id='resizeDiv' class='lead'>Введите больше 2 символов.</div>";
+        }
+    }
+
+    //<-------------------------------------Поиск на сайте------------------------------------->//
 
 }
