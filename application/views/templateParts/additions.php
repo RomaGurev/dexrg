@@ -23,18 +23,14 @@
 
 <!-- Модальное окно -->
 <div class="modal fade" id="RGModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title display-6 fs-4" id="exampleModalLabel">Заголовок модального окна</h5>
+      <div class="modal-header" style="padding: 0.5rem 1rem">
+        <h5 class="modal-title display-6 fs-4" id="modalLabel">Учетная карта призывника</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
       <div class="modal-body lead">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-        <button type="button" class="btn btn-primary">Сохранить изменения</button>
+        <div id="modalContent">{содержимое окна}</div>
       </div>
     </div>
   </div>

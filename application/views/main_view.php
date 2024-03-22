@@ -60,14 +60,15 @@
 
 
             <div class="mt-2 d-flex">
-                <input type="search" id="searchInput" class="form-control me-2" placeholder="Введите запрос...">
-                
-                <select id="searchType" class="form-control form-select" style="width: 80%; cursor:pointer;">
-                <?
-                foreach (Config::getValue("searchType") as $key => $value) {
-                    echo '<option value="' . $key . '">' . $value . '</option>';
-                }
-                ?>
+                <input id="showSelect" class="d-none" value="false">
+                <input type="text" id="searchInput" class="form-control me-2" placeholder="Введите запрос...">
+
+                <select id="searchType" class="form-control form-select" style="width: 80%;cursor:pointer;">
+                    <?
+                    foreach (Config::getValue("searchType") as $key => $value) {
+                        echo '<option value="' . $key . '">' . $value . '</option>';
+                    }
+                    ?>
                 </select>
             </div>
 
@@ -75,20 +76,21 @@
             <div id="searchResult" style="overflow: hidden; height: 0px;" class="mt-2"></div>
         </div>
 
-
-        <? //if (Profile::isHavePermission("adjustment")) {   ?>
         <div class="p-4 mb-3 rounded-3 border shadow">
             <div class="d-flex">
-                <div style="width: 60%;">
+                <div class="col-4 col-xl-6">
                     <h3 class="display-6 lh-1 fs-2">Общая информация</h3>
                     <p class="lead mb-1 pt-lg-3">
-                        <b>Всего дел в отработке:</b>
-                        <? print_r($data["adjustmentChartsInfo"][0]) ?> <br>
+                        <b>Всего дел в процессе: 15</b><br>
                         &nbsp; Контроль - прибыло: 13 <br>
                         &nbsp; Контроль - не прибыло: 2 <br>
                         &nbsp; Утверждено: 5 <br>
                         &nbsp; Отработка: 2 <br>
-                        <br>
+                        <b>Всего дел завершено: 115</b><br>
+                        &nbsp; Контроль - прибыло: 13 <br>
+                        &nbsp; Контроль - не прибыло: 2 <br>
+                        &nbsp; Утверждено: 5 <br>
+                        &nbsp; Отработка: 2 <br>
                         <b>Категории годности:</b> <br>
                         &nbsp; А - годен к военной службе: 4 <br>
                         &nbsp; Б - годен к военной службе с незначительными ограничениями: 4 <br>
@@ -98,45 +100,22 @@
                         &nbsp; Подлежит обследованию: 2
                     </p>
                 </div>
-
-                <div id="ChartDon" class="col">
-                    <div class="app-chart__canvas">
-                        <canvas class="chartAdjustment"></canvas>
-                    </div>
+                <div class="col-8 col-xl-6">
+                    <canvas class="chartAdjustment"></canvas>
                 </div>
-
             </div>
         </div>
-        <? //}   ?>
 
-        <? if (Profile::isHavePermission("statistic")) { ?>
             <div class="p-4 mb-3 rounded-3 border shadow">
-                <h3 class="display-6 lh-1 fs-2">Статистика</h3>
-                <div class="pt-lg-3">
-                    <p class="lead mb-1">{блок статистики}</p>
-                </div>
-            </div>
-        <? } ?>
-
-        <? if (Profile::isHavePermission("complaint")) { ?>
-            <div class="p-4 mb-3 rounded-3 border shadow">
-                <h3 class="display-6 lh-1 fs-2">Жалобы и консультации</h3>
+                <h3 class="display-6 lh-1 fs-2">Изменение категории, жалобы и возвраты</h3>
                 <div class="pt-lg-3 d-flex">
-
-                    <div id="Chart1" class="w-50">
-                        <!--<p class="lead mb-1">Всего жалоб и консультаций: 11</p>-->
-                        <div class="app-chart__canvas">
-                            <canvas class="chartComplaint1"></canvas>
-                        </div>
+                    <div class="col w-50">
+                        <canvas class="chartComplaint1"></canvas>
                     </div>
-                    <div id="Chart2" class="w-50">
-                        <!--<p class="lead mb-1">Категории годности по жалобам: </p>-->
-                        <div class="app-chart__canvas">
-                            <canvas class="chartComplaint2"></canvas>
-                        </div>
+                    <div class="col w-50">
+                        <canvas class="chartComplaint2"></canvas>
                     </div>
                 </div>
             </div>
-        <? } ?>
     </div>
 </div>

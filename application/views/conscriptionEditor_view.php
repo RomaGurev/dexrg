@@ -26,13 +26,13 @@ if ($data["currentConscript"] != null) {
         ?>
 
         <div class="mb-3 d-flex">
-            <div class="me-3 w-50">
-                <label for="conscriptNumber" class="form-label">Номер призывника*</label>
+            <div class="me-3 w-25">
+                <label for="conscriptNumber" class="form-label">Уникальный номер призывника</label>
                 <input type="number" class="form-control" id="conscriptNumber" maxlength="10" value="<? echo $edit ? $currentConscript["id"] : $data["nextConscriptID"];  ?>" disabled>
             </div>
 
             <div class="col">
-                <label for="creationDate" class="form-label">Дата создания*</label>
+                <label for="creationDate" class="form-label">Дата прибытия*</label>
                 <input type="date" class="form-control" value="<? if (isset($currentConscript["creationDate"])): echo $currentConscript["creationDate"]; else: echo date("Y-m-d"); endif ?>" id="creationDate"
                     required></input>
             </div>

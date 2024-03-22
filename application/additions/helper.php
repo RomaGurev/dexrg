@@ -33,4 +33,8 @@ class Helper
     public static function getVKNames() {
         return Database::execute("SELECT id, name FROM vkList");
     }
+
+    public static function getProfileByUserID($userID) {
+        return Database::execute("SELECT * from staff WHERE id = :id", ["id" => $userID])[0];
+    }
 }

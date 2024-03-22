@@ -12,7 +12,8 @@ $("#searchInput").on("input", function () {
         data: {
             searchConscript: {
                 type: $("#searchType").val(),
-                value: searchValue
+                value: searchValue,
+                showSelect: $("#showSelect").val()
             }
         },
         success: function (data) {
@@ -29,7 +30,7 @@ $("#searchType").on("change", function() {
     $("#searchInput").trigger("input");
 });
 
-$(window).on( "resize", function() {
+$(window).on("resize", function() {
     let newheight = $('#resizeDiv').length ? $('#resizeDiv').height() : 0;
     $("#searchResult").stop().animate({ height: newheight });
 });
@@ -37,9 +38,65 @@ $(window).on( "resize", function() {
 
 //Открытие модального окна с УКП
 openConscriptModal = function (conscriptID) {
-    alert(conscriptID);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            getConscriptInfoForModal: {
+                conscriptID: conscriptID
+            }
+        },
+        success: function (data) {
+            $("#modalContent").empty();
+            $("#modalContent").append(data);
+
+            new bootstrap.Modal(document.getElementById('RGModal')).show();
+        }
+    });
+    
 }
 //Открытие модального окна с УКП
+
+//Действия с УКП
+function printProtocol(id) {
+    location.href = "print?template=protocol&id=" + id;
+}
+
+function editConscript(id) {
+    location.href = "/conscription/editor?back=main&id=" + id;
+}
+
+function deleteConscript(id) {
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            deleteConscript: {
+                complaintID: id
+            }
+        },
+        success: function (data) {
+            window.scrollTo(0, 0);
+            if (data == "reloadPage") {
+                showAlert(true, "Призывник успешно удален");
+                setInterval(() =>
+                    location.href = '/complaint', 1000
+                );
+            } else {
+                showAlert(true, data, "danger", "");
+                showLoading(false);
+            }
+        }
+    });
+}
+
+function addChangeCategory(id) {
+    location.href = "/changeCategory/editor?conscript=" + id;
+}
+//Действия с УКП
 
 //Загрузка
 showLoading = function (state) {

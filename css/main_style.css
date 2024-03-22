@@ -42,3 +42,27 @@ button .svg-search:hover image {
 .container {
     max-width: 90% !important;
 }
+
+.point {
+    width: 12px;
+    height: 12px;
+    background-color: #0d6efd;
+    border-radius: 2px;
+    position: relative;
+    right: 7px;
+    top: 11px;
+}
+
+.documentLine {
+    border-left: 3px solid #0d6efd; 
+    margin: 0px 0px 0px 10px;
+}
+
+.documentItem {
+    display: flex;
+    margin-top: 0.25rem;
+}
+
+.documentItem a {
+    text-decoration: none;
+}

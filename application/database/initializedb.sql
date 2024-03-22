@@ -23,3 +23,24 @@ ALTER TABLE `conscript`
 ALTER TABLE `conscript`
     MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+
+CREATE TABLE `changeCategory` (
+  `id` int(11) NOT NULL,
+  `conscriptID` int(11) NOT NULL,
+  `article` varchar(10) NOT NULL,
+  `healthCategory` varchar(100) NOT NULL,
+  `creatorID` int(11) NOT NULL,
+  `complaint` varchar(1000) NOT NULL,
+  `anamnez` varchar(1000) NOT NULL,
+  `objectData` varchar(1500) NOT NULL,
+  `specialResult` varchar(1500) NOT NULL,
+  `diagnosis` varchar(1500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `changeCategory`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `changeCategory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;

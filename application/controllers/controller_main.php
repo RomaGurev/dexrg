@@ -25,6 +25,11 @@ class Controller_Main extends Controller
 			$this->view->generateView('loginPage_view.php', "Авторизация");
 	}
 
+	function action_clown() 
+	{
+		$this->view->generateView('rg_view.php', "Клоун");
+	}
+
 	function getAdjustmentChartInfo() {
 		// Создание экземпляра класса Statistic
 		// Запрос к БД с Count'ами для получения полей объекта Statistics

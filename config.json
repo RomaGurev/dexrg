@@ -1,6 +1,6 @@
 {
-    "version" : "0.66",
-    "versionDate" : "13.03.2024",
+    "version" : "0.70",
+    "versionDate" : "22.03.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -19,9 +19,9 @@
         "pattern" : ["Шаблоны", "pattern"]
     },
     "userType" : {
-        "0" : ["Администратор", ["main", "admin", "statistic"]],
+        "0" : ["Администратор", ["main", "admin"]],
         "1" : ["Невропатолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol", "statistic"]],
+        "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol"]],
         "3" : ["Хирург", ["main", "changeCategory", "complaint", "return", "pattern"]],
         "4" : ["Терапевт", ["main", "changeCategory", "complaint", "return", "pattern"]],
         "5" : ["Стоматолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
@@ -45,7 +45,7 @@
         "rvkArticle" : "Поиск по статье РВК",
         "id" : "Поиск по уникальному номеру",
         "birthDate" : "Поиск по дате рождения",
-        "creationDate" : "Поиск по дата создания",
+        "creationDate" : "Поиск по дата прибытия",
         "vk" : "Поиск по военному комиссариату",
         "adventPeriod" : "Поиск по периоду призыва"
     },
@@ -86,6 +86,14 @@
         "%ГОДНОСТЬ%" : "healtCategory",
         "%ИМЯ_ВРАЧА%" : "ownerID", 
         "%ДАТА_ОСВИДЕТЕЛЬСТВОВАНИЯ%" : "creationDate"
+    },
+    "customScripts" : {
+        "admin": "adminPage.js",
+        "main": "mainPage.js",
+        "pattern": "patternPage.js",
+        "conscription": "conscriptionPage.js",
+        "complaint": "complaintPage.js",
+        "changeCategory": "changeCategoryPage.js"
     }
     
 }

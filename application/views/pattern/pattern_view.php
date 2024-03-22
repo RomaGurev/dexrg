@@ -7,8 +7,8 @@
 
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
-        <h3 class="display-6 lh-1 mb-3 col-9 col-lg-10">Шаблоны</h3>
-        <a href="/pattern/editor" class="btn btn-outline-success mb-3 float-end col-3 col-lg-2">Добавить шаблон</a>
+        <h3 class="display-6 lh-1 mb-3 col">Шаблоны</h3>
+        <a href="/pattern/editor" class="btn btn-outline-success mb-3 col-auto">Добавить шаблон</a>
     </div>
 
     

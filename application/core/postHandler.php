@@ -74,7 +74,7 @@ class postHandler
             return "Базы данных $dbname не существует.";
         } else {
             Database::setCurrentBase($dbname);
-            $current = explode("-", Database::getCurrentBase());
+            //$current = explode("-", Database::getCurrentBase());
             return "success";
         }
 
@@ -91,7 +91,7 @@ class postHandler
             "isEmployed" => $currentValue == 1 ? 0 : 1,
             "id" => $userID
         ];
-        $ans = Database::execute($query, $dataArr);
+        Database::execute($query, $dataArr);
         return "<div class='alert alert-success mt-2'>Параметры учетной записи успешно сохранены.</div>";
     }
 
@@ -105,7 +105,7 @@ class postHandler
             "position" => $userPosition,
             "id" => $userID
         ];
-        $ans = Database::execute($query, $dataArr);
+        Database::execute($query, $dataArr);
         return "<div class='alert alert-success mt-2'>Параметры учетной записи успешно сохранены.</div>";
     }
     //<-------------------------------------Панель администратора------------------------------------->//
@@ -281,33 +281,27 @@ class postHandler
 
         if ($valueLength >= 3) {
 
-            if($param['type'] == "vk") {
-
-                $testArr = [
-                    "Барабинский",
-                ];
-
-                //echo '/' . $param['value'] . '(\W+)/i';
-                $keys = array_column(Helper::getVKNames(), 'name');
-                
-                $matches  = preg_grep ('#((?i)' . trim($param['value']) . '(\W+))#i', $testArr);
-                print_r($keys);
-                print_r($matches);
+            switch ($param['type']) {
+                case 'vk':
+                    $keys = array_column(Helper::getVKNames(), 'name');
+                    $keys = array_map('mb_strtolower', $keys);
+                    $matches  = preg_grep ('#((?i)' . trim(mb_strtolower($param['value'])) . '(\W*))#i', $keys);
+                    $param['value'] = key($matches)+1;
+                    break;
+                case 'article':
+                    echo "<div id='resizeDiv' class='lead'>Не реализовано.</div>";
+                    break;
             }
 
-            
-
             $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 3";
-
             $ans = Database::execute($query, null, "current");
 
             if (count($ans) == 0)
-                return "<div id='resizeDiv' class='lead'>Учетные карты не найдены. Необходимо зарегистрировать призывника.</div>";
+                return "<div id='resizeDiv' class='lead'>Учетные карты не найдены. Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>";
             else {
-
                 $result = "<div id='resizeDiv' class='d-grid gap-2'>";
                 foreach ($ans as $conscript)
-                    $result .= ConscriptBuilder::getConscriptCard($conscript);
+                    $result .= ConscriptBuilder::getConscriptCard($conscript, $param['showSelect']);
                 $result .= "</div>";
 
                 return $result;
@@ -320,6 +314,24 @@ class postHandler
         }
     }
 
+    static function getConscriptInfoForModal($param) 
+    {
+        if ($param['conscriptID'] === "")
+            return "Ошибка загрузки. Призывник по ID не найден.";
+        else {
+            $conscript = Database::execute("SELECT * FROM `conscript` WHERE id=:id",  ["id" => $param['conscriptID']], "current");
+
+            if(count($conscript) > 0) {
+                $changeCategoryInfo = Database::execute("SELECT * FROM `changeCategory` WHERE conscriptID=:id", ["id" => $param['conscriptID']], "current");
+                $complaintInfo = null;
+                $returnInfo = null;
+
+                return ConscriptBuilder::getConscriptModalInfo($conscript[0], $changeCategoryInfo, $complaintInfo, $returnInfo);
+            } else {
+                return "Ошибка. Призывник по ID " . $param['conscriptID'] . " не найден.";
+            }
+        }
+    }
     //<-------------------------------------Поиск на сайте------------------------------------->//
 
 }

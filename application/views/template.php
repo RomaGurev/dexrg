@@ -33,7 +33,7 @@
 	<script src="/js/chart.js" type="text/javascript"></script>
 	<script src="/js/doubleScroll.js" type="text/javascript"></script>
 	
-	<script src="/js/custom_scripts/custom-scripts.js" type="text/javascript"></script>
+	<script src="/js/custom_scripts/commonPage.js" type="text/javascript"></script>
 	<? include 'application/core/custom-scripts.php' ?>
 
 </body>

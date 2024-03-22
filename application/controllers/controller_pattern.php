@@ -13,6 +13,25 @@ class Controller_Pattern extends Controller
 			$this->view->failAccess();
 	}
 
+	//Функция отображения страницы добавления шаблона с проверкой наличия доступа
+	function action_editor()
+	{
+		if (Profile::isHavePermission("pattern")) {
+			if(isset($_GET["id"])) {
+				$data['currentPattern'] = $this->getUserPatternByID($_GET["id"]);
+
+				if($data['currentPattern'] != null && $data['currentPattern'][0]['ownerID'] == Profile::$user['id'])
+					$this->view->generateView('pattern/patternEditor_view.php', "Редактирование шаблона", $data);
+				else
+					$this->view->errorPage('Идентификатор шаблона не найден.');
+			} else {
+				$this->view->generateView('pattern/patternEditor_view.php', "Добавление шаблона");
+			}
+		}
+		else
+			$this->view->failAccess();
+	}
+
 	//Функция для получения списка шаблонов пользователя
 	function getUserPatternList()
 	{
@@ -31,25 +50,5 @@ class Controller_Pattern extends Controller
 			"id" => $id
 		];
 		return Database::execute($quary, $dataArr);
-	}
-
-
-	//Функция отображения страницы добавления шаблона с проверкой наличия доступа
-	function action_editor()
-	{
-		if (Profile::isHavePermission("pattern")) {
-			if(isset($_GET["id"])) {
-				$data['currentPattern'] = $this->getUserPatternByID($_GET["id"]);
-
-				if($data['currentPattern'] != null && $data['currentPattern'][0]['ownerID'] == Profile::$user['id'])
-					$this->view->generateView('pattern/patternEditor_view.php', "Редактирование шаблона", $data);
-				else
-					$this->view->errorPage('Идентификатор шаблона не найден.');
-			} else {
-				$this->view->generateView('pattern/patternEditor_view.php', "Добавление шаблона");
-			}
-		}
-		else
-			$this->view->failAccess();
 	}
 }

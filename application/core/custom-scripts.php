@@ -7,22 +7,13 @@
 $customDir = "/js/custom_scripts";
 
 //Привязка скриптов к странице.
-$custom_scripts = [
-    ["admin", "adminPage.js"],
-    ["main", "mainPage.js"],
-    ["pattern", "patternPage.js"],
-    ["adjustment", "adjustmentPage.js"],
-    ["conscription", "conscriptionPage.js"],
-    ["complaint", "complaintPage.js"]
-];
+$custom_scripts = Config::getValue("customScripts");
 
-for ($i=0; $i < count($custom_scripts); $i++) { 
-    if(!empty(Route::$mainRoute) && Route::$mainRoute == $custom_scripts[$i][0]) {
-        $customURL = $customDir . "/" . $custom_scripts[$i][1];
+foreach ($custom_scripts as $key => $value) {
+    if(!empty(Route::$mainRoute) && Route::$mainRoute == $key) {
+        $customURL = $customDir . "/" . $value;
         echo "<script src='$customURL' type='text/javascript'></script>";
-    } elseif (empty(Route::$mainRoute) && $custom_scripts[$i][0] == "main") {
+    } elseif (empty(Route::$mainRoute) && $key == "main") {
         echo "<script src='$customDir/mainPage.js' type='text/javascript'></script>";
     }
 }
-
-?>

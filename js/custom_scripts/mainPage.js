@@ -11,12 +11,28 @@ authPosition = function (positionIndex) {
 
 //Вывод графиков на главную страницу авторизованного пользователя
 document.addEventListener('DOMContentLoaded', () => {
+    let clownClick = 0;
     $.getJSON('/application/additions/statistic.php', function (result) {
-        console.log(result);
         fillCharts(result);
+    });
+
+    resizeCharts();
+    $(window).on( "resize", function() {
+        resizeCharts();
+    });
+
+    $('#clown').on( "click", function() {
+        clownClick++;
+
+        if(clownClick == 10 )
+            location.href="/main/clown?rgnsk=clown";
     });
 });
 
+function resizeCharts() {
+    for (let id in Chart.instances) 
+            Chart.instances[id].resize();
+}
 
 // Получение случайного цвета для bar'a из стандартной цветовой палитры Chart.js
 function getRandomColorForBars(sizeOfDataSet) {
@@ -38,8 +54,6 @@ function getRandomColorForBars(sizeOfDataSet) {
 }
 
 function fillCharts(statisticObject) {
-
-
     new Chart(
         document.querySelector('.chartComplaint1'),
         {
@@ -65,7 +79,8 @@ function fillCharts(statisticObject) {
                     colors: {
                         forceOverride: false
                     }
-                }
+                },
+                responsive: true
             }
         }
     );
@@ -95,7 +110,8 @@ function fillCharts(statisticObject) {
                     colors: {
                         forceOverride: false
                     }
-                }
+                },
+                responsive: true
             }
         }
     );
@@ -124,7 +140,8 @@ function fillCharts(statisticObject) {
                     colors: {
                         forceOverride: true
                     }
-                }
+                },
+                responsive: true
             }
         }
     );

@@ -32,9 +32,9 @@ class Statistic
     function prepareChartComplaint($userID) 
     {
         $obj = [
-            "labels" => ['Жалобы', 'Консультации', 'Не назначено'],
-            "data" => [20, 50, 10],
-            "titleText" => "Всего жалоб и консультаций: 12"
+            "labels" => ['Изменение категории', 'Жалобы', 'Возвраты'],
+            "data" => [35, 5, 12],
+            "titleText" => "Всего: 52"
         ];
         return $obj;
     }
@@ -43,7 +43,7 @@ class Statistic
     {
         $obj = [
             "labels" => ['A', 'Б', 'В', 'Г', 'Д'],
-            "data" => [10, 20, 8, 9, 6],
+            "data" => [10, 20, 7, 9, 6],
             "titleText" => "Распределение категорий: 52"
         ];
         return $obj;

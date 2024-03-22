@@ -12,10 +12,10 @@ if ($data["currentPattern"] != null) {
 
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
-        <h3 class="display-6 lh-1 mb-3 col-9 col-lg-10">
+        <h3 class="display-6 lh-1 mb-3 col">
             <? echo $edit ? "Редактирование шаблона" : "Добавление шаблона"; ?>
         </h3>
-        <a href="/pattern" class="btn btn-outline-secondary mb-3 float-end col-3 col-lg-2">Назад</a>
+        <a href="/pattern" class="btn btn-outline-secondary mb-3 col-auto" style="min-width: 200px">Назад</a>
     </div>
 
     <form <? echo $edit ? "id='editPatternForm'" : "id='addPatternForm'" ?> method="POST" class="mt-3 mb-0">
