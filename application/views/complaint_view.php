@@ -7,54 +7,51 @@
 
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
-        <h3 class="display-6 lh-1 mb-3 col-8 col-lg-9">DEBUG-вывод</h3>
-        <a href="/conscription/editor?back=complaint"
-            class="btn btn-outline-success mb-3 float-end col-4 col-lg-3">Регистрация призывника</a>
+        <h3 class="display-6 lh-1 col m-0">Жалобы</h3>
+        <? if (Profile::isHavePermission("canAdd")) { ?>
+            <a href="/document?documentType=complaint" class="btn btn-outline-success col-auto">Добавить жалобу</a>
+        <? } ?>
     </div>
 
-    <?
-    $conscriptList = $data['conscriptList'];
-    if (count($conscriptList) > 0) {
-    ?>
+    <div class="mt-3 d-flex">
+        <input id="documentType" class="d-none" value="complaint">
+        <input type="text" id="searchDocumentInput" class="form-control me-2" placeholder="Введите запрос...">
 
-
-    <div class="table-responsive" id="responsiveTable">
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="text-center">
-                <tr>
-                    <th scope="col" class="lead">№</th>
-                    <th scope="col" class="lead">ФИО</th>
-                    <th scope="col" class="lead">Дата создания</th>
-                    <th scope="col" class="lead">Статья РВК</th>
-                    <th scope="col" class="lead">Военкомат</th>
-                    <th scope="col" class="lead">Период призыва</th>
-                    <th scope="col" class="lead">Категория годности</th>
-                    <th scope="col" class="lead">В работе</th>
-                </tr>
-            </thead>
-            <tbody>
-                <? 
-                foreach ($conscriptList as $key => $value) {
-                    echo "<tr>
-                    <td class='lead fs-6 text-center'>" . $value["id"] . "</td>
-                    <td class='lead fs-6'>" . $value["name"] . "</td>
-                    <td class='lead fs-6'>" . Helper::formatDateToView($value["creationDate"]) . "</td>
-                    <td class='lead fs-6'>" . $value["rvkArticle"] . "</td>
-                    <td class='lead fs-6'>" . Helper::getVKNameById($value["vk"])["name"] . "</td>
-                    <td class='lead fs-6'>" . Helper::convertAdventPeriodToString($value["adventPeriod"]) . "</td>
-                    <td class='lead fs-6'>" . $value["healthCategory"] . "</td>
-                    <td class='lead fs-6'>" . ($value["inProcess"] == 1 ? "TRUE" : "FALSE") . "</td>
-                    </tr>";
-                }  
-                ?>
-            </tbody>
-        </table>
+        <select id="searchType" class="form-control form-select" style="width: 80%;cursor:pointer;">
+            <?
+            foreach (Config::getValue("searchDocumentType") as $key => $value) {
+                echo '<option value="' . $key . '">' . $value . '</option>';
+            }
+            ?>
+        </select>
     </div>
 
-    <? 
-    } else {
-        echo '<p class="lead mb-3 text-center">Список жалоб пуст.</p>';
-    }
-    ?>
 
+    <div id="searchResult" style="overflow: hidden;" class="mt-2">
+        <div id="resizeDiv">
+            <?
+            if (count($data["complaint"]) > 0) {
+                foreach ($data["complaint"] as $value) {
+                    echo DocumentBuilder::getConscriptWithDocumentsCard($value);
+                }
+            } else {
+                echo "<p class='lead mb-3 text-center'>Список жалоб пуст.</p>";
+            }
+            ?>
+        </div>
+    </div>
 </div>
+
+<? 
+if (isset($data["documentID"])) {
+?>
+<script>
+document.addEventListener("DOMContentLoaded", function(event) {
+    $("#searchType").val('id');
+    <? echo "$('#searchDocumentInput').val(" . $data["documentID"] . ");"?>
+    $("#searchDocumentInput").trigger("input");
+});
+</script>
+<? 
+} 
+?>

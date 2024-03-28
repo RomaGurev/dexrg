@@ -24,17 +24,45 @@ $("#searchInput").on("input", function () {
         }
     });
 });
+//Поиск призывника
 
+//Поиск документа
+$("#searchDocumentInput").on("input", function () {
+    let searchValue = $("#searchDocumentInput").val().trim();
+    $("#searchResult").empty();
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            searchDocument: {
+                type: $("#searchType").val(),
+                documentType: $("#documentType").val(),
+                value: searchValue,
+            }
+        },
+        success: function (data) {
+            $("#searchResult").append(data);
+            showLoading(false);
+            let newheight = data == "" ? 0 : $('#resizeDiv').height();
+            $("#searchResult").stop().animate({ height: newheight });
+        }
+    });
+});
+//Поиск документа
 
+//Поиск
 $("#searchType").on("change", function() {
     $("#searchInput").trigger("input");
+    $("#searchDocumentInput").trigger("input");
 });
 
 $(window).on("resize", function() {
     let newheight = $('#resizeDiv').length ? $('#resizeDiv').height() : 0;
     $("#searchResult").stop().animate({ height: newheight });
 });
-//Поиск призывника
+//Поиск
 
 //Открытие модального окна с УКП
 openConscriptModal = function (conscriptID) {
@@ -63,8 +91,16 @@ function printProtocol(id) {
     location.href = "print?template=protocol&id=" + id;
 }
 
+function printLetter(id) {
+    location.href = "print?template=letter&id=" + id;
+}
+
+function printExtract(id) {
+    location.href = "print?template=extract&id=" + id;
+}
+
 function editConscript(id) {
-    location.href = "/conscription/editor?back=main&id=" + id;
+    location.href = "/conscription/editor?back=&id=" + id;
 }
 
 function deleteConscript(id) {
@@ -75,7 +111,7 @@ function deleteConscript(id) {
         dataType: 'text',
         data: {
             deleteConscript: {
-                complaintID: id
+                conscriptID: id
             }
         },
         success: function (data) {
@@ -83,7 +119,7 @@ function deleteConscript(id) {
             if (data == "reloadPage") {
                 showAlert(true, "Призывник успешно удален");
                 setInterval(() =>
-                    location.href = '/complaint', 1000
+                    location.href = '/', 1000
                 );
             } else {
                 showAlert(true, data, "danger", "");
@@ -94,7 +130,16 @@ function deleteConscript(id) {
 }
 
 function addChangeCategory(id) {
-    location.href = "/changeCategory/editor?conscript=" + id;
+    location.href = "/document?conscript=" + id + "&documentType=changeCategory";
+}
+function addControl(id) {
+    location.href = "/document?conscript=" + id + "&documentType=control";
+}
+function addReturn(id) {
+    location.href = "/document?conscript=" + id + "&documentType=return";
+}
+function addComplaint(id) {
+    location.href = "/document?conscript=" + id + "&documentType=complaint";
 }
 //Действия с УКП
 

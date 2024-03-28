@@ -8,6 +8,7 @@ require_once '../core/config.php';
 require_once '../core/profile.php';
 require_once '../core/route.php';
 require_once '../additions/conscriptBuilder.php';
+require_once '../additions/documentBuilder.php';
 require_once '../additions/helper.php';
 
 Profile::authInit();
@@ -155,7 +156,7 @@ class postHandler
         if ($param['patternName'] === "")
             return "Введите название шаблона";
         else {
-            $query = "INSERT INTO `patternList` (name, complaint, anamnez, objectData, specialResult, diagnosis, ownerID) VALUES (:name, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :ownerID);";
+            $query = "INSERT INTO `patternList` (name, complaint, anamnez, objectData, specialResult, diagnosis, healthCategory, article,ownerID) VALUES (:name, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :healthCategory, :article, :ownerID);";
             $dataArr = [
                 "name" => $param['patternName'],
                 "complaint" => $param['complaintTextarea'],
@@ -163,6 +164,8 @@ class postHandler
                 "objectData" => $param['objectDataTextarea'],
                 "specialResult" => $param['specialResultTextarea'],
                 "diagnosis" => $param['diagnosisTextarea'],
+                "healthCategory" => $param['healthCategorySelect'],
+                "article" => $param['articleInput'],
                 "ownerID" => Profile::$user['id']
             ];
             Database::execute($query, $dataArr);
@@ -177,7 +180,7 @@ class postHandler
             return "Введите название шаблона";
         else {
 
-            $query = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis WHERE id = :id;";
+            $query = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis, healthCategory = :healthCategory, article = :article WHERE id = :id;";
             $dataArr = [
                 "name" => $param['patternName'],
                 "complaint" => $param['complaintTextarea'],
@@ -185,6 +188,8 @@ class postHandler
                 "objectData" => $param['objectDataTextarea'],
                 "specialResult" => $param['specialResultTextarea'],
                 "diagnosis" => $param['diagnosisTextarea'],
+                "healthCategory" => $param['healthCategorySelect'],
+                "article" => $param['articleInput'],
                 "id" => $param['patternID']
             ];
 
@@ -218,20 +223,26 @@ class postHandler
         if ($param['fullName'] === "")
             return "Введите имя призывника";
         else {
-            $query = "INSERT INTO `conscript` (creatorID, creationDate, name, birthDate, rvkArticle, vk, healthCategory, adventPeriod) VALUES (:creatorID, :creationDate, :name, :birthDate, :rvkArticle, :vk, :healthCategory, :adventPeriod);";
-            $dataArr = [
-                "creatorID" => Profile::$user['id'],
-                "creationDate" => Helper::formatDateToView($param['creationDate']),
-                "name" => $param['fullName'],
-                "birthDate" => Helper::formatDateToView($param['birthDate']),
-                "rvkArticle" => $param['rvkArticle'],
-                "vk" => $param['vk'],
-                "healthCategory" => $param['healthCategory'],
-                "adventPeriod" => $param['adventTime']
-            ];
+            $duplicateCheck = Database::execute("SELECT * FROM `conscript` WHERE name=:name AND birthDate=:birthDate", ["name" => $param['fullName'], "birthDate" => Helper::formatDateToView($param['birthDate'])], "current");
 
-            Database::execute($query, $dataArr, "current");
-            return "reloadPage";
+            if (count($duplicateCheck) == 0) {
+                $query = "INSERT INTO `conscript` (creatorID, creationDate, name, birthDate, rvkArticle, rvkDiagnosis, vk, healthCategory, adventPeriod) VALUES (:creatorID, :creationDate, :name, :birthDate, :rvkArticle, :rvkDiagnosis, :vk, :healthCategory, :adventPeriod);";
+                $dataArr = [
+                    "creatorID" => Profile::$user['id'],
+                    "creationDate" => Helper::formatDateToView($param['creationDate']),
+                    "name" => $param['fullName'],
+                    "birthDate" => Helper::formatDateToView($param['birthDate']),
+                    "rvkArticle" => $param['rvkArticle'],
+                    "rvkDiagnosis" => $param['rvkDiagnosis'],
+                    "vk" => $param['vk'],
+                    "healthCategory" => $param['healthCategory'],
+                    "adventPeriod" => $param['adventTime']
+                ];
+                Database::execute($query, $dataArr, "current");
+                return "reloadPage";
+            } else {
+                return "<div>Призывник <a href='/?conscript=" . $duplicateCheck[0]["id"] . "' style='text-decoration: none;'> " . $param['fullName'] . " [" . Helper::formatDateToView($param['birthDate']) . "]</a> уже существует.</div>";
+            }
         }
     }
 
@@ -240,14 +251,15 @@ class postHandler
         if ($param['fullName'] === "")
             return "Введите имя призывника";
         else {
-            $query = "UPDATE `conscript` SET creatorID = :creatorID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, vk = :vk, healthCategory = :healthCategory, adventPeriod = :adventPeriod WHERE id = :id;";
+            $query = "UPDATE `conscript` SET creatorID = :creatorID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, rvkDiagnosis = :rvkDiagnosis, vk = :vk, healthCategory = :healthCategory, adventPeriod = :adventPeriod WHERE id = :id;";
             $dataArr = [
                 "id" => $param['id'],
                 "creatorID" => Profile::$user['id'],
-                "creationDate" => $param['creationDate'],
+                "creationDate" => Helper::formatDateToView($param['creationDate']),
                 "name" => $param['fullName'],
-                "birthDate" => $param['birthDate'],
+                "birthDate" => Helper::formatDateToView($param['birthDate']),
                 "rvkArticle" => $param['rvkArticle'],
+                "rvkDiagnosis" => $param['rvkDiagnosis'],
                 "vk" => $param['vk'],
                 "healthCategory" => $param['healthCategory'],
                 "adventPeriod" => $param['adventTime']
@@ -260,12 +272,13 @@ class postHandler
 
     static function deleteConscript($param)
     {
-        if ($param['complaintID'] === "")
+        if ($param['conscriptID'] === "")
             return "Ошибка удаления призывника. ID не найден.";
         else {
+            Database::execute("DELETE FROM `documents` WHERE conscriptID=:id", ["id" => $param['conscriptID']], "current");
             $query = "DELETE FROM `conscript` WHERE id=:id";
             $dataArr = [
-                "id" => $param['complaintID'],
+                "id" => $param['conscriptID'],
             ];
             Database::execute($query, $dataArr, "current");
             return "reloadPage";
@@ -285,19 +298,19 @@ class postHandler
                 case 'vk':
                     $keys = array_column(Helper::getVKNames(), 'name');
                     $keys = array_map('mb_strtolower', $keys);
-                    $matches  = preg_grep ('#((?i)' . trim(mb_strtolower($param['value'])) . '(\W*))#i', $keys);
-                    $param['value'] = key($matches)+1;
+                    $matches = preg_grep('#((?i)' . trim(mb_strtolower($param['value'])) . '(\W*))#i', $keys);
+                    $param['value'] = key($matches);
                     break;
                 case 'article':
                     echo "<div id='resizeDiv' class='lead'>Не реализовано.</div>";
                     break;
             }
 
-            $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 3";
+            $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 5";
             $ans = Database::execute($query, null, "current");
 
             if (count($ans) == 0)
-                return "<div id='resizeDiv' class='lead'>Учетные карты не найдены. Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>";
+                return "<div id='resizeDiv' class='lead'>Учетная карта не найдена." . (Profile::isHavePermission("canAdd") ? "Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>" : "</div>");
             else {
                 $result = "<div id='resizeDiv' class='d-grid gap-2'>";
                 foreach ($ans as $conscript)
@@ -308,25 +321,69 @@ class postHandler
             }
 
         } else {
-            if($valueLength == 0)
+            if ($valueLength == 0)
                 return "";
             return "<div id='resizeDiv' class='lead'>Введите больше 2 символов.</div>";
         }
     }
 
-    static function getConscriptInfoForModal($param) 
+    static function searchDocument($param)
+    {
+        $valueLength = mb_strlen($param['value'], "UTF-8");
+
+        switch ($param["type"]) {
+            case "name":
+            case "rvkArticle":
+            case "birthDate":
+            case "creationDate":
+                if($valueLength >= 3)
+                    $additionQuery = "WHERE " . $param["type"] . " LIKE '%" . $param['value'] . "%'";
+                elseif ($param["type"] == "rvkArticle" && $valueLength > 0) 
+                    $additionQuery = "WHERE " . $param["type"] . " LIKE '" . $param['value'] . "%'";
+                else
+                    $additionQuery = null;
+
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], $additionQuery);
+                break;
+            
+            default:
+                if($valueLength > 0)
+                    $additionQuery = "AND " . $param["type"] . " LIKE '%" . $param['value'] . "%'";
+                else 
+                    $additionQuery = null;
+
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], Profile::isHavePermission("viewForAll") || $param["type"] == "id" ? null : Profile::$user["id"], null, $additionQuery);
+                break;
+        }
+
+        $result = "<div id='resizeDiv' class='d-grid gap-2'>";
+
+        if($valueLength < 3 && $valueLength != 0 && $param["type"] != "rvkArticle" && $param["type"] != "id" && $param["type"] != "article")
+            $result .= "<div class='lead'>Введите больше 2 символов.</div>";
+
+        if(count($conscriptsWithDocuments) > 0) {
+            foreach ($conscriptsWithDocuments as $conscript)
+                $result .= DocumentBuilder::getConscriptWithDocumentsCard($conscript);
+        } else {
+            $result .= "<div class='lead'>Документ не найден.</div>";
+        }
+        $result .= "</div>";
+
+        return $result;
+    }
+
+
+    static function getConscriptInfoForModal($param)
     {
         if ($param['conscriptID'] === "")
             return "Ошибка загрузки. Призывник по ID не найден.";
         else {
-            $conscript = Database::execute("SELECT * FROM `conscript` WHERE id=:id",  ["id" => $param['conscriptID']], "current");
+            $conscript = Database::execute("SELECT * FROM `conscript` WHERE id=:id", ["id" => $param['conscriptID']], "current");
 
-            if(count($conscript) > 0) {
-                $changeCategoryInfo = Database::execute("SELECT * FROM `changeCategory` WHERE conscriptID=:id", ["id" => $param['conscriptID']], "current");
-                $complaintInfo = null;
-                $returnInfo = null;
+            if (count($conscript) > 0) {
+                $documentsInfo = Database::execute("SELECT * FROM `documents` WHERE conscriptID=:id", ["id" => $param['conscriptID']], "current");
 
-                return ConscriptBuilder::getConscriptModalInfo($conscript[0], $changeCategoryInfo, $complaintInfo, $returnInfo);
+                return ConscriptBuilder::getConscriptModalInfo($conscript[0], $documentsInfo);
             } else {
                 return "Ошибка. Призывник по ID " . $param['conscriptID'] . " не найден.";
             }
@@ -334,4 +391,70 @@ class postHandler
     }
     //<-------------------------------------Поиск на сайте------------------------------------->//
 
+    //<-------------------------------------Страница добавления/редактирования документов------------------------------------->//
+
+    static function getPatternByID($param)
+    {
+        $pattern = Database::execute("SELECT * FROM `patternList` WHERE id=:id", ["id" => $param['patternID']])[0];
+
+        if (count($pattern) > 0) {
+            return json_encode($pattern);
+        } else {
+            return "Ошибка. Шаблон " . $param['patternID'] . " не найден.";
+        }
+    }
+
+    static function addDocument($param)
+    {
+        $query = "INSERT INTO `documents` (conscriptID, article, healthCategory, creatorID, complaint, anamnez, objectData, specialResult, diagnosis, documentDate, documentType) VALUES (:conscriptID, :article, :healthCategory, :creatorID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :documentDate, :documentType);";
+        $dataArr = [
+            "conscriptID" => $param['conscriptID'],
+            "article" => $param['articleInput'],
+            "healthCategory" => $param['healthCategorySelect'],
+            "creatorID" => Profile::$user['id'],
+            "complaint" => $param['complaintTextarea'],
+            "anamnez" => $param['anamnezTextarea'],
+            "objectData" => $param['objectDataTextarea'],
+            "specialResult" => $param['specialResultTextarea'],
+            "diagnosis" => $param['diagnosisTextarea'],
+            "documentDate" => Helper::formatDateToView(date("Y-m-d")),
+            "documentType" => $param['documentType']
+        ];
+        Database::execute($query, $dataArr, "current");
+        return "reloadPage";
+    }
+
+    static function editDocument($param)
+    {
+        $query = "UPDATE `documents` SET  article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate WHERE id = :id;";
+        $dataArr = [
+            "article" => $param['articleInput'],
+            "healthCategory" => $param['healthCategorySelect'],
+            "complaint" => $param['complaintTextarea'],
+            "anamnez" => $param['anamnezTextarea'],
+            "objectData" => $param['objectDataTextarea'],
+            "specialResult" => $param['specialResultTextarea'],
+            "diagnosis" => $param['diagnosisTextarea'],
+            "documentDate" => Helper::formatDateToView(date("Y-m-d")),
+            "id" => $param['documentID']
+        ];
+        Database::execute($query, $dataArr, "current");
+        return "reloadPage";
+    }
+
+    static function deleteDocument($param)
+    {
+        if ($param['documentID'] === "")
+            return "Ошибка удаления документа. ID не найден.";
+        else {
+            $query = "DELETE FROM `documents` WHERE id=:id";
+            $dataArr = [
+                "id" => $param['documentID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+            return "reloadPage";
+        }
+    }
+
+    //<-------------------------------------Страница добавления/редактирования документов------------------------------------->//
 }

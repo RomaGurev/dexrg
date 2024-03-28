@@ -33,7 +33,7 @@ class Profile
                 $ans = Database::execute($quary, $dataArr);
                 static::$user["position"] = $ans[0]["position"];
                 static::$user["name"] = $ans[0]["name"];
-                static::$user["permissions"] = Config::getValue("userType")[static::$user["position"]][1];
+                static::$user["permissions"] = Config::getValue("permissionSet")[Config::getValue("userType")[static::$user["position"]][1]];
             }
         }
     }

@@ -6,7 +6,10 @@
 //Обработка добавления призывника
 $("#addConscriptForm").submit(function (event) {
     showLoading(true);
+    $('#editorConscriptButton').attr('disabled', true);
     event.preventDefault();
+
+    alert($('#diagnosisTextarea').val());
 
     $.post({
         url: '/application/core/postHandler.php',
@@ -18,6 +21,7 @@ $("#addConscriptForm").submit(function (event) {
                 creatorID: $('#creatorID').val(),
                 fullName: $('#fullName').val(),
                 rvkArticle: $('#rvkArticle').val(),
+                rvkDiagnosis: $('#diagnosisTextarea').val(),
                 birthDate: $('#birthDate').val(),
                 healthCategory: $('#healthCategory').val(),
                 vk: $('#vk').val(),
@@ -28,14 +32,13 @@ $("#addConscriptForm").submit(function (event) {
             window.scrollTo(0, 0);
             if (data == "reloadPage") {
                 showAlert(true, "Призывник успешно зарегистрирован");
-                let url = new URL(location.href);
-                let backParam = url.searchParams.get("back"); 
                 setInterval(() =>
-                    location.href = '/' + backParam, 1000
+                    location.href = '/?conscript=' + $('#conscriptNumber').val(), 1000
                 );
             } else {
                 showAlert(true, data, "danger", "");
                 showLoading(false);
+                $('#editorConscriptButton').attr('disabled', false);
             }
         }
     });
@@ -43,8 +46,8 @@ $("#addConscriptForm").submit(function (event) {
 
 //Обработка изменения призывника
 $("#editConscriptForm").submit(function (event) {
-
     showLoading(true);
+    $('#editorConscriptButton').attr('disabled', true);
     event.preventDefault();
 
     $.post({
@@ -53,11 +56,12 @@ $("#editConscriptForm").submit(function (event) {
         dataType: 'text',
         data: {
             editConscript: {
-                id: $('#editID').val(),
+                id: $('#conscriptNumber').val(),
                 creationDate: $('#creationDate').val(),
                 creatorID: $('#creatorID').val(),
                 fullName: $('#fullName').val(),
                 rvkArticle: $('#rvkArticle').val(),
+                rvkDiagnosis: $('#diagnosisTextarea').val(),
                 birthDate: $('#birthDate').val(),
                 healthCategory: $('#healthCategory').val(),
                 vk: $('#vk').val(),
@@ -68,14 +72,14 @@ $("#editConscriptForm").submit(function (event) {
             window.scrollTo(0, 0);
             if (data == "reloadPage") {
                 showAlert(true, "Изменения призывника успешно сохранены");
-                let url = new URL(location.href);
-                let backParam = url.searchParams.get("back"); 
+
                 setInterval(() =>
-                    location.href = '/' + backParam, 1000
+                    location.href = '/?conscript=' + $('#conscriptNumber').val(), 1000
                 );
             } else {
                 showAlert(true, data, "danger", "");
                 showLoading(false);
+                $('#editorConscriptButton').attr('disabled', false);
             }
         }
     });

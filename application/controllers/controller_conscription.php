@@ -13,7 +13,6 @@ class Controller_Conscription extends Controller
 				$data["activeMenuItem"] = "";
 
 			$data["vkList"] = $this->getVKList();
-			$data["patternList"] = $this->getPatternList();
 			$data["nextConscriptID"] = $this->getNextConscriptID();
 
 			if(isset($_GET["id"])) {
@@ -35,11 +34,6 @@ class Controller_Conscription extends Controller
 	//Функция для получения списка военных комиссариатов
 	function getVKList() {
 		return Database::execute("SELECT * FROM vkList");
-	}
-
-	//Функция для получения списка шаблонов активного пользователя
-	function getPatternList() {
-		return Database::execute("SELECT * FROM patternList WHERE ownerID=:id", ["id" => Profile::$user["id"]]);
 	}
 
 	//Функция для получения следующего номера документа

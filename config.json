@@ -1,6 +1,6 @@
 {
-    "version" : "0.70",
-    "versionDate" : "22.03.2024",
+    "version" : "0.78",
+    "versionDate" : "28.03.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -12,32 +12,33 @@
         "changeCategory" : ["Изменение категории", "changeCategory"],
         "complaint" : ["Жалобы", "complaint"],
         "control" : ["Контроль", "control"],
-        "protocol" : ["Протоколы", "protocol"],
-        "adjustment" : ["Отработка", "adjustment"],
-        "return" : ["Возврат", "return"],
-        "inspection" : ["Обследования", "inspection"],
+        "return" : ["Возвраты", "return"],
         "pattern" : ["Шаблоны", "pattern"]
     },
     "userType" : {
-        "0" : ["Администратор", ["main", "admin"]],
-        "1" : ["Невропатолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "2" : ["Секретарь", ["main", "control", "complaint", "return", "protocol"]],
-        "3" : ["Хирург", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "4" : ["Терапевт", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "5" : ["Стоматолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "6" : ["Лор", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "7" : ["Окулист", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "8" : ["Психиатр", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "9" : ["Дерматолог", ["main", "changeCategory", "complaint", "return", "pattern"]],
-        "10" : ["Медицинская сестра", ["main"]]
+        "0" : ["Администратор", "admin"],
+        "1" : ["Невролог", "specialist"],
+        "2" : ["Секретарь", "viewer"],
+        "3" : ["Хирург", "specialist"],
+        "4" : ["Терапевт", "specialist"],
+        "5" : ["Стоматолог", "specialist"],
+        "6" : ["Лор", "specialist"],
+        "7" : ["Окулист", "specialist"],
+        "8" : ["Психиатр", "specialist"],
+        "9" : ["Дерматолог", "specialist"],
+        "10" : ["Медицинская сестра", "belocercovec"]
+    },
+    "permissionSet" : {
+        "specialist": ["main", "changeCategory", "control", "complaint", "return", "pattern", "canAdd"],
+        "viewer" : ["main", "changeCategory", "control", "complaint", "return", "viewForAll", "canAdd"],
+        "belocercovec" : ["main", "viewForAll"],
+        "admin" : ["main", "admin"]
     },
     "documentType" : {
         "control" : "Контроль",
         "return" : "Возврат",
-        "approvement" : "Утверждение",
-        "adjustment" : "Отработка",
-        "inspection" : "Обследование",
-        "complaint" : "Жалоба"
+        "complaint" : "Жалоба",
+        "changeCategory" : "Изменение категории"
     },
     "searchType" : {
         "name" : "Поиск по ФИО",
@@ -49,30 +50,26 @@
         "vk" : "Поиск по военному комиссариату",
         "adventPeriod" : "Поиск по периоду призыва"
     },
-    "healthCategory" : {
-        "A" : "А - годен к военной службе",
-        "Б" : "Б - годен к военной службе с незначительными ограничениями",
-        "В" : "В - ограниченно годен к военной службе",
-        "Г" : "Г - временно не годен к военной службе",
-        "Д" : "Д - не годен к военной службе"
+    "searchDocumentType" : {
+        "name" : "Поиск по ФИО",
+        "article" : "Поиск по итоговой статье",
+        "rvkArticle" : "Поиск по статье РВК",
+        "birthDate" : "Поиск по дате рождения",
+        "creationDate" : "Поиск по дата прибытия",
+        "id" : "Поиск по уникальному номеру документа"
     },
-    "healthCategoryFull" : {
-        "А" : "А - годен к военной службе",
-        "А1" : "А1 - годен к военной службе",
-        "А2" : "А2 - годен к военной службе",
-        "А3" : "А3 - годен к военной службе",
-        "А4" : "А4 - годен к военной службе",
-        "Б" : "Б - годен к военной службе с незначительными ограничениями",
-        "Б1" : "Б1 - годен к военной службе с незначительными ограничениями",
-        "Б2" : "Б2 - годен к военной службе с незначительными ограничениями",
-        "Б3" : "Б3 - годен к военной службе с незначительными ограничениями",
-        "Б4" : "Б4 - годен к военной службе с незначительными ограничениями",
-        "В" : "В - ограниченно годен к военной службе",
-        "Г" : "Г - временно не годен к военной службе",
-        "Д" : "Д - не годен к военной службе",
-        "О" : "Подлежит обследованию",
-        "Х" : "Вынесение решения в компетенции хирурга",
-        "My" : "Заполнить свои данные"
+    "healthCategory" : {
+        "А1" : ["годен к военной службе"],
+        "А2" : ["годен к военной службе"],
+        "А3" : ["годен к военной службе"],
+        "А4" : ["годен к военной службе"],
+        "Б2" : ["годен к военной службе с незначительными ограничениями"],
+        "Б3" : ["годен к военной службе с незначительными ограничениями"],
+        "Б4" : ["годен к военной службе с незначительными ограничениями"],
+        "В" : ["ограниченно годен к военной службе", ["changeCategory"]],
+        "Г" : ["временно не годен к военной службе", ["changeCategory"]],
+        "Д" : ["не годен к военной службе", ["changeCategory"]],
+        "О" : ["подлежит обследованию", ["registration", "changeCategory"]]
     },
     "printValues" : {
         "%ФИО%" : "name",
@@ -83,17 +80,21 @@
         "%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%" : "specialResult",
         "%ДИАГНОЗ%" : "diagnosis", 
         "%ИСХОДЯЩАЯ_СТАТЬЯ%" : "article",
-        "%ГОДНОСТЬ%" : "healtCategory",
-        "%ИМЯ_ВРАЧА%" : "ownerID", 
-        "%ДАТА_ОСВИДЕТЕЛЬСТВОВАНИЯ%" : "creationDate"
+        "%ГОДНОСТЬ%" : "healthCategory",
+        "%ИМЯ_ВРАЧА%" : "creator", 
+        "%ДАТА_ОСВИДЕТЕЛЬСТВОВАНИЯ%" : "documentDate",
+        "%ВК_ИМЯ%" : "vkName",
+        "%НАЗНАЧЕНИЕ%" : "medicalAppointment",
+        "%РЕШЕНИЕ%" : "result",
+        "%ВХ_НАЗНАЧЕНИЕ%" : "rvkMedicalAppointment",
+        "%ВХ_ДИАГНОЗ%" : "rvkDiagnosis"
     },
     "customScripts" : {
         "admin": "adminPage.js",
         "main": "mainPage.js",
         "pattern": "patternPage.js",
         "conscription": "conscriptionPage.js",
-        "complaint": "complaintPage.js",
-        "changeCategory": "changeCategoryPage.js"
+        "document": "documentPage.js"
     }
     
 }

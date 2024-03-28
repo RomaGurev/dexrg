@@ -19,17 +19,17 @@ echo $statisticString;
 
 class Statistic
 {
-    function prepareChartAdjustment($userID) 
+    function prepareChartAdjustment($userID)
     {
         $obj = [
-            "labels" => ['Прибыло', 'Не прибыло', 'Утверждено', 'Отработка'],
-            "data" => [3, 12, 16, 9],
-            "titleText" => "Контроль - всего: 22"
+            "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
+            "data" => [3, 12, 16, 9, 5, 3],
+            "titleText" => "Категории годности - всего: 22"
         ];
         return $obj;
     }
 
-    function prepareChartComplaint($userID) 
+    function prepareChartComplaint($userID)
     {
         $obj = [
             "labels" => ['Изменение категории', 'Жалобы', 'Возвраты'],
@@ -39,7 +39,7 @@ class Statistic
         return $obj;
     }
 
-    function prepareChartHealthCategory($userID) 
+    function prepareChartHealthCategory($userID)
     {
         $obj = [
             "labels" => ['A', 'Б', 'В', 'Г', 'Д'],
@@ -49,12 +49,27 @@ class Statistic
         return $obj;
     }
 
+    function prepareStatisticText($userID)
+    {
+        return "<b>Всего дел в работе: 115</b><br>
+        Изменение категории: 13 <br>
+        Контроль: 2 <br>
+        Жалоба: 5 <br>
+        Возврат: 2 <br>
+        <b>Всего дел завершено: 115</b><br>
+        Изменение категории: 13 <br>
+        Контроль: 2 <br>
+        Жалоба: 5 <br>
+        Возврат: 2 <br>";
+    }
+
     function getStatistic($userID)
     {
         $result = [
             "chartAdjustment" => $this->prepareChartAdjustment($userID),
             "chartHealthCategory" => $this->prepareChartHealthCategory($userID),
-            "chartComplaint" => $this->prepareChartComplaint($userID)
+            "chartComplaint" => $this->prepareChartComplaint($userID),
+            "statisticText" => $this->prepareStatisticText($userID)
         ];
 
         return json_encode($result);

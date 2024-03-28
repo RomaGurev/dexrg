@@ -29,7 +29,9 @@ $("#addPatternForm").submit(function (event) {
                     anamnezTextarea: $('#anamnezTextarea').val(),
                     objectDataTextarea: $('#objectDataTextarea').val(),
                     specialResultTextarea: $('#specialResultTextarea').val(),
-                    diagnosisTextarea: $('#diagnosisTextarea').val()
+                    diagnosisTextarea: $('#diagnosisTextarea').val(),
+                    healthCategorySelect: $('#healthCategorySelect').val(),
+                    articleInput: $('#articleInput').val()
                 }
             },
             success: function (data) {
@@ -75,7 +77,9 @@ $("#editPatternForm").submit(function (event) {
                     anamnezTextarea: $('#anamnezTextarea').val(),
                     objectDataTextarea: $('#objectDataTextarea').val(),
                     specialResultTextarea: $('#specialResultTextarea').val(),
-                    diagnosisTextarea: $('#diagnosisTextarea').val()
+                    diagnosisTextarea: $('#diagnosisTextarea').val(),
+                    healthCategorySelect: $('#healthCategorySelect').val(),
+                    articleInput: $('#articleInput').val()
                 }
             },
             success: function (data) {

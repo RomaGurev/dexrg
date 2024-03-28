@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let clownClick = 0;
     $.getJSON('/application/additions/statistic.php', function (result) {
         fillCharts(result);
+        fillText(result["statisticText"]);
     });
 
     resizeCharts();
@@ -51,6 +52,11 @@ function getRandomColorForBars(sizeOfDataSet) {
         }
     }
     return arrOfColors;
+}
+
+function fillText(statisticText) {
+    $('#statisticText').empty();
+    $('#statisticText').append(statisticText);
 }
 
 function fillCharts(statisticObject) {

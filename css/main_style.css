@@ -10,7 +10,7 @@ button .svg-search:hover image {
 .svg-search image {
     filter: invert(100%);
     transition: 0.15s ease-in-out;
-}
+} 
 
 .svg-search:hover image {
     filter: invert(0%);
@@ -58,6 +58,10 @@ button .svg-search:hover image {
     margin: 0px 0px 0px 10px;
 }
 
+.finalResults {
+    margin: 0px 0px 0px 25px;
+}
+
 .documentItem {
     display: flex;
     margin-top: 0.25rem;
@@ -66,3 +70,34 @@ button .svg-search:hover image {
 .documentItem a {
     text-decoration: none;
 }
+
+.w-20 {
+    width: 20% !important;
+}
+
+.w-25 {
+    width: 25% !important;
+}
+
+.w-33 {
+    width: 33% !important;
+}
+
+.w-10 {
+    width: 10% !important;
+}
+
+.w-15 {
+    width: 15% !important;
+}
+
+/* Страница печати */
+
+#print_panel {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.print-padding {
+    padding-top: 5rem !important;
+}
+

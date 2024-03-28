@@ -1,142 +1,105 @@
-<table style="border: 1px black; width: 840px; table-layout: fixed;">
-    <tr>
-        <td>
-            <span style="font-size: 12pt; font-family: Times New Roman;">
-                ВОЕННО – ВРАЧЕБНАЯ КОМИССИЯ <br>
-                НОВОСИБИРСКОЙ ОБЛАСТИ
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: center;">
-            <span style="font-size: 16pt; font-family: Times New Roman;">ЛИСТ<br>
-                медицинского освидетельствования
-            </span>
-            <br><br>
-            <span style="font-size: 14pt; font-family: Arial;"><b>
-                    %ФИО%, %ДАТА_РОЖДЕНИЯ% г.р.
-                </b></span>
-            <br>
-            <span style="font-size: 13pt; line-height: 2; font-family: Arial;">(фамилия, имя, отчество, дата
-                рождения)</span>
-            <br><br>
-        </td>
-    </tr>
-    <tr>
-        <td> <br> <br> <br> <br>
-            <span style="font-size: 16pt; font-family: Arial;">Жалобы:</span>
-            <span style="line-height: 2;">&nbsp;</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-left: 25px;" valign=top height="100px">
-            <span style="font-size: 14pt; font-family: Arial;">
-                %ЖАЛОБЫ%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td> <br><br>
-            <span style="font-size: 16pt; font-family: Arial;" valign=top height="150px">Анамнез:</span>
-            <span style="line-height: 2;">&nbsp;</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-left: 25px;" valign=top height="200px">
-            <span style="font-size: 14pt; font-family: Arial;">
-                %АНАМНЕЗ%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <span style="font-size: 16pt; font-family: Arial;" valign=top height="150px">Данные объективного
-                исследования:
-            </span>
-            <span style="line-height: 2;">&nbsp;</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-left: 25px;" valign=top height="500px">
-            <span style="font-size: 14pt; font-family: Arial;">
-                %ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td>
-
-            <span style="font-size: 16pt; font-family: Arial;" valign=top height="150px">Результаты специальных
-                исследований
-                (лабораторных, рентгенологических, инструментальных и др.):</span>
-            <span style="line-height: 2;">&nbsp;</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-left: 25px;" valign=top height="350px">
-            <span style="font-size: 14pt; font-family: Arial;">
-                %РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <span style="font-size: 16pt; font-family: Arial;" valign=top height="150px">Диагноз (по-русски):</span>
-            <span style="line-height: 2;">&nbsp;</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-left: 25px;" valign=top height="200px">
-            <span style="font-size: 14pt; font-family: Arial;">
-                %ДИАГНОЗ%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <span style="font-size: 16pt; font-family: Times New Roman;">Заключение врача-специалиста. На основании
-                статьи
-                %ИСХОДЯЩАЯ_СТАТЬЯ% графы I
-                Расписания болезней и ТДТ (приложение к Положению о военно-врачебной экспертизе, утверждённому
-                постановлением Правительства РФ №565–2013г.:
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding-left: 25px;"><br>
-            <span style="font-size: 16pt; font-family: Times New Roman;">
-                %ГОДНОСТЬ%
-                <br>
-                Причина изменения решения:
-                %ПРИЧИНА_ИЗМЕНЕНИЯ_РЕШЕНИЯ%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"><br>
-            <span style="font-size: 13pt; font-family: Arial;">(указать категорию годности и показатель
-                предназначения)</span>
-            <span style="line-height: 2;">&nbsp;</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: right;"><br>
-            <span style="font-size: 16pt; font-family: Arial;">
-                %ИМЯ_ВРАЧА%
-            </span>
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: right;">
-            <span style="font-size: 13pt; font-family: Arial;">(подпись, фамилия, инициалы врача-специалиста)</span>
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align: left;"><br>
-            <span style="font-size: 14t; font-family: Times New Roman;">
-                %ДАТА_ОСВИДЕТЕЛЬСТВОВАНИЯ%
-            </span><br>
-            <span style="font-size: 13pt; font-family: Arial;">(дата освидетельствования)</span>
-        </td>
-    </tr>
+﻿<table class="printTable" width="800px" height="1200px">
+	<tr>
+		<td class="font-10 va-middle" width="30px">
+			№ <br> п/п
+		</td>
+		<td class="font-10 va-middle" width="260px">
+			Фамилия, имя, отчество.<br>
+			Год рождения.<Br>
+			Военный комиссариат.
+		</td>
+		<td class="font-10 va-middle" width="260px">
+			Диагноз, категория годности к <br> военной службе, показатель <br> предназначения для прохождения <br>
+			военной службы, решение <br>призывной комиссии муниципального <br>образования. Статья, пункт <br> Расписания
+			болезней и таблицы <br>дополнительных требований.
+		</td>
+		<td class="font-10 va-middle">
+			Жалобы гражданина на <br> состояние здоровья и анамнез <br> (другие заявления гражданина и данные на него)
+		</td>
+	</tr>
+	<tr>
+		<td>1</td><td>2</td><td>3</td><td>4</td>
+	</tr>
+	<tr height="1100px">
+		<td width="30px"></td>
+		<td width="260px">
+			<div>%ФИО%</div>
+			<div class="mb-3">%ДАТА_РОЖДЕНИЯ%</div>
+			<div class="fw-bold">Военный комиссариат<br>%ВК_ИМЯ%</div>
+		</td>
+		<td width="260px">
+			<div class="text-start mb-3">Диагноз: %ВХ_ДИАГНОЗ%</div>
+			<div class="fw-bold">%ВХ_НАЗНАЧЕНИЕ%</div>
+		</td>
+		<td class="text-start">
+			<div>%ЖАЛОБЫ%</div>
+			<div>%АНАМНЕЗ%</div>
+		</td>
+	</tr>
 </table>
+
+<br><br>
+
+<table class="printTable" style="margin-left: 40px;" width="820px" height="1200px">
+	<tr>
+		<td class="font-10 va-middle" width="260px">
+			Данные объективного <br> исследования, специальных <br> исследований, диагноз <br> (по-русски)
+		</td>
+		<td class="font-10 va-middle" width="260px">
+			Итоговое заключение о <br> категории годности к <br> военной службе, показате <br> предназначения для <br>
+			прохождения военной <br> службы. Статья, пункт <br> Расписания болезней и таблицы дополнительных <br>
+			требований
+		</td>
+		<td class="font-10 va-middle" width="270px">
+			Решение призывной <br> комиссии <br> Результаты <br> голосования комиссий
+		</td>
+		<td class="font-10 va-middle" width="80px">
+			Примечание
+		</td>
+	</tr>
+	<tr>
+		<td>1</td><td>2</td><td>3</td><td>4</td>
+	</tr>
+	<tr height="1050px">
+		<td class="text-start" width="260px">
+			<div>%ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%</div>
+			<div>%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%</div>
+			
+			<div>Диагноз: %ДИАГНОЗ%</div>
+		</td>
+		<td width="260px">
+			<div class="fw-bold">%НАЗНАЧЕНИЕ%</div>
+		</td>
+		<td width="270px">
+			<div class="fw-bold">%РЕШЕНИЕ%</div>
+		</td>
+		<td width="60px"></td>
+	</tr>
+</table>
+
+<style>
+body {
+	font-family: 'Times New Roman', Times, serif;
+	font-size: 12pt;
+}
+
+.font-10 {
+	font-size: 10pt;
+}
+
+.printTable {
+	table-layout: fixed;
+}
+
+.printTable td {
+	border-collapse: collapse; 
+	border: 1px solid black;
+	text-align: center;
+	vertical-align: top;
+	white-space: normal;
+}
+
+.va-middle {
+	vertical-align: middle !important;
+}
+</style>

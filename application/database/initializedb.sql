@@ -11,6 +11,7 @@ CREATE TABLE `conscript` (
   `name` varchar(255) NOT NULL,
   `birthDate` varchar(100) NOT NULL,
   `rvkArticle` varchar(10) NOT NULL,
+  `rvkDiagnosis` varchar(1500) NOT NULL,
   `vk` varchar(255) NOT NULL,
   `healthCategory` varchar(100) NOT NULL,
   `adventPeriod` varchar(50) NOT NULL,
@@ -25,7 +26,7 @@ ALTER TABLE `conscript`
 COMMIT;
 
 
-CREATE TABLE `changeCategory` (
+CREATE TABLE `documents` (
   `id` int(11) NOT NULL,
   `conscriptID` int(11) NOT NULL,
   `article` varchar(10) NOT NULL,
@@ -33,14 +34,16 @@ CREATE TABLE `changeCategory` (
   `creatorID` int(11) NOT NULL,
   `complaint` varchar(1000) NOT NULL,
   `anamnez` varchar(1000) NOT NULL,
-  `objectData` varchar(1500) NOT NULL,
-  `specialResult` varchar(1500) NOT NULL,
-  `diagnosis` varchar(1500) NOT NULL
+  `objectData` varchar(2500) NOT NULL,
+  `specialResult` varchar(2500) NOT NULL,
+  `diagnosis` varchar(1500) NOT NULL,
+  `documentDate` varchar(100) NOT NULL,
+  `documentType` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `changeCategory`
+ALTER TABLE `documents`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `changeCategory`
+ALTER TABLE `documents`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;

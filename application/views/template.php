@@ -13,6 +13,7 @@
 	<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="/css/main_style.css" />
 	<link rel="stylesheet" href="/bootstrap/bootstrap.css" />
+	<link rel="stylesheet" href="/css/font-awesome.min.css" />
 
 	<title><?= $title ?></title>
 </head>

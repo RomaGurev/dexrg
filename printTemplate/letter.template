@@ -1,0 +1,213 @@
+﻿<table width="820px" style="border: 1px black; padding-top: 40px; padding-left: 30px; padding-right: 30px; padding-aling: justify; ">
+	<tr>
+		<td align="center" width="46,4%">
+			<img alt="" src="templates/img/image002.gif"> <br>
+			<font face="Times New Roman" style="font-size: 12pt;">
+				МИНИСТЕРСТВО ОБОРОНЫ <br>
+				РОССИЙСКОЙ ФЕДЕРАЦИИ <br> (МИНОБОРОНЫ РОССИИ) <br><br>
+			</font>
+			<font face="Times New Roman" style="font-size: 12pt;">
+				<b>
+					ФЕДЕРАЛЬНОЕ <br>
+					КАЗЕННОЕ УЧРЕЖДЕНИЕ <br>
+					"ВОЕННЫЙ  КОМИССАРИАТ <br>
+					НОВОСИБИРСКОЙ  ОБЛАСТИ"
+				</b>
+			</font>
+			<br>
+			<font face="Times New Roman" style="font-size: 9pt;">
+				ул. Советская, 4а, г. Новосибирск, 630007 <br>
+				<span style="margin-centre: 0px;">
+			</font>
+			
+			<table>
+				<tr>
+					<td></td>
+					<td>
+						<font face="Times New Roman" style="font-size: 12pt;">
+								<? $dd = substr($priz['date_protocol2'],0, 2); 
+								   $mm = substr($priz['date_protocol2'],3, 2);
+								   $yy = substr($priz['date_protocol2'],6, 10);
+								   echo "«".$dd."» ".$mm." ".$yy."г";
+								?> 
+							</span> <br>
+						    На № <?=$priz['mail']?>	
+					    </font>		
+				    </td>
+				    <td> </td>
+			    </tr>
+		    </table>		
+		</td>
+		<td align="center" width="50,7%">
+			<font face="Times New Roman" style="font-size: 14pt;">
+			ВОЕННОМУ КОМИССАРУ<br>
+			<?php if ($priz['voenkomat'] == "Барабинский") echo "Г. БАРАБИНСК, БАРАБИНСКОГО И ЗДВИНСКОГО РАЙОНОВ" ?>
+			<?php if ($priz['voenkomat'] == "Здвинский") echo "Г. БАРАБИНСК, БАРАБИНСКОГО И ЗДВИНСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Бердский") echo "Г. БЕРДСК" ?>			
+			<?php if ($priz['voenkomat'] == "Доволенский") echo "КРАСНОЗЕРСКОГО, ДОВОЛЕНСКОГО И КОЧКОВСКОГО РАЙОНОВ" ?>		
+			<?php if ($priz['voenkomat'] == "Кочковский") echo "КРАСНОЗЕРСКОГО, ДОВОЛЕНСКОГО И КОЧКОВСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Красноозерский") echo "КРАСНОЗЕРСКОГО, ДОВОЛЕНСКОГО И КОЧКОВСКОГО РАЙОНОВ" ?>		
+			<?php if ($priz['voenkomat'] == "г. Искитим") echo "Г. ИСКИТИМ" ?>			
+			<?php if ($priz['voenkomat'] == "Искитимский") echo "Г. ИСКИТИМ" ?>			
+			<?php if ($priz['voenkomat'] == "Карасукский") echo "Г. КАРАСУК, БАГАНСКОГО, КАРАСУКСКОГО И КУПИНСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Баганский") echo "Г. КАРАСУК, БАГАНСКОГО, КАРАСУКСКОГО И КУПИНСКОГО РАЙОНОВ" ?>		
+			<?php if ($priz['voenkomat'] == "Каргатский") echo "Г. КАРГАТ, КАРГАТСКОГО, УБИНСКОГО И ЧУЛЫМСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Убинский") echo "Г. КАРГАТ, КАРГАТСКОГО, УБИНСКОГО И ЧУЛЫМСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Коченевский") echo "КОЧЕНЕВСКОГО И КОЛЫВАНСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Колыванский") echo "КОЧЕНЕВСКОГО И КОЛЫВАНСКОГО РАЙОНОВ" ?>		
+			<?php if ($priz['voenkomat'] == "Куйбышевский") echo "Г. КУЙБЫШЕВ, КУЙБЫШЕВСКОГО И СЕВЕРНОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Северный") echo "КУЙБЫШЕВСКОГО И СЕВЕРНОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Купинский") echo "Г. КАРАСУК, БАГАНСКОГО, КАРАСУКСКОГО И КУПИНСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Мошковский") echo "Г. ТОГУЧИН, ТОГУЧИНСКОГО, БОЛОТНИНСКОГО И МОШКОВСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Ордынский") echo "ОРДЫНСКОГО РАЙОНА" ?>			
+			<?php if ($priz['voenkomat'] == "Сузунский") echo "СУЗУНСКОГО РАЙОНА" ?>			
+			<?php if ($priz['voenkomat'] == "Татарский") echo "Г. ТАТАРСК, ТАТАРСКОГО, УСТЬ-ТАРКСКОГО И ЧИСТООЗЕРНОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Усть-Таркский") echo "Г. ТАТАРСК, ТАТАРСКОГО, УСТЬ-ТАРКСКОГО И ЧИСТООЗЕРНОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Чистоозерный") echo "Г. ТАТАРСК, ТАТАРСКОГО, УСТЬ-ТАРКСКОГО И ЧИСТООЗЕРНОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Тогучинский") echo "Г. ТОГУЧИН, ТОГУЧИНСКОГО, БОЛОТНИНСКОГО И МОШКОВСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Болотнинский") echo "Г. ТОГУЧИН, ТОГУЧИНСКОГО, БОЛОТНИНСКОГО И МОШКОВСКОГО РАЙОНОВ" ?>		
+			<?php if ($priz['voenkomat'] == "Чановский") echo "ЧАНОВСКОГО, ВЕНГЕРОВСКОГО И КЫШТОВСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Венгеровский") echo "ЧАНОВСКОГО, ВЕНГЕРОВСКОГО И КЫШТОВСКОГО РАЙОНОВ" ?>	
+			<?php if ($priz['voenkomat'] == "Кыштовский") echo "ЧАНОВСКОГО, ВЕНГЕРОВСКОГО И КЫШТОВСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Маслянинский") echo "Г. ЧЕРЕПАНОВО, ЧЕРЕПАНОВСКОГО И МАСЛЯНИНСКОГО РАЙОНОВ" ?>		
+			<?php if ($priz['voenkomat'] == "Черепановский") echo "Г. ЧЕРЕПАНОВО, ЧЕРЕПАНОВСКОГО И МАСЛЯНИНСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Чулымский") echo "Г. КАРГАТ, КАРГАТСКОГО, УБИНСКОГО И ЧУЛЫМСКОГО РАЙОНОВ" ?>			
+			<?php if ($priz['voenkomat'] == "Новосибирский") echo "НОВОСИБИРСКОГО РАЙОНА, Г. ОБЬ И Р.П. КОЛЬЦОВО" ?>			
+			<?php if ($priz['voenkomat'] == "р.п. Кольцово") echo "НОВОСИБИРСКОГО РАЙОНА, Г. ОБЬ И Р.П. КОЛЬЦОВО" ?>		
+			<?php if ($priz['voenkomat'] == "г. Обь") echo "НОВОСИБИРСКОГО РАЙОНА, Г. ОБЬ И Р.П. КОЛЬЦОВО" ?>
+			<?php if ($priz['voenkomat'] == "Дзержинский") echo "ДЗЕРЖИНСКОГО И КАЛИНИНСКОГО РАЙОНОВ <BR> Г. НОВОСИБИРСК" ?>		
+			<?php if ($priz['voenkomat'] == "Калининский") echo "ДЗЕРЖИНСКОГО И КАЛИНИНСКОГО РАЙОНОВ <BR> Г. НОВОСИБИРСК" ?>			
+			<?php if ($priz['voenkomat'] == "Заельцовский") echo "ОКТЯБРЬСКОГО РАЙОНА И ЦЕНТРАЛЬНОГО АДМИНИСТРАТИВНОГО ОКРУГА <BR> Г. НОВОСИБИРСК" ?>		
+			<?php if ($priz['voenkomat'] == "Ленинский") echo "КИРОВСКОГО И ЛЕНИНСКОГО РАЙОНОВ <BR> Г. НОВОСИБИРСК" ?>		
+			<?php if ($priz['voenkomat'] == "Кировский") echo "КИРОВСКОГО И ЛЕНИНСКОГО РАЙОНОВ <BR> Г. НОВОСИБИРСК" ?>		
+			<?php if ($priz['voenkomat'] == "Октябрьский") echo "ОКТЯБРЬСКОГО РАЙОНА И ЦЕНТРАЛЬНОГО АДМИНИСТРАТИВНОГО ОКРУГА <BR> Г. НОВОСИБИРСК" ?>		
+			<?php if ($priz['voenkomat'] == "Железнодорожный") echo "ОКТЯБРЬСКОГО РАЙОНА И ЦЕНТРАЛЬНОГО АДМИНИСТРАТИВНОГО ОКРУГА <BR> Г. НОВОСИБИРСК" ?>			
+			<?php if ($priz['voenkomat'] == "Центральный округ") echo "ОКТЯБРЬСКОГО РАЙОНА И ЦЕНТРАЛЬНОГО АДМИНИСТРАТИВНОГО ОКРУГА <BR> Г. НОВОСИБИРСК" ?>			
+			<?php if ($priz['voenkomat'] == "Советский") echo "СОВЕТСКОГО И ПЕРВОМАЙСКОГО РАЙОНОВ <BR> Г. НОВОСИБИРСК" ?>			
+			<?php if ($priz['voenkomat'] == "Первомайский") echo "СОВЕТСКОГО И ПЕРВОМАЙСКОГО РАЙОНОВ <BR> Г. НОВОСИБИРСК" ?>	 <br>									
+			</font>
+		</td>
+	</tr>
+	<tr>
+	</tr>
+	<tr>
+		<td align="center" COLSPAN=2>
+			<br>
+			<font face="Times New Roman" style="font-size: 16.5pt;">
+			Cлужебное письмо<br><br>
+		    </font>
+		</td>	
+	</tr>
+	<tr>
+		<td align="justify" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 16.5pt;">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;В соответствии с решением призывной комиссии  Новосибирской области  протокол  № <?=$priz['protocol_numb2']?> от  <?=$priz['date_protocol2']?> г.  <?=$priz['fio']?>    
+			<? $a = substr($priz['daterogdenia'],6, 10); echo $a;?>г.   признан  по  ст.<?=$priz['isx_st']?> графы I расписания болезней и ТДТ (приложение к Положению о военно-врачебной экспертизе, утвержденному постановлением  Правительства РФ 2013 года № 565). 
+			<?php if ($priz['godnost'] == "А") echo "«А» - годен к военной службе"?>				
+			<?php if ($priz['godnost'] == "Б") echo "«Б» - годен к военной службе с незначительными ограничениями"?>				
+			<?php if ($priz['godnost'] == "В") echo "«В» - ограниченно годен к военной службе"?>			
+			<?php if ($priz['godnost'] == "Г") echo "«Г» - временно не годен к военной службе"?>				
+			<?php if ($priz['godnost'] == "Д") echo "«Д» - не годен к военной службе"?>	
+			</font>
+			<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td align="left" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 16.5pt;">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ранее вынесенное решение призывной комиссии 
+			<?php if ($priz['voenkomat'] == "Барабинский") echo "Барабинского района" ?>
+			<?php if ($priz['voenkomat'] == "Здвинский") echo "Здвинского района" ?>			
+			<?php if ($priz['voenkomat'] == "Бердский") echo "Бердского района" ?>			
+			<?php if ($priz['voenkomat'] == "Доволенский") echo "Доволенского района" ?>		
+			<?php if ($priz['voenkomat'] == "Кочковский") echo "Кочковского района" ?>			
+			<?php if ($priz['voenkomat'] == "Красноозерский") echo "Краснозерского района" ?>		
+			<?php if ($priz['voenkomat'] == "г. Искитим") echo "г. Искитим" ?>			
+			<?php if ($priz['voenkomat'] == "Искитимский") echo "Искитимского района" ?>			
+			<?php if ($priz['voenkomat'] == "Карасукский") echo "Карасукского района" ?>			
+			<?php if ($priz['voenkomat'] == "Баганский") echo "Баганского района" ?>		
+			<?php if ($priz['voenkomat'] == "Каргатский") echo "Каргатского района" ?>			
+			<?php if ($priz['voenkomat'] == "Убинский") echo "Убинского района" ?>			
+			<?php if ($priz['voenkomat'] == "Коченевский") echo "Коченевского района" ?>			
+			<?php if ($priz['voenkomat'] == "Колыванский") echo "Колыванского района" ?>		
+			<?php if ($priz['voenkomat'] == "Куйбышевский") echo "Куйбышевского района" ?>			
+			<?php if ($priz['voenkomat'] == "Северный") echo "Северного района" ?>			
+			<?php if ($priz['voenkomat'] == "Купинский") echo "Купинского района" ?>			
+			<?php if ($priz['voenkomat'] == "Мошковский") echo "Мошковского района" ?>			
+			<?php if ($priz['voenkomat'] == "Ордынский") echo "Ордынского района" ?>			
+			<?php if ($priz['voenkomat'] == "Сузунский") echo "Сузунского района" ?>			
+			<?php if ($priz['voenkomat'] == "Татарский") echo "Татарского района" ?>			
+			<?php if ($priz['voenkomat'] == "Усть-Таркский") echo "Усть-Таркского района" ?>			
+			<?php if ($priz['voenkomat'] == "Чистоозерный") echo "Чистоозерного района" ?>			
+			<?php if ($priz['voenkomat'] == "Тогучинский") echo "Тогучинского района" ?>			
+			<?php if ($priz['voenkomat'] == "Болотнинский") echo "Болотнинского района" ?>		
+			<?php if ($priz['voenkomat'] == "Чановский") echo "Чановского района" ?>			
+			<?php if ($priz['voenkomat'] == "Венгеровский") echo "Венгеровского района" ?>	
+			<?php if ($priz['voenkomat'] == "Кыштовский") echo "Кыштовского района" ?>			
+			<?php if ($priz['voenkomat'] == "Маслянинский") echo "Маслянинского района" ?>		
+			<?php if ($priz['voenkomat'] == "Черепановский") echo "Черепановского района" ?>			
+			<?php if ($priz['voenkomat'] == "Чулымский") echo "Чулымского района" ?>			
+			<?php if ($priz['voenkomat'] == "Новосибирский") echo "Новосибирского района" ?>			
+			<?php if ($priz['voenkomat'] == "р.п. Кольцово") echo "Новосибирского района" ?>				
+			<?php if ($priz['voenkomat'] == "г. Обь") echo "Новосибирского района" ?>	
+			<?php if ($priz['voenkomat'] == "Дзержинский") echo "Дзержинского района" ?>		
+			<?php if ($priz['voenkomat'] == "Калининский") echo "Калининского района" ?>				
+			<?php if ($priz['voenkomat'] == "Ленинский") echo "Ленинского района" ?>		
+			<?php if ($priz['voenkomat'] == "Кировский") echo "Кировского района" ?>		
+			<?php if ($priz['voenkomat'] == "Октябрьский") echo "Октябрьского района" ?>				
+			<?php if ($priz['voenkomat'] == "Центральный округ") echo "Центрального административного округа" ?>			
+			<?php if ($priz['voenkomat'] == "Советский") echo "Советского района" ?>			
+			<?php if ($priz['voenkomat'] == "Первомайский") echo "Первомайского района" ?>	
+			 отменить. 	
+			</font> 
+			<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td align="left" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 16.5pt;">
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Диагноз: <?=$priz['diagnoz']?>  
+			</font>
+			<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td align="left" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 16.5pt;">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Причина отмены решения: <?=$priz['otpravitel']?>
+			</font> 
+			<br><br>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="center" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 16.5pt;">
+				После получения служебного письма в течение 10 дней предоставить материал расследования	
+			</font>
+			<br><br>
+		</td>
+	</tr>
+	
+	<tr>
+		<td align="left" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 14pt;">
+				Начальник отдела (подготовки и призыва граждан на военную службу)
+			</font>
+		</td>
+	</tr>
+	<tr>
+		<td align="left" COLSPAN=2>
+			<font face="Times New Roman" style="font-size: 14pt;">
+				военного комиссариата Новосибирской области
+			</font>
+		</td>
+	</tr>
+	<tr>		
+		<td align="left" COLSPAN=2 style="padding-top: 14px;"> 
+			<font face="Times New Roman" style="font-size: 14pt;">
+				полковник&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;А. Сверчков					
+			</font>
+		</td>
+	</tr>
+</table>

@@ -29,17 +29,64 @@ class Controller_Print extends Controller
 
 	function replaceData($data, $fileContent) {
 		foreach (Config::getValue("printValues") as $key => $value) 
-			$fileContent = str_replace($key, isset($data[$value]) ? $this->getEditableString($data[$value]) : $this->getEditableString("{НЕКОРРЕКТНОЕ ЗНАЧЕНИЕ}"), $fileContent);
+			$fileContent = str_replace($key, isset($data[$value]) ? (empty($data[$value]) ? $this->getEditableString("{НЕ ЗАПОЛНЕНО}") : $this->getEditableString($data[$value])) : $this->getEditableString("{НЕКОРРЕКТНОЕ ЗНАЧЕНИЕ}"), $fileContent);
 			
 		return $fileContent;
 	}
 
 	function protocolPrepare($fileContent, $id) {
-		$data = Database::execute("SELECT * FROM conscript WHERE id = :id", ["id" => $id], "current")[0];
+		$data = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $id], "current")[0];
+		$data["vkName"] = Helper::getVKNameById($data["vk"])["fullNameNotUnique"];
 
-		$data["ownerID"] = Database::execute("SELECT name FROM staff WHERE id=:id", ["id" => $data["ownerID"]])[0]["name"];
-		$data["birthDate"] = Helper::formatDateToView($data["birthDate"]);
-		$data["creationDate"] = Helper::formatDateToView($data["creationDate"]);
+		$documents = Helper::getResultDocuments($id);
+		foreach ($documents as $document) {
+			$data["complaint"] .= $document["complaint"] . "<br>";
+			$data["anamnez"] .= $document["anamnez"] . "<br>";
+			$data["objectData"] .= $document["objectData"] . "<br>";
+			$data["specialResult"] .= $document["specialResult"] . "<br>";
+			$data["diagnosis"] .= $document["diagnosis"] . "<br>";
+		}
+
+		//$data["rvkMedicalAppointment"] //РВК Назначение
+		$data["rvkMedicalAppointment"] = "Категория годности<br>" . Helper::getHealthCategoryNameByID($data["healthCategory"]);
+
+
+
+		//$data["medicalAppointment"] //Назначение;
+		//$data["result"] //Решение
+		
+
+		//////
+		//if($data["documentType"] == "complaint")
+		//	$data["anamnez"] .= "<br>Не согласен с решением районной призывной комиссии.";
+		/////
+		$fileContent = $this->replaceData($data, $fileContent);
+		return $fileContent;
+	}
+
+	function letterPrepare($fileContent, $id) {
+		$data = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $id], "current")[0];
+		
+		$fileContent = $this->replaceData($data, $fileContent);
+
+		return $fileContent;
+	}
+
+	function extractPrepare($fileContent, $id) {
+		return $fileContent;
+	}
+
+	function examinationPrepare($fileContent, $id) {
+		$data = Database::execute("SELECT * FROM `documents` WHERE id = :id", ["id" => $id], "current")[0];
+		$data["creator"] = Database::execute("SELECT name FROM staff WHERE id=:id", ["id" => $data["creatorID"]])[0]["name"];
+		$data["documentDate"] = Helper::formatDateToView($data["documentDate"]);
+
+		$conscript = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $data["conscriptID"]], "current")[0];
+
+		$data["name"] = $conscript["name"];
+		$data["birthDate"] = $conscript["birthDate"];
+		$data["rvkArticle"] = $conscript["rvkArticle"];
+		$data["healthCategory"] = Helper::getHealthCategoryNameByID($data["healthCategory"]);
 
 		$fileContent = $this->replaceData($data, $fileContent);
 
