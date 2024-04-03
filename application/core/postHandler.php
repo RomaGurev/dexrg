@@ -226,7 +226,7 @@ class postHandler
             $duplicateCheck = Database::execute("SELECT * FROM `conscript` WHERE name=:name AND birthDate=:birthDate", ["name" => $param['fullName'], "birthDate" => Helper::formatDateToView($param['birthDate'])], "current");
 
             if (count($duplicateCheck) == 0) {
-                $query = "INSERT INTO `conscript` (creatorID, creationDate, name, birthDate, rvkArticle, rvkDiagnosis, vk, healthCategory, adventPeriod) VALUES (:creatorID, :creationDate, :name, :birthDate, :rvkArticle, :rvkDiagnosis, :vk, :healthCategory, :adventPeriod);";
+                $query = "INSERT INTO `conscript` (creatorID, creationDate, name, birthDate, rvkArticle, rvkDiagnosis, vk, healthCategory, adventPeriod, postPeriod, rvkProtocolDate, rvkProtocolNumber) VALUES (:creatorID, :creationDate, :name, :birthDate, :rvkArticle, :rvkDiagnosis, :vk, :healthCategory, :adventPeriod, :postPeriod, :rvkProtocolDate, :rvkProtocolNumber);";
                 $dataArr = [
                     "creatorID" => Profile::$user['id'],
                     "creationDate" => Helper::formatDateToView($param['creationDate']),
@@ -236,7 +236,10 @@ class postHandler
                     "rvkDiagnosis" => $param['rvkDiagnosis'],
                     "vk" => $param['vk'],
                     "healthCategory" => $param['healthCategory'],
-                    "adventPeriod" => $param['adventTime']
+                    "adventPeriod" => $param['adventTime'],
+                    "postPeriod" => $param['postPeriodSelect'],
+                    "rvkProtocolDate" => Helper::formatDateToView($param['rvkProtocolDate']),
+                    "rvkProtocolNumber" => $param['rvkProtocolNumber']
                 ];
                 Database::execute($query, $dataArr, "current");
                 return "reloadPage";
@@ -251,7 +254,7 @@ class postHandler
         if ($param['fullName'] === "")
             return "Введите имя призывника";
         else {
-            $query = "UPDATE `conscript` SET creatorID = :creatorID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, rvkDiagnosis = :rvkDiagnosis, vk = :vk, healthCategory = :healthCategory, adventPeriod = :adventPeriod WHERE id = :id;";
+            $query = "UPDATE `conscript` SET creatorID = :creatorID, creationDate = :creationDate, name = :name, birthDate = :birthDate, rvkArticle = :rvkArticle, rvkDiagnosis = :rvkDiagnosis, vk = :vk, healthCategory = :healthCategory, adventPeriod = :adventPeriod, postPeriod = :postPeriod, rvkProtocolDate = :rvkProtocolDate, rvkProtocolNumber = :rvkProtocolNumber WHERE id = :id;";
             $dataArr = [
                 "id" => $param['id'],
                 "creatorID" => Profile::$user['id'],
@@ -262,7 +265,10 @@ class postHandler
                 "rvkDiagnosis" => $param['rvkDiagnosis'],
                 "vk" => $param['vk'],
                 "healthCategory" => $param['healthCategory'],
-                "adventPeriod" => $param['adventTime']
+                "adventPeriod" => $param['adventTime'],
+                "postPeriod" => $param['postPeriodSelect'],
+                "rvkProtocolDate" => Helper::formatDateToView($param['rvkProtocolDate']),
+                "rvkProtocolNumber" => $param['rvkProtocolNumber']
             ];
 
             Database::execute($query, $dataArr, "current");
@@ -310,7 +316,7 @@ class postHandler
             $ans = Database::execute($query, null, "current");
 
             if (count($ans) == 0)
-                return "<div id='resizeDiv' class='lead'>Учетная карта не найдена." . (Profile::isHavePermission("canAdd") ? "Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>" : "</div>");
+                return "<div id='resizeDiv' class='lead'>Учетная карта не найдена." . (Profile::isHavePermission("canAdd") ? " Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>" : "</div>");
             else {
                 $result = "<div id='resizeDiv' class='d-grid gap-2'>";
                 foreach ($ans as $conscript)
@@ -365,13 +371,28 @@ class postHandler
             foreach ($conscriptsWithDocuments as $conscript)
                 $result .= DocumentBuilder::getConscriptWithDocumentsCard($conscript);
         } else {
-            $result .= "<div class='lead'>Документ не найден.</div>";
+            $result .= "<div class='lead'>Документы не найдены.</div>";
         }
         $result .= "</div>";
 
         return $result;
     }
 
+    static function saveProtocolChanges($param) 
+    {
+        if ($param['conscriptID'] === "")
+            return "Ошибка сохранения информации протокола. ID призывника не найден.";
+        else {
+            $query = "UPDATE `conscript` SET protocolNumber=:protocolNumber, protocolDate=:protocolDate WHERE id=:id";
+            $dataArr = [
+                "id" => $param['conscriptID'],
+                "protocolNumber" => $param['protocolNumber'],
+                "protocolDate" => Helper::formatDateToView($param['protocolDate'])
+            ];
+            Database::execute($query, $dataArr, "current");
+            return "continue";
+        }
+    }
 
     static function getConscriptInfoForModal($param)
     {
@@ -406,7 +427,7 @@ class postHandler
 
     static function addDocument($param)
     {
-        $query = "INSERT INTO `documents` (conscriptID, article, healthCategory, creatorID, complaint, anamnez, objectData, specialResult, diagnosis, documentDate, documentType) VALUES (:conscriptID, :article, :healthCategory, :creatorID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :documentDate, :documentType);";
+        $query = "INSERT INTO `documents` (conscriptID, article, healthCategory, creatorID, complaint, anamnez, objectData, specialResult, diagnosis, documentDate, documentType, postPeriod, reasonForCancel) VALUES (:conscriptID, :article, :healthCategory, :creatorID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :documentDate, :documentType, :postPeriod, :reasonForCancel);";
         $dataArr = [
             "conscriptID" => $param['conscriptID'],
             "article" => $param['articleInput'],
@@ -417,8 +438,10 @@ class postHandler
             "objectData" => $param['objectDataTextarea'],
             "specialResult" => $param['specialResultTextarea'],
             "diagnosis" => $param['diagnosisTextarea'],
-            "documentDate" => Helper::formatDateToView(date("Y-m-d")),
-            "documentType" => $param['documentType']
+            "documentDate" => Helper::formatDateToView($param["documentDate"]),
+            "documentType" => $param['documentType'],
+            "postPeriod" => $param['postPeriodSelect'],
+            "reasonForCancel" => $param['reasonForCancelTextarea']
         ];
         Database::execute($query, $dataArr, "current");
         return "reloadPage";
@@ -426,7 +449,7 @@ class postHandler
 
     static function editDocument($param)
     {
-        $query = "UPDATE `documents` SET  article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate WHERE id = :id;";
+        $query = "UPDATE `documents` SET  article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate, postPeriod=:postPeriod, reasonForCancel=:reasonForCancel WHERE id = :id;";
         $dataArr = [
             "article" => $param['articleInput'],
             "healthCategory" => $param['healthCategorySelect'],
@@ -435,7 +458,9 @@ class postHandler
             "objectData" => $param['objectDataTextarea'],
             "specialResult" => $param['specialResultTextarea'],
             "diagnosis" => $param['diagnosisTextarea'],
-            "documentDate" => Helper::formatDateToView(date("Y-m-d")),
+            "documentDate" => Helper::formatDateToView($param["documentDate"]),
+            "postPeriod" => $param['postPeriodSelect'],
+            "reasonForCancel" => $param['reasonForCancelTextarea'],
             "id" => $param['documentID']
         ];
         Database::execute($query, $dataArr, "current");

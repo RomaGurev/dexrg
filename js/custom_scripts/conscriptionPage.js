@@ -3,13 +3,23 @@
 > содержит скрипты эмуляции POST запросов к postHandler'у
 */
 
+//Выбор категории "Г" и появление поля "Срок отсрочки"
+$("#healthCategory").on("change", function (event) {
+    let valueSelected = $("#healthCategory").val();
+
+    if(valueSelected == "Г") {
+        $("#postPeriod").removeClass("d-none"); //class remove d-none
+    } else {
+        $("#postPeriod").addClass("d-none"); //class add d-none
+        $("#postPeriodSelect").val("");
+    }
+});
+
 //Обработка добавления призывника
 $("#addConscriptForm").submit(function (event) {
     showLoading(true);
     $('#editorConscriptButton').attr('disabled', true);
     event.preventDefault();
-
-    alert($('#diagnosisTextarea').val());
 
     $.post({
         url: '/application/core/postHandler.php',
@@ -25,7 +35,10 @@ $("#addConscriptForm").submit(function (event) {
                 birthDate: $('#birthDate').val(),
                 healthCategory: $('#healthCategory').val(),
                 vk: $('#vk').val(),
-                adventTime: $('#adventTime').val(),
+                adventTime: $('#adventTime').val(), 
+                postPeriodSelect: $('#postPeriodSelect').val(),
+                rvkProtocolDate: $('#rvkProtocolDate').val(),
+                rvkProtocolNumber: $('#rvkProtocolNumber').val()
             }
         },
         success: function (data) {
@@ -66,6 +79,9 @@ $("#editConscriptForm").submit(function (event) {
                 healthCategory: $('#healthCategory').val(),
                 vk: $('#vk').val(),
                 adventTime: $('#adventTime').val(),
+                postPeriodSelect: $('#postPeriodSelect').val(),
+                rvkProtocolDate: $('#rvkProtocolDate').val(),
+                rvkProtocolNumber: $('#rvkProtocolNumber').val()
             }
         },
         success: function (data) {

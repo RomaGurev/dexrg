@@ -1,6 +1,6 @@
 {
-    "version" : "0.78",
-    "versionDate" : "28.03.2024",
+    "version" : "0.84",
+    "versionDate" : "03.04.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -17,8 +17,8 @@
     },
     "userType" : {
         "0" : ["Администратор", "admin"],
+        "2" : ["Секретариат", "viewer"],
         "1" : ["Невролог", "specialist"],
-        "2" : ["Секретарь", "viewer"],
         "3" : ["Хирург", "specialist"],
         "4" : ["Терапевт", "specialist"],
         "5" : ["Стоматолог", "specialist"],
@@ -29,8 +29,8 @@
         "10" : ["Медицинская сестра", "belocercovec"]
     },
     "permissionSet" : {
-        "specialist": ["main", "changeCategory", "control", "complaint", "return", "pattern", "canAdd"],
-        "viewer" : ["main", "changeCategory", "control", "complaint", "return", "viewForAll", "canAdd"],
+        "specialist": ["main", "control", "complaint", "return", "changeCategory", "pattern", "canAdd"],
+        "viewer" : ["main", "control", "complaint", "return", "changeCategory", "pattern", "viewForAll", "canAdd"],
         "belocercovec" : ["main", "viewForAll"],
         "admin" : ["main", "admin"]
     },
@@ -71,6 +71,20 @@
         "Д" : ["не годен к военной службе", ["changeCategory"]],
         "О" : ["подлежит обследованию", ["registration", "changeCategory"]]
     },
+    "postPeriod" : {
+        "1" : "1 месяц",
+        "2" : "2 месяца",
+        "3" : "3 месяца",
+        "4" : "4 месяца",
+        "5" : "5 месяцев",
+        "6" : "6 месяцев",
+        "7" : "7 месяцев",
+        "8" : "8 месяцев",
+        "9" : "9 месяцев",
+        "10" : "10 месяцев",
+        "11" : "11 месяцев",
+        "12" : "12 месяцев"
+    },
     "printValues" : {
         "%ФИО%" : "name",
         "%ДАТА_РОЖДЕНИЯ%" : "birthDate", 
@@ -84,10 +98,15 @@
         "%ИМЯ_ВРАЧА%" : "creator", 
         "%ДАТА_ОСВИДЕТЕЛЬСТВОВАНИЯ%" : "documentDate",
         "%ВК_ИМЯ%" : "vkName",
-        "%НАЗНАЧЕНИЕ%" : "medicalAppointment",
+        "%НАЗНАЧЕНИЕ%" : "appointment",
         "%РЕШЕНИЕ%" : "result",
-        "%ВХ_НАЗНАЧЕНИЕ%" : "rvkMedicalAppointment",
-        "%ВХ_ДИАГНОЗ%" : "rvkDiagnosis"
+        "%ВХ_НАЗНАЧЕНИЕ%" : "rvkAppointment",
+        "%ВХ_ДИАГНОЗ%" : "rvkDiagnosis",
+        "%ПРИЧИНА_ИЗМЕНЕНИЯ_РЕШЕНИЯ%" : "reasonToChangeResult",
+        "%НОМЕР_ПРОТОКОЛА%" : "protocolNumber",
+        "%ДАТА_ПРОТОКОЛА%" : "protocolDate",
+        "%ДАТА_ПИСЬМА%" : "letterDate",
+        "%НОМЕР_ПИСЬМА%" : "letterNumber"
     },
     "customScripts" : {
         "admin": "adminPage.js",

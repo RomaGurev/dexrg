@@ -107,7 +107,6 @@
             <span style="font-size: 16pt; font-family: Times New Roman;">
                 %ГОДНОСТЬ%
                 <br>
-                Причина изменения решения:
                 %ПРИЧИНА_ИЗМЕНЕНИЯ_РЕШЕНИЯ%
             </span>
         </td>

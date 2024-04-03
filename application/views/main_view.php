@@ -54,7 +54,7 @@ if(isset($_GET["conscript"])) {
 
             <div class="mt-2 d-flex">
                 <input id="showSelect" class="d-none" value="false">
-                <input type="text" id="searchInput" class="form-control me-2" placeholder="Введите запрос...">
+                <input type="text" id="searchInput" class="form-control me-2" placeholder="Введите запрос..." autocomplete="off">
 
                 <select id="searchType" class="form-control form-select" style="width: 80%;cursor:pointer;">
                     <?

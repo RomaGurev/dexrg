@@ -12,6 +12,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="/css/main_style.css" />
+	<link rel="stylesheet" href="/css/print.css" />
 	<link rel="stylesheet" href="/bootstrap/bootstrap.css" />
 
 	<title><?= $title ?></title>
@@ -27,7 +28,7 @@
 				<p class="mb-0 ms-2 me-2" style="font-size: 1.5rem;">ВВК ПЕЧАТЬ</p>
 			</a>
 			<div class="m-auto w-25 d-flex me-2">
-				<a onclick="printDocument();" class="btn btn-outline-success w-100 align-self-end">Печать</a>
+				<a onclick="window.print(); " class="btn btn-outline-success w-100 align-self-end">Печать</a>
 			</div>
 			<div class="w-25 d-flex">
 				<a onclick="history.back();" class="btn btn-outline-dark w-100 align-self-end">Назад</a>
@@ -40,6 +41,7 @@
 	</div>
 	<script src="/js/jquery-3.5.1.min.js" type="text/javascript"></script>
 	<script src="/js/print.js" type="text/javascript"></script>
+	<script src="/js/petrovich.js" type="text/javascript"></script>
 </body>
 
 </html>

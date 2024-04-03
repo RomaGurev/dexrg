@@ -90,14 +90,3 @@ button .svg-search:hover image {
 .w-15 {
     width: 15% !important;
 }
-
-/* Страница печати */
-
-#print_panel {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-
-.print-padding {
-    padding-top: 5rem !important;
-}
-

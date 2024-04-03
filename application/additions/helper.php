@@ -128,7 +128,8 @@ class Helper
 
     }
 
-    public static function getResultDocuments($userID) {
+    public static function getResultDocuments($userID) 
+    {
         $documentPriority = ["complaint" => 0, "return" => 1, "control" => 2, "changeCategory" => 3];
         $documents = Database::execute("SELECT * FROM `documents` WHERE conscriptID=:conscriptID", ["conscriptID" => $userID], "current");
         $result = array();
@@ -142,5 +143,30 @@ class Helper
             }
         }
         return $result;
+    }
+
+    public static function convertDateToPrintFormat($date) 
+    {
+        if(!empty($date)) {
+            $date = explode(".", $date);
+
+	        switch ($date[1])
+	        {
+	        		case "01": { $mm = "января"; break;	}
+	        		case "02": { $mm = "февраля"; break;	}
+	        		case "03": { $mm = "марта"; break;	}
+	        		case "04": { $mm = "апреля"; break;	}
+	        		case "05": { $mm = "мая"; break;	}
+	        		case "06": { $mm = "июня"; break;	}
+	        		case "07": { $mm = "июля"; break;	}
+	        		case "08": { $mm = "августа"; break;	}
+	        		case "09": { $mm = "сентября"; break;	}
+	        		case "10": { $mm = "октября"; break;	}
+	        		case "11": { $mm = "ноября"; break;	}
+	        		case "12": { $mm = "декабря"; break;	}
+	        }
+	        return "«".$date[0]."» ".$mm." ".$date[2]."г.";
+        } else
+            return "{ошибка конвертации даты}";
     }
 }

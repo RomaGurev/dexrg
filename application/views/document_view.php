@@ -28,7 +28,7 @@ $documentName = $edit ? "Редактирование документа - " . C
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
         <h3 class="display-6 lh-1 col m-0"><? echo $documentName ?></h3>
-        <a href="/" class="btn btn-outline-secondary col-auto w-10">Назад</a>
+        <a onclick="history.back();" class="btn btn-outline-secondary col-auto w-10">Назад</a>
     </div>
 
     <input class="d-none" type="text" id="conscriptID">
@@ -67,35 +67,37 @@ $documentName = $edit ? "Редактирование документа - " . C
                     <input class="form-control" value="<? echo $edit ? $currentDocument['id'] : $data['nextDocumentID'] ?>" id="documentID" disabled>
                 </div>
 
+                <div class="col me-3">
+                    <label for="documentDate" class="form-label">Дата документа</label>
+                    <input type="date" class="form-control" value="<? if (isset($currentDocument["documentDate"])): echo date('Y-m-d',strtotime($currentDocument["documentDate"])); else: echo date("Y-m-d"); endif ?>" id="documentDate">
+                </div>
+
                 <div class="col">
-                    
+                    <label for="pattern" class="form-label">Шаблон</label>
+                    <select id="pattern" <? echo count($data["patternList"]) > 0 ? "style='cursor:pointer;' class='form-control form-select'" : "class='form-control' disabled" ?>>
+                        <?
+                        if (count($data["patternList"]) > 0)
+                            echo "<option value=''>Выбрать шаблон</option>";
+                        else
+                            echo "<option value=''>Нет шаблонов</option>";
 
-                <label for="pattern" class="form-label">Шаблон</label>
-                <select id="pattern" <? echo count($data["patternList"]) > 0 ? "style='cursor:pointer;' class='form-control form-select'" : "class='form-control' disabled" ?>>
-                    <?
-                    if (count($data["patternList"]) > 0)
-                        echo "<option value=''>Выбрать шаблон</option>";
-                    else
-                        echo "<option value=''>Нет шаблонов</option>";
-
-                    foreach ($data["patternList"] as $key => $value)
-                        echo "<option value=" . $value["id"] . ">" . $value["name"] . "</option>";
-                    ?>
-                </select>
-
+                        foreach ($data["patternList"] as $key => $value)
+                            echo "<option value=" . $value["id"] . ">" . $value["name"] . "</option>";
+                        ?>
+                    </select>
                 </div>
             </div>
 
             <div class="mb-3 d-flex">
                 <div class="me-3 w-50">
                     <label for="complaintTextarea" class="form-label">Жалобы</label>
-                    <textarea class="form-control" id="complaintTextarea" maxlength="1000" rows="4"
+                    <textarea class="form-control" id="complaintTextarea" maxlength="2500" rows="4"
                         placeholder="Пример: Головокружение при перемене положения, с тошнотой, головные боли в височно-теменной области, давящего характера, слабость, потливость."><? if (isset($currentDocument["complaint"]))
                             echo $currentDocument["complaint"]; ?></textarea>
                 </div>
                 <div class="w-50">
                     <label for="anamnezTextarea" class="form-label">Анамнез</label>
-                    <textarea class="form-control" id="anamnezTextarea" maxlength="1000" rows="4"><? if (isset($currentDocument["anamnez"]))
+                    <textarea class="form-control" id="anamnezTextarea" maxlength="2500" rows="4"><? if (isset($currentDocument["anamnez"]))
                         echo $currentDocument["anamnez"]; ?></textarea>
                 </div>
             </div>
@@ -114,7 +116,7 @@ $documentName = $edit ? "Редактирование документа - " . C
 
             <div class="mb-3">
                 <label for="diagnosisTextarea" class="form-label">Диагноз</label>
-                <textarea class="form-control" id="diagnosisTextarea" maxlength="1500" rows="5"
+                <textarea class="form-control" id="diagnosisTextarea" maxlength="2500" rows="5"
                     placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentDocument["diagnosis"]))
                         echo $currentDocument["diagnosis"]; ?></textarea>
             </div>
@@ -127,7 +129,7 @@ $documentName = $edit ? "Редактирование документа - " . C
                     placeholder="Пример: 23в">
             </div>
 
-            <div class="col">
+            <div id="healthCategory" class="col">
                 <label for="healthCategorySelect" class="form-label">Категория годности</label>
                 <select id="healthCategorySelect" class="form-control form-select" style="cursor:pointer;">
                     <option value="">Не выбрано</option>
@@ -138,24 +140,41 @@ $documentName = $edit ? "Редактирование документа - " . C
                     ?>
                 </select>
             </div>
+
+            <div id="postPeriod" class="col d-none">
+                <label for="postPeriodSelect" class="form-label">Срок отсрочки</label>
+                <select id="postPeriodSelect" class="form-control form-select" style="cursor:pointer;">
+                    <option value="">Не выбрано</option>
+                    <? 
+                    foreach (Config::getValue("postPeriod") as $key => $value) {
+                        echo "<option value='$key'>$value</option>";
+                    }
+                    ?>
+                </select>
+            </div>
         </div>
 
-            
+        <div class="mb-3">
+                <label for="reasonForCancelTextarea" class="form-label">Причина отмены решения</label>
+                <textarea class="form-control" id="reasonForCancelTextarea" maxlength="2500" rows="3"><? if (isset($currentDocument["reasonForCancel"]))
+                    echo $currentDocument["reasonForCancel"]; ?></textarea>
+        </div>
 
-            <div class="row">
-            <div class="col-auto">
-                <button id="saveButton" name="submit" type="submit" class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Добавить документ"; ?></button>
-            </div>
+
+        <div class="row">
             <?
             if($edit) {
             ?>
-            <div class="col"></div>
             <div class="col-auto">
-                <button type="button" onclick="deleteDocument(<?echo $currentDocument['id']?>);" class="btn btn-outline-danger">Удалить документ</button>
+                <button type="button" onclick="openAreYouSureModal('Вы уверены, что хотите удалить документ?', deleteDocument, <?echo $currentDocument['id']?>);" class="btn btn-outline-danger">Удалить документ</button>
             </div>
             <?
             }
             ?>
+            <div class="col"></div>
+            <div class="col-auto">
+                <button id="saveButton" name="submit" type="submit" class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Добавить документ"; ?></button>
+            </div>
         </div>
         </form>
     </div>
@@ -165,5 +184,9 @@ $documentName = $edit ? "Редактирование документа - " . C
 if ($edit) {
     echo "<script>
         document.getElementById('healthCategorySelect').value = '" . $currentDocument['healthCategory'] . "';
+        document.getElementById('postPeriodSelect').value = '" . $currentDocument['postPeriod'] . "';
+        document.addEventListener('DOMContentLoaded', () => {
+            $('#healthCategorySelect').trigger('change');
+        });
     </script>";
 }

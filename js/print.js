@@ -1,7 +1,11 @@
-function printDocument() {
-    document.getElementById('print_panel').style.display='none'; 
-    document.getElementById('print_content').classList.toggle("print-padding");
-    window.print(); 
-    document.getElementById('print_panel').style.display='block';
-    document.getElementById('print_content').classList.toggle("print-padding");
+var input = document.querySelectorAll('input');
+input.forEach(element => {
+    element.addEventListener('input', resizeInput)
+});
+
+function resizeInput() {
+  this.style.width = this.value.length + "ch";
+
+  if(this.value.length < 1)
+    this.style.width = "50px";
 }

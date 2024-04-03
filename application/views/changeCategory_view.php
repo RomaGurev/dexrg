@@ -35,7 +35,7 @@
                     echo DocumentBuilder::getConscriptWithDocumentsCard($value);
                 }
             } else {
-                echo "<p class='lead mb-3 text-center'>Список изменений категорий пуст.</p>";
+                echo "<p class='lead mb-3'>Документы не найдены.</p>";
             }
             ?>
         </div>

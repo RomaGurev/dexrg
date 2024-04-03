@@ -64,7 +64,7 @@ $(window).on("resize", function() {
 });
 //Поиск
 
-//Открытие модального окна с УКП
+//Модальные окна
 openConscriptModal = function (conscriptID) {
     $.post({
         url: '/application/core/postHandler.php',
@@ -84,25 +84,40 @@ openConscriptModal = function (conscriptID) {
     });
     
 }
-//Открытие модального окна с УКП
+
+openAreYouSureModal = function (contentText, callback, callbackParam) {
+    $("#areYouSureModalContent").empty();
+    $("#areYouSureModalContent").append(contentText);
+    
+    new bootstrap.Modal(document.getElementById('areYouSureModal')).show();
+
+    $('#areYouSureModalConfirm').on("click", function() {
+        callback(callbackParam);
+        $('#openAreYouSureModal').modal().hide();
+        $("#areYouSureModalClose").click()
+    });
+}
+//Модальные окна
 
 //Действия с УКП
-function printProtocol(id) {
-    location.href = "print?template=protocol&id=" + id;
+function printProtocol(id) {  
+    saveProtocolChanges(function() {
+        location.href = "print?template=protocol&id=" + id;
+    });
 }
-
 function printLetter(id) {
-    location.href = "print?template=letter&id=" + id;
+    saveProtocolChanges(function() {
+        location.href = "print?template=letter&id=" + id;
+    });
 }
-
 function printExtract(id) {
-    location.href = "print?template=extract&id=" + id;
+    saveProtocolChanges(function() {
+        location.href = "print?template=extract&id=" + id;
+    });
 }
-
 function editConscript(id) {
     location.href = "/conscription/editor?back=&id=" + id;
 }
-
 function deleteConscript(id) {
     showLoading(true);
     $.post({
@@ -128,7 +143,6 @@ function deleteConscript(id) {
         }
     });
 }
-
 function addChangeCategory(id) {
     location.href = "/document?conscript=" + id + "&documentType=changeCategory";
 }
@@ -140,6 +154,25 @@ function addReturn(id) {
 }
 function addComplaint(id) {
     location.href = "/document?conscript=" + id + "&documentType=complaint";
+}
+
+saveProtocolChanges = function(func) {
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            saveProtocolChanges: {
+                conscriptID: $("#protocolConscriptID").val(),
+                protocolDate: $("#protocolDate").val(),
+                protocolNumber: $("#protocolNumber").val(),
+            }
+        },
+        success: function (data) {
+            if(data == "continue")
+                func();
+        }
+    });
 }
 //Действия с УКП
 

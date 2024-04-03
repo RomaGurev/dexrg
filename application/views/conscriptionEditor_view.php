@@ -51,36 +51,9 @@ if ($data["currentConscript"] != null) {
                 maxlength="255" required>
             </div>
 
-            <div class="col">
+            <div class="col me-3">
                 <label for="birthDate" class="form-label">Дата рождения</label>
                 <input type="date" class="form-control" <?  if (isset($currentConscript["birthDate"])) echo "value='" .  date('Y-m-d', strtotime($currentConscript["birthDate"])) . "'" ?> id="birthDate">
-            </div>
-        </div>
-
-
-        <div class="mb-3">
-                <label for="diagnosisTextarea" class="form-label">Диагноз РВК</label>
-                <textarea class="form-control" id="diagnosisTextarea" maxlength="1500" rows="5"
-                    placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentConscript["rvkDiagnosis"])) echo $currentConscript["rvkDiagnosis"]; ?></textarea>
-        </div>
-
-        <div class="mb-3 d-flex">
-
-            <div class="col me-3">
-                <label for="healthCategory" class="form-label">Категория годности РВК</label>
-                <select id="healthCategory" class="form-control form-select" style="cursor:pointer;">
-                    <option value="">Не выбрано</option>
-                    <? 
-                    foreach (Helper::getHealthCategories("registration") as $key => $value) {
-                        echo "<option value='$key'>«" . $key . "» - $value</option>";
-                    }
-                    ?>
-                </select>
-            </div>
-
-            <div class="col me-3">
-                <label for="rvkArticle" class="form-label">Статья РВК</label>
-                <input type="text" class="form-control" placeholder="Пример: 23в" id="rvkArticle" <?  if (isset($currentConscript["rvkArticle"])) echo "value='" . $currentConscript["rvkArticle"] . "'" ?> maxlength="10">
             </div>
 
             <div class="col">
@@ -98,23 +71,70 @@ if ($data["currentConscript"] != null) {
                     </option>
                 </select>
             </div>
+        </div>
 
+        <div class="mb-3">
+                <label for="diagnosisTextarea" class="form-label">Диагноз РВК</label>
+                <textarea class="form-control" id="diagnosisTextarea" maxlength="2500" rows="5"
+                    placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentConscript["rvkDiagnosis"])) echo $currentConscript["rvkDiagnosis"]; ?></textarea>
+        </div>
+
+        <div class="mb-3 d-flex">
+            <div class="col me-3">
+                <label for="healthCategory" class="form-label">Категория годности РВК</label>
+                <select id="healthCategory" class="form-control form-select" style="cursor:pointer;">
+                    <option value="">Не выбрано</option>
+                    <? 
+                    foreach (Helper::getHealthCategories("registration") as $key => $value) {
+                        echo "<option value='$key'>«" . $key . "» - $value</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <div id="postPeriod" class="col me-3 d-none">
+                <label for="postPeriodSelect" class="form-label">Срок отсрочки</label>
+                <select id="postPeriodSelect" class="form-control form-select" style="cursor:pointer;">
+                    <option value="">Не выбрано</option>
+                    <? 
+                    foreach (Config::getValue("postPeriod") as $key => $value) {
+                        echo "<option value='$key'>$value</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="rvkArticle" class="form-label">Статья РВК</label>
+                <input type="text" class="form-control" placeholder="Пример: 23в" id="rvkArticle" <?  if (isset($currentConscript["rvkArticle"])) echo "value='" . $currentConscript["rvkArticle"] . "'" ?> maxlength="10">
+            </div>
+        </div>
+
+        <div class="mb-3 d-flex">
+            <div class="col me-3">
+                <label for="rvkProtocolDate" class="form-label">Дата протокола РВК</label>
+                <input type="date" class="form-control" id="rvkProtocolDate" <?  if (!empty($currentConscript["rvkProtocolDate"])) echo "value='" . date('Y-m-d',strtotime($currentConscript["rvkProtocolDate"])) . "'" ?>>
+            </div>
+            <div class="col">
+                <label for="rvkProtocolNumber" class="form-label">Номер протокола РВК</label>
+                <input type="text" class="form-control" placeholder="Пример: 216" id="rvkProtocolNumber" <?  if (isset($currentConscript["rvkProtocolNumber"])) echo "value='" . $currentConscript["rvkProtocolNumber"] . "'" ?>>
+            </div>
         </div>
 
         <div class="row">
-            <div class="col-auto">
-                <button name="submit" id="editorConscriptButton" type="submit" class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Зарегистрировать призывника"; ?></button>
-            </div>
             <?
             if($edit) {
             ?>
-            <div class="col"></div>
             <div class="col-auto">
-                <button type="button" onclick="deleteConscript(<?echo $currentConscript['id']?>);" class="btn btn-outline-danger">Удалить призывника</button>
+                <button type="button" onclick="openAreYouSureModal('Вы уверены, что хотите удалить призывника и все связанные с ним документы?', deleteConscript, <?echo $currentConscript['id']?>);" class="btn btn-outline-danger">Удалить призывника</button>
             </div>
             <?
             }
             ?>
+            <div class="col"></div>
+            <div class="col-auto">
+                <button name="submit" id="editorConscriptButton" type="submit" class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Зарегистрировать призывника"; ?></button>
+            </div>
         </div>
     </form>
 </div>
@@ -124,8 +144,13 @@ if($edit) {
 ?>
 <script>
 <?if (isset($currentConscript["healthCategory"])) echo "document.getElementById('healthCategory').value='" . $currentConscript["healthCategory"] . "';"?>
+<?if (isset($currentConscript["postPeriod"])) echo "document.getElementById('postPeriodSelect').value='" . $currentConscript["postPeriod"] . "';"?>
 <?if (isset($currentConscript["vk"])) echo "document.getElementById('vk').value='" . $currentConscript["vk"] . "';"?>
 <?if (isset($currentConscript["adventPeriod"])) echo "document.getElementById('adventTime').value='" . $currentConscript["adventPeriod"] . "';"?>
+
+document.addEventListener('DOMContentLoaded', () => {
+    $('#healthCategory').trigger('change');
+});
 </script>
 <? 
 } 

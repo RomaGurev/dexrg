@@ -32,9 +32,8 @@
 	<script src="/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
 	<script src="/js/snippets.js" type="text/javascript"></script>
 	<script src="/js/chart.js" type="text/javascript"></script>
-	<script src="/js/doubleScroll.js" type="text/javascript"></script>
 	
-	<script src="/js/custom_scripts/commonPage.js" type="text/javascript"></script>
+	<script src="/js/custom_scripts/commonPage.js?ct=<? echo filemtime("js\\custom_scripts\\commonPage.js") ?>" type="text/javascript"></script>
 	<? include 'application/core/custom-scripts.php' ?>
 
 </body>

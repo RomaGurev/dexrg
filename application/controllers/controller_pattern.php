@@ -20,8 +20,12 @@ class Controller_Pattern extends Controller
 			if(isset($_GET["id"])) {
 				$data['currentPattern'] = $this->getUserPatternByID($_GET["id"]);
 
-				if($data['currentPattern'] != null && $data['currentPattern'][0]['ownerID'] == Profile::$user['id'])
-					$this->view->generateView('pattern/patternEditor_view.php', "Редактирование шаблона", $data);
+				if($data['currentPattern'] != null) {
+					if($data['currentPattern'][0]['ownerID'] == Profile::$user['id'] || Profile::isHavePermission("viewForAll"))
+						$this->view->generateView('pattern/patternEditor_view.php', "Редактирование шаблона", $data);
+					else
+						$this->view->errorPage('Вы не являетесь владельцев шаблона.');
+				}
 				else
 					$this->view->errorPage('Идентификатор шаблона не найден.');
 			} else {
@@ -35,10 +39,15 @@ class Controller_Pattern extends Controller
 	//Функция для получения списка шаблонов пользователя
 	function getUserPatternList()
 	{
-		$quary = "SELECT * FROM `patternList` WHERE ownerID=:ownerID ORDER BY ID desc;";
-		$dataArr = [
-			"ownerID" => Profile::$user['id']
-		];
+		$quary = "SELECT * FROM `patternList`";
+		if(!Profile::isHavePermission("viewForAll")) {
+			$quary .= " WHERE ownerID=:ownerID";
+			$dataArr = [
+				"ownerID" => Profile::$user['id']
+			];
+		}
+		$quary .= " ORDER BY ID desc;";
+
 		return Database::execute($quary, $dataArr);
 	}
 

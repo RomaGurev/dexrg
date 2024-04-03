@@ -12,6 +12,20 @@ function select(id, name) {
     $('#creationForm').removeClass('d-none');
 } 
 
+//Выбор категории "Г" и появление поля "Срок отсрочки"
+$("#healthCategorySelect").on("change", function (event) {
+    let valueSelected = $("#healthCategorySelect").val();
+
+    if(valueSelected == "Г") {
+        $("#postPeriod").removeClass("d-none"); //class remove d-none
+        $("#healthCategory").addClass("me-3"); //class add me-3
+    } else {
+        $("#postPeriod").addClass("d-none"); //class add d-none
+        $("#healthCategory").removeClass("me-3") //class remove me-3
+        $("#postPeriodSelect").val("");
+    }
+});
+
 //Применение шаблона
 $("#pattern").on("change", function (event) {
     showLoading(true);
@@ -67,7 +81,10 @@ $("#addDocumentForm").submit(function (event) {
                 objectDataTextarea: $('#objectDataTextarea').val(),
                 specialResultTextarea: $('#specialResultTextarea').val(),
                 diagnosisTextarea: $('#diagnosisTextarea').val(),
-                documentType: $('#documentType').val()
+                documentType: $('#documentType').val(),
+                postPeriodSelect: $('#postPeriodSelect').val(),
+                reasonForCancelTextarea: $('#reasonForCancelTextarea').val(),
+                documentDate: $('#documentDate').val()
             }
         },
         success: function (data) {
@@ -106,7 +123,10 @@ $("#editDocumentForm").submit(function (event) {
                 specialResultTextarea: $('#specialResultTextarea').val(),
                 diagnosisTextarea: $('#diagnosisTextarea').val(),
                 documentType: $('#documentType').val(),
-                documentID: $('#documentID').val()
+                documentID: $('#documentID').val(),
+                postPeriodSelect: $('#postPeriodSelect').val(),
+                reasonForCancelTextarea: $('#reasonForCancelTextarea').val(),
+                documentDate: $('#documentDate').val()
             }
         },
         success: function (data) {

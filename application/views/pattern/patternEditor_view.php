@@ -35,13 +35,13 @@ if ($data["currentPattern"] != null) {
             <div class="mb-3 d-flex">
                 <div class="col me-3">
                     <label for="complaintTextarea" class="form-label">Жалобы</label>
-                    <textarea class="form-control" id="complaintTextarea" maxlength="1000" rows="4"
+                    <textarea class="form-control" id="complaintTextarea" maxlength="2500" rows="4"
                         placeholder="Пример: Головокружение при перемене положения, с тошнотой, головные боли в височно-теменной области, давящего характера, слабость, потливость."><? if (isset($currentPattern["complaint"]))
             echo $currentPattern["complaint"]; ?></textarea>
             </div>
             <div class="col">
                 <label for="anamnezTextarea" class="form-label">Анамнез</label>
-                <textarea class="form-control" id="anamnezTextarea" maxlength="1000" rows="4"><? if (isset($currentPattern["anamnez"]))
+                <textarea class="form-control" id="anamnezTextarea" maxlength="2500" rows="4"><? if (isset($currentPattern["anamnez"]))
                     echo $currentPattern["anamnez"]; ?></textarea>
             </div>
         </div> 
@@ -60,7 +60,7 @@ if ($data["currentPattern"] != null) {
 
         <div class="mb-3">
             <label for="diagnosisTextarea" class="form-label">Диагноз</label>
-            <textarea class="form-control" id="diagnosisTextarea" maxlength="1500" rows="5"
+            <textarea class="form-control" id="diagnosisTextarea" maxlength="2500" rows="5"
                 placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentPattern["diagnosis"]))
                     echo $currentPattern["diagnosis"]; ?></textarea>
         </div>
@@ -87,19 +87,20 @@ if ($data["currentPattern"] != null) {
         </div>
 
         <div class="row">
-            <div class="col-auto">
-                <button id="editorPatternButton" name="submit" type="submit" class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Добавить шаблон"; ?></button>
-            </div>
             <?
             if($edit) {
             ?>
-            <div class="col"></div>
             <div class="col-auto">
-                <button type="button" onclick="deletePattern(<?echo $currentPattern['id']?>);" class="btn btn-outline-danger">Удалить шаблон</button>
+                <button type="button" onclick="openAreYouSureModal('Вы уверены, что хотите удалить шаблон?', deletePattern, <?echo $currentPattern['id']?>);" class="btn btn-outline-danger">Удалить шаблон</button>
             </div>
             <?
             }
             ?>
+            <div class="col"></div>
+            <div class="col-auto">
+                <button id="editorPatternButton" name="submit" type="submit" class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Добавить шаблон"; ?></button>
+            </div>
+            
         </div>
     </form>
 </div>

@@ -20,19 +20,19 @@ class DocumentBuilder
 
             switch ($value["documentType"]) {
                 case 'changeCategory':
-                    $documentText = "Изменение категории (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " . $authorProfile["name"] : "");
+                    $documentText = "Изменение категории (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
 
                 case 'control':
-                    $documentText = "Контроль от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " . $authorProfile["name"] : "");
+                    $documentText = "Контроль от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
                 
                 case 'return':
-                    $documentText = "Возврат по статье " . $value["article"] . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " . $authorProfile["name"] : "");
+                    $documentText = "Возврат по статье " . $value["article"] . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
 
                 case 'complaint':
-                    $documentText = "Жалоба от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " . $authorProfile["name"] : "");
+                    $documentText = "Жалоба от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
 
                 default:

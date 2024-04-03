@@ -1,4 +1,4 @@
-﻿<table class="printTable" width="800px" height="1200px">
+<table class="printTable" width="840px" height="1200px">
 	<tr>
 		<td class="font-10 va-middle" width="30px">
 			№ <br> п/п
@@ -18,7 +18,10 @@
 		</td>
 	</tr>
 	<tr>
-		<td>1</td><td>2</td><td>3</td><td>4</td>
+		<td>1</td>
+		<td>2</td>
+		<td>3</td>
+		<td>4</td>
 	</tr>
 	<tr height="1100px">
 		<td width="30px"></td>
@@ -31,15 +34,10 @@
 			<div class="text-start mb-3">Диагноз: %ВХ_ДИАГНОЗ%</div>
 			<div class="fw-bold">%ВХ_НАЗНАЧЕНИЕ%</div>
 		</td>
-		<td class="text-start">
-			<div>%ЖАЛОБЫ%</div>
-			<div>%АНАМНЕЗ%</div>
-		</td>
+		<td class="text-start gumma white-space"><div style="height: 1100px; width: 260px;">%ЖАЛОБЫ%%АНАМНЕЗ%</div></td>
 	</tr>
 </table>
-
-<br><br>
-
+<hr>
 <table class="printTable" style="margin-left: 40px;" width="820px" height="1200px">
 	<tr>
 		<td class="font-10 va-middle" width="260px">
@@ -58,15 +56,14 @@
 		</td>
 	</tr>
 	<tr>
-		<td>1</td><td>2</td><td>3</td><td>4</td>
+		<td>1</td>
+		<td>2</td>
+		<td>3</td>
+		<td>4</td>
 	</tr>
-	<tr height="1050px">
-		<td class="text-start" width="260px">
-			<div>%ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%</div>
-			<div>%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%</div>
-			
-			<div>Диагноз: %ДИАГНОЗ%</div>
-		</td>
+	<tr height="1100px">
+		<td class="text-start gumma white-space" width="260px"><div style="height: 1100px; width: 260px;">%ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%
+			Диагноз: %ДИАГНОЗ%</div></td>
 		<td width="260px">
 			<div class="fw-bold">%НАЗНАЧЕНИЕ%</div>
 		</td>
@@ -78,28 +75,41 @@
 </table>
 
 <style>
-body {
-	font-family: 'Times New Roman', Times, serif;
-	font-size: 12pt;
-}
-
-.font-10 {
-	font-size: 10pt;
-}
-
-.printTable {
-	table-layout: fixed;
-}
-
-.printTable td {
-	border-collapse: collapse; 
-	border: 1px solid black;
-	text-align: center;
-	vertical-align: top;
-	white-space: normal;
-}
-
-.va-middle {
-	vertical-align: middle !important;
-}
+	body {
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 12pt;
+	}
+	table tbody{
+		display: block;
+	}
 </style>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		/* Функция пересчёта размера шрифта */
+		function fGummaFontSize() {
+			/* Увеличиваем размер шрифта, до появления прокрутки */
+			while (this.scrollHeight <= this.clientHeight || this.scrollWidth <= this.clientWidth) {
+				if(parseInt(this.style.fontSize) >= 14) 
+					break;
+
+				this.style.fontSize = parseFloat(getComputedStyle(this).fontSize) + 2 + "px";
+			}
+
+			/* Уменьшаем размер шрифта, пока прокрутка не исчезнет */
+			while (this.scrollHeight > this.clientHeight || this.scrollWidth > this.clientWidth) {
+				if(parseInt(this.style.fontSize) < 5) 
+					break;
+
+				this.style.fontSize = parseFloat(getComputedStyle(this).fontSize) - 1 + "px";
+			}
+		}
+		/* Функция обхода всех элементов с нужным классом */
+		function fGummaResizeAll() {
+			document.querySelectorAll(".gumma").forEach(el => fGummaFontSize.call(el));
+		}
+		document.querySelectorAll(".gumma").forEach(el => el.addEventListener("input", fGummaFontSize));
+		document.querySelectorAll(".gumma").forEach(el => el.addEventListener("paste", fGummaFontSize));
+		window.onload = fGummaResizeAll; // Запуск после загрузки контента
+	});
+</script>

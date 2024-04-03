@@ -35,3 +35,22 @@
     </div>
   </div>
 </div>
+
+<!-- Модальное окно подтверждения действия-->
+<div class="modal fade" id="areYouSureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title display-6 fs-4" id="modalLabel">Вы уверены?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body lead">
+        <div id="areYouSureModalContent">{содержимое окна}</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="areYouSureModalClose" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+        <button type="button" id="areYouSureModalConfirm" class="btn btn-primary">Да</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -118,31 +118,35 @@ class ConscriptBuilder
         $result .= '
         <div class="d-flex">
             <div class="col">
-                <p class="card-text mb-1 lead"><b>ФИО: </b>' . $conscript['name'] . '</p>
-                <p class="card-text mb-1 lead"><b>Дата рождения: </b>' . (!empty($conscript['birthDate']) ? Helper::formatDateToView($conscript['birthDate']) : 'Информация не указана'). '</p>
-                <p class="card-text mb-1 lead"><b>Уникальный номер: </b>' . $conscript['id'] . '</p>
+                <p class="card-text mb-0 lead"><b>ФИО: </b>' . $conscript['name'] . ' [' . $conscript['id'] . ']</p>
+                <p class="card-text mb-0 lead"><b>Дата рождения: </b>' . (!empty($conscript['birthDate']) ? Helper::formatDateToView($conscript['birthDate']) : 'Информация не указана'). '</p>
                 <p class="card-text mb-2 lead"><b>Статус УКП: </b>' . ($conscript['inProcess'] == true ? 'В работе' : 'Завершен') . '</p>
-                <p class="card-text mb-1 lead"><b>Военный комиссариат: </b>' . (!empty($conscript['vk']) ? Helper::getVKNameById($conscript['vk'])["name"] : 'Информация не указана'). '</p>
-                <p class="card-text mb-1 lead"><b>Период призыва: </b>' . Helper::convertAdventPeriodToString($conscript["adventPeriod"]) . '</p>
-                <p class="card-text mb-1 lead"><b>Статья РВК: </b>' . (!empty($conscript['rvkArticle']) ? $conscript["rvkArticle"] : 'Информация не указана') . '</p>
-                <p class="card-text mb-1 lead"><b>Диагноз РВК: </b>' . (!empty($conscript['rvkDiagnosis']) ? Helper::getShortenString($conscript["rvkDiagnosis"], 100) : 'Информация не указана') . '</p>
-                <p class="card-text mb-1 lead"><b>Категория годности РВК: </b>' . (!empty($conscript['healthCategory']) ? "«" . $conscript['healthCategory'] . "» - " . Helper::getHealthCategoryNameByID($conscript["healthCategory"]) : 'Информация не указана') . '</p>
+                <p class="card-text mb-0 lead"><b>Военный комиссариат: </b>' . (!empty($conscript['vk']) ? Helper::getVKNameById($conscript['vk'])["name"] : 'Информация не указана'). '</p>
+                <p class="card-text mb-0 lead"><b>Период призыва: </b>' . Helper::convertAdventPeriodToString($conscript["adventPeriod"]) . '</p>
+                <p class="card-text mb-0 lead"><b>Статья РВК: </b>' . (!empty($conscript['rvkArticle']) ? $conscript["rvkArticle"] : 'Информация не указана') . '</p>
+                <p class="card-text mb-0 lead"><b>Диагноз РВК: </b>' . (!empty($conscript['rvkDiagnosis']) ? Helper::getShortenString($conscript["rvkDiagnosis"], 100) : 'Информация не указана') . '</p>
+                <p class="card-text mb-0 lead"><b>Категория годности РВК: </b>' . (!empty($conscript['healthCategory']) ? "«" . $conscript['healthCategory'] . "» - " . Helper::getHealthCategoryNameByID($conscript["healthCategory"]) : 'Информация не указана') . '</p>
             </div>
 
             <div class="col-7">';
 
         if(Profile::isHavePermission("canAdd") && $conscript['inProcess'] == true) {
 
-        $result .='<div class="row">
-                        <div class="col-lg mb-2 pe-lg-0"><button type="button" onclick="addChangeCategory(' . $conscript['id'] . ');" class="btn btn-outline-success w-100">Изменить категорию</button></div>
-                        <div class="col-lg mb-2"><button type="button" onclick="addControl(' . $conscript['id'] . ');" class="btn btn-outline-primary w-100">Добавить контроль</button></div>
-                        <div class="w-100"></div>
-                        <div class="col-lg mb-2 pe-lg-0"><button type="button" onclick="addReturn(' . $conscript['id'] . ');" class="btn btn-outline-dark w-100">Добавить возврат</button></div>
-                        <div class="col-lg"><button type="button" onclick="addComplaint(' . $conscript['id'] . ');" class="btn btn-outline-dark w-100">Добавить жалобу</button></div>
-                    </div>';
+        $result .='<div>
+                    <div class="d-flex mb-2">
+                        <div class="col me-2"><button type="button" onclick="addChangeCategory(' . $conscript['id'] . ');" class="btn btn-outline-success w-100">Изменить категорию</button></div>
+                        <div class="col"><button type="button" onclick="addControl(' . $conscript['id'] . ');" class="btn btn-outline-primary w-100">Добавить контроль</button></div>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="col me-2"><button type="button" onclick="addReturn(' . $conscript['id'] . ');" class="btn btn-outline-dark w-100">Добавить возврат</button></div>
+                        <div class="col"><button type="button" onclick="addComplaint(' . $conscript['id'] . ');" class="btn btn-outline-dark w-100">Добавить жалобу</button></div>
+                    </div>
+
+                </div>';
         }
         
-        $result .= '<h3 class="card-text mb-1 lead mt-3"><b>История документов:</b></h3>
+        $result .= '<h3 class="card-text mb-1 mt-2 lead"><b>История документов:</b></h3>
 
                 <div class="documentLine mt-2">';
 
@@ -159,7 +163,7 @@ class ConscriptBuilder
                
         if($finalHealthResult != null) {
             $result .= '<div class="finalResults">
-                    <p class="card-text mb-1 lead mt-2" style="border-top: 1px dashed #C0C0C0;"><b>Итоговая категория годности: </b>' . Helper::getHealthCategoryNameByID($finalHealthResult["healthCategory"]) . '</p>
+                    <p class="card-text mb-1 lead mt-2" style="border-top: 1px dashed #C0C0C0;"><b>Итоговая категория годности: </b>' . (empty($finalHealthResult["healthCategory"]) ? "отсутствует" : "«" . $finalHealthResult["healthCategory"] . "» - " . Helper::getHealthCategoryNameByID($finalHealthResult["healthCategory"])) . '</p>
                     <p class="card-text mb-1 lead"><b>Итоговая статья: </b>' . (empty($finalHealthResult["article"]) ? "отсутствует" : $finalHealthResult["article"]) . '</p>
                 </div>';
         }
@@ -167,15 +171,30 @@ class ConscriptBuilder
 
         $result .= '
         <div class="d-flex mt-2">
-            <div class="col">
+            <div class="col align-self-end">
                 <button type="button" onclick="editConscript(' . $conscript['id'] . ');" class="btn btn-outline-dark">Редактировать УКП</button>
             </div>';
 
         if(Profile::isHavePermission("viewForAll")) {
-            $result .= '<div class="col-auto">
-                <button type="button" onclick="printLetter(' . $conscript['id'] . ');" class="btn btn-outline-primary">Служебное письмо</button>
-                <button type="button" onclick="printExtract(' . $conscript['id'] . ');" class="btn btn-success">Выписка</button>
-                <button type="button" onclick="printProtocol(' . $conscript['id'] . ');" class="btn btn-primary">Печать протокола</button>
+            $result .= '
+            <div class="col-7">
+                <div class="d-flex mb-3">
+                    <input id="protocolConscriptID" class="d-none" type="text" value="' . $conscript['id'] . '">
+                    <div class="col me-2">
+                        <label for="protocolNumber" class="form-label"><b>Номер протокола</b></label>
+                        <input type="text" class="form-control" id="protocolNumber" value="' . $conscript['protocolNumber'] . '">
+                    </div>
+                    <div class="col">
+                        <label for="protocolDate" class="form-label"><b>Дата протокола</b></label>
+                        <input type="date" class="form-control" value="' . (empty($conscript['protocolDate']) ? date("Y-m-d") : date('Y-m-d', strtotime($conscript['protocolDate']))) . '" id="protocolDate">
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <div class="col me-2"><button type="button" onclick="printLetter(' . $conscript['id'] . ');" class="btn btn-outline-primary w-100">Служебное письмо</button></div>
+                    <div class="col me-2"><button type="button" onclick="printExtract(' . $conscript['id'] . ');" class="btn btn-success w-100">Выписка</button></div>
+                    <div class="col"><button type="button" onclick="printProtocol(' . $conscript['id'] . ');" class="btn btn-primary w-100">Протокол</button></div>
+                </div>
             </div>';
         }
 
