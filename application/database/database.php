@@ -41,7 +41,6 @@ class Database
     //Метод выполнения запроса, возвращает полученный в результат
     public static function execute($query, $dataArr = null, $dbname = "")
     {
-
         try {
             switch ($dbname) {
                 case "current":

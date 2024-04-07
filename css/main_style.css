@@ -59,7 +59,7 @@ button .svg-search:hover image {
 }
 
 .finalResults {
-    margin: 0px 0px 0px 25px;
+    background-color: rgba(33, 37, 41, 0.03);
 }
 
 .documentItem {

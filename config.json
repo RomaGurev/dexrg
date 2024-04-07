@@ -1,6 +1,6 @@
 {
-    "version" : "0.84",
-    "versionDate" : "03.04.2024",
+    "version" : "0.91",
+    "versionDate" : "07.04.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -114,6 +114,14 @@
         "pattern": "patternPage.js",
         "conscription": "conscriptionPage.js",
         "document": "documentPage.js"
+    },
+    "categoryConverter" : {
+        "А" : "A",
+        "Б" : "B",
+        "В" : "V",
+        "Г" : "G",
+        "Д" : "D",
+        "О" : "O"
     }
     
 }

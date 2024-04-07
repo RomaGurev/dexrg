@@ -34,6 +34,13 @@ $("#pattern").on("change", function (event) {
 
     if (isEmpty(valueSelected)) {
         showLoading(false);
+        $('#complaintTextarea').val();
+        $('#anamnezTextarea').val();
+        $('#objectDataTextarea').val();
+        $('#specialResultTextarea').val();
+        $('#diagnosisTextarea').val();
+        $('#healthCategorySelect').val();
+        $('#articleInput').val();
     }
     else {
         $.post({
@@ -60,6 +67,28 @@ $("#pattern").on("change", function (event) {
     }
 });
 
+//Копирование диагноза РВК
+copyRvkDiagnosis = function() {
+    showLoading(true);
+
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            getRvkDiagnosisByConscriptID: {
+                conscriptID: $('#conscriptID').val()
+            }
+        },
+        success: function (data) {
+            showLoading(false);
+            if(data.length > 0)
+                $('#diagnosisTextarea').val(data);
+            else
+                alert("Диагноз РВК пуст."); //TODO: Реализовать сообщение
+        }
+    });
+};
 
 //Обработка добавления документа
 $("#addDocumentForm").submit(function (event) {

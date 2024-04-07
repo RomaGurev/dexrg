@@ -73,11 +73,20 @@ class Helper
 
     public static function getFinalHealthResult($userID)
     {
-        $documents = Database::execute("SELECT * from documents WHERE conscriptID=:id ORDER BY healthCategory DESC LIMIT 1", ["id" => $userID], "current");
-        if (count($documents) > 0)
-            $healthResult = ["healthCategory" => $documents[0]["healthCategory"], "article" => $documents[0]["article"]];
-        else
+        $documents = Helper::getResultDocuments($userID);
+
+        if (count($documents) > 0) {
+            $healthResult = ["healthCategory" => $documents[0]["healthCategory"], "article" => $documents[0]["article"], "documentType" => $documents[0]["documentType"]];
+            foreach ($documents as $value) {
+                if($healthResult["healthCategory"] < $value["healthCategory"]) {
+                    $healthResult["healthCategory"] = $value["healthCategory"];
+                    $healthResult["article"] = $value["article"];
+                    $healthResult["documentType"] = $value["documentType"];
+                }
+            }
+        } else
             $healthResult = null;
+
         return $healthResult;
     }
 
@@ -86,15 +95,15 @@ class Helper
         return mb_strimwidth($str, 0, $limit, "...");
     }
 
-    public static function getConscriptsWithDocuments($documentType = null, $creatorID = null, $additionQueryToConscript = null, $additionQueryToDocument = null)
+    public static function getConscriptsWithDocuments($documentType = null, $inProcess = null, $creatorID = null, $additionQueryToConscript = null, $additionQueryToDocument = null)
     {
         $result = array();
-        $conscriptQuery = "SELECT * FROM `conscript`";
+        $conscriptQuery = "SELECT * FROM `conscript` WHERE `inProcess` = :inProcess";
 
         if ($additionQueryToConscript != null)
             $conscriptQuery .= " " . $additionQueryToConscript;
 
-        $conscripts = Database::execute($conscriptQuery, null, "current");
+        $conscripts = Database::execute($conscriptQuery, ["inProcess" => $inProcess], "current");
 
         foreach ($conscripts as $conscript) {
             $documentQuery = "SELECT * FROM `documents` WHERE conscriptID=:id";
@@ -149,7 +158,7 @@ class Helper
     {
         if(!empty($date)) {
             $date = explode(".", $date);
-
+            
 	        switch ($date[1])
 	        {
 	        		case "01": { $mm = "января"; break;	}

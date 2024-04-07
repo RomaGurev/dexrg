@@ -13,6 +13,8 @@ authPosition = function (positionIndex) {
 document.addEventListener('DOMContentLoaded', () => {
     let clownClick = 0;
     $.getJSON('/application/additions/statistic.php', function (result) {
+        console.log(result);
+
         fillCharts(result);
         fillText(result["statisticText"]);
     });
@@ -35,21 +37,22 @@ function resizeCharts() {
             Chart.instances[id].resize();
 }
 
-// Получение случайного цвета для bar'a из стандартной цветовой палитры Chart.js
-function getRandomColorForBars(sizeOfDataSet) {
+// Получение случайного цвета для chart'a из заданной цветовой палитры
+function getRandomColorForCharts(sizeOfDataSet) {
     let arrOfColors = [];
-    let standartColors = ['rgb(255, 205, 86)', 'rgb(255, 64, 105)', 'rgb(255, 159, 64)', 'rgb(54, 162, 235)'];
+    /*let palette = ['#f3a683', '#f7d794', '#778beb', '#e77f67', '#cf6a87', 
+                    '#f19066', '#f5cd79', '#546de5', '#e15f41', '#c44569',
+                    '#786fa6', '#f8a5c2', '#63cdda', '#ea8685',
+                    '#574b90', '#f78fb3', '#3dc1d3', '#e66767']; */
+
+    let palette = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', 
+    '#f1c40f', '#e67e22', '#e74c3c', '#e15f41', '#c44569'];
 
     for (let i = 0; i < sizeOfDataSet; i++) {
-        if (i < standartColors.length) {
-            arrOfColors.push(standartColors[i]);
-        } else {
-            let colorComponents = standartColors[i % standartColors.length].match(/\d+/g);
-            let newColorFromStandart = 'rgb(' + (colorComponents[0] - Math.floor(Math.random() * 100) % 50).toString() + ', ' +
-                (colorComponents[1] - Math.floor(Math.random() * 100) % 50).toString() + ', ' +
-                (colorComponents[2] - Math.floor(Math.random() * 100) % 50).toString() + ')';
-            arrOfColors.push(newColorFromStandart);
-        }
+        let indexToDelete = Math.floor(Math.random() * 100) % palette.length;
+        let randomColor = palette[indexToDelete];
+        palette.splice(indexToDelete, 1);
+        arrOfColors.push(randomColor);
     }
     return arrOfColors;
 }
@@ -61,7 +64,101 @@ function fillText(statisticText) {
 
 function fillCharts(statisticObject) {
     new Chart(
-        document.querySelector('.chartComplaint1'),
+        document.querySelector('.chartAdjustment'),
+        {
+            type: 'pie',
+            data: {
+                labels: statisticObject["chartAdjustment"]["labels"],
+                datasets: [
+                    {
+                        data: statisticObject["chartAdjustment"]["data"],
+                        backgroundColor: getRandomColorForCharts(statisticObject["chartAdjustment"]["data"].length)
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom"
+                    },
+                    title: {
+                        display: true,
+                        text: statisticObject["chartAdjustment"]["titleText"]
+                    },
+                    colors: {
+                        forceOverride: false
+                    }
+                },
+                responsive: true
+            }
+        }
+    );
+
+    new Chart(
+        document.querySelector('.chartChangeCategory'),
+        {
+            type: 'bar',
+            data: {
+                labels: statisticObject["chartChangeCategory"]["labels"],
+                datasets: [
+                    {
+                        data: statisticObject["chartChangeCategory"]["data"],
+                        backgroundColor: getRandomColorForCharts(statisticObject["chartChangeCategory"]["data"].length)
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: statisticObject["chartChangeCategory"]["titleText"]
+                    },
+                    colors: {
+                        forceOverride: false
+                    }
+                },
+                responsive: true
+            }
+        }
+    );
+
+    new Chart(
+        document.querySelector('.chartControl'),
+        {
+            type: 'bar',
+            data: {
+                labels: statisticObject["chartControl"]["labels"],
+                datasets: [
+                    {
+                        data: statisticObject["chartControl"]["data"],
+                        backgroundColor: getRandomColorForCharts(statisticObject["chartControl"]["data"].length)
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: statisticObject["chartControl"]["titleText"]
+                    },
+                    colors: {
+                        forceOverride: false
+                    }
+                },
+                responsive: true
+            }
+        }
+    );
+
+    new Chart(
+        document.querySelector('.chartComplaint'),
         {
             type: 'bar',
             data: {
@@ -69,7 +166,7 @@ function fillCharts(statisticObject) {
                 datasets: [
                     {
                         data: statisticObject["chartComplaint"]["data"],
-                        backgroundColor: getRandomColorForBars(statisticObject["chartComplaint"]["data"].length)
+                        backgroundColor: getRandomColorForCharts(statisticObject["chartComplaint"]["data"].length)
                     }
                 ]
             },
@@ -92,15 +189,15 @@ function fillCharts(statisticObject) {
     );
 
     new Chart(
-        document.querySelector('.chartComplaint2'),
+        document.querySelector('.chartReturn'),
         {
             type: 'bar',
             data: {
-                labels: statisticObject["chartHealthCategory"]["labels"],
+                labels: statisticObject["chartReturn"]["labels"],
                 datasets: [
                     {
-                        data: statisticObject["chartHealthCategory"]["data"],
-                        backgroundColor: getRandomColorForBars(statisticObject["chartHealthCategory"]["data"].length)
+                        data: statisticObject["chartReturn"]["data"],
+                        backgroundColor: getRandomColorForCharts(statisticObject["chartReturn"]["data"].length)
                     }
                 ]
             },
@@ -111,7 +208,7 @@ function fillCharts(statisticObject) {
                     },
                     title: {
                         display: true,
-                        text: statisticObject["chartHealthCategory"]["titleText"]
+                        text: statisticObject["chartReturn"]["titleText"]
                     },
                     colors: {
                         forceOverride: false
@@ -121,37 +218,6 @@ function fillCharts(statisticObject) {
             }
         }
     );
-
-    new Chart(
-        document.querySelector('.chartAdjustment'),
-        {
-            type: 'doughnut',
-            data: {
-                labels: statisticObject["chartAdjustment"]["labels"],
-                datasets: [
-                    {
-                        data: statisticObject["chartAdjustment"]["data"]
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: true
-                    },
-                    title: {
-                        display: true,
-                        text: statisticObject["chartAdjustment"]["titleText"]
-                    },
-                    colors: {
-                        forceOverride: true
-                    }
-                },
-                responsive: true
-            }
-        }
-    );
-
 }
 
 //Обработка формы авторизации

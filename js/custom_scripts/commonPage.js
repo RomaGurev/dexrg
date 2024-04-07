@@ -39,6 +39,7 @@ $("#searchDocumentInput").on("input", function () {
             searchDocument: {
                 type: $("#searchType").val(),
                 documentType: $("#documentType").val(),
+                inProcess: $("#inProcess").val(),
                 value: searchValue,
             }
         },
@@ -57,6 +58,11 @@ $("#searchType").on("change", function() {
     $("#searchInput").trigger("input");
     $("#searchDocumentInput").trigger("input");
 });
+
+changeProccessMode = function(value) {
+    $("#inProcess").val(value);
+    $("#searchDocumentInput").trigger("input");
+};
 
 $(window).on("resize", function() {
     let newheight = $('#resizeDiv').length ? $('#resizeDiv').height() : 0;
@@ -79,10 +85,11 @@ openConscriptModal = function (conscriptID) {
             $("#modalContent").empty();
             $("#modalContent").append(data);
 
+            //window.location.href += '?conscript=' + conscriptID;
+            window.history.pushState("", "", "/?conscript=" + conscriptID);
             new bootstrap.Modal(document.getElementById('RGModal')).show();
         }
     });
-    
 }
 
 openAreYouSureModal = function (contentText, callback, callbackParam) {
@@ -164,12 +171,13 @@ saveProtocolChanges = function(func) {
         data: {
             saveProtocolChanges: {
                 conscriptID: $("#protocolConscriptID").val(),
+                letterNumber: $("#letterNumber").val(),
                 protocolDate: $("#protocolDate").val(),
                 protocolNumber: $("#protocolNumber").val(),
             }
         },
         success: function (data) {
-            if(data == "continue")
+            if(data == "continue" && func != null)
                 func();
         }
     });

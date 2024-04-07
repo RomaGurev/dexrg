@@ -18,6 +18,7 @@ CREATE TABLE `conscript` (
   `rvkProtocolNumber` varchar(100) NOT NULL,
   `protocolDate` varchar(100) NOT NULL,
   `protocolNumber` varchar(100) NOT NULL,
+  `letterNumber` varchar(100) NOT NULL,
   `inProcess` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

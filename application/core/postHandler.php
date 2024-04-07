@@ -343,13 +343,13 @@ class postHandler
             case "birthDate":
             case "creationDate":
                 if($valueLength >= 3)
-                    $additionQuery = "WHERE " . $param["type"] . " LIKE '%" . $param['value'] . "%'";
+                    $additionQuery = "AND " . $param["type"] . " LIKE '%" . $param['value'] . "%'";
                 elseif ($param["type"] == "rvkArticle" && $valueLength > 0) 
-                    $additionQuery = "WHERE " . $param["type"] . " LIKE '" . $param['value'] . "%'";
+                    $additionQuery = "AND " . $param["type"] . " LIKE '" . $param['value'] . "%'";
                 else
                     $additionQuery = null;
 
-                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], $additionQuery);
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], $additionQuery);
                 break;
             
             default:
@@ -358,7 +358,7 @@ class postHandler
                 else 
                     $additionQuery = null;
 
-                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], Profile::isHavePermission("viewForAll") || $param["type"] == "id" ? null : Profile::$user["id"], null, $additionQuery);
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") || $param["type"] == "id" ? null : Profile::$user["id"], null, $additionQuery);
                 break;
         }
 
@@ -383,9 +383,10 @@ class postHandler
         if ($param['conscriptID'] === "")
             return "Ошибка сохранения информации протокола. ID призывника не найден.";
         else {
-            $query = "UPDATE `conscript` SET protocolNumber=:protocolNumber, protocolDate=:protocolDate WHERE id=:id";
+            $query = "UPDATE `conscript` SET letterNumber=:letterNumber, protocolNumber=:protocolNumber, protocolDate=:protocolDate WHERE id=:id";
             $dataArr = [
                 "id" => $param['conscriptID'],
+                "letterNumber" => $param['letterNumber'],
                 "protocolNumber" => $param['protocolNumber'],
                 "protocolDate" => Helper::formatDateToView($param['protocolDate'])
             ];
@@ -422,6 +423,17 @@ class postHandler
             return json_encode($pattern);
         } else {
             return "Ошибка. Шаблон " . $param['patternID'] . " не найден.";
+        }
+    }
+
+    static function getRvkDiagnosisByConscriptID($param) 
+    {
+        $diagnosis = Database::execute("SELECT rvkDiagnosis FROM `conscript` WHERE id=:id", ["id" => $param['conscriptID']], "current")[0];
+
+        if (count($diagnosis) > 0) {
+            return $diagnosis['rvkDiagnosis'];
+        } else {
+            return "";
         }
     }
 

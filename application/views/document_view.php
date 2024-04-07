@@ -115,7 +115,10 @@ $documentName = $edit ? "Редактирование документа - " . C
             </div>
 
             <div class="mb-3">
-                <label for="diagnosisTextarea" class="form-label">Диагноз</label>
+            <div class="d-flex">
+                <label for="diagnosisTextarea" class="form-label col">Диагноз</label>
+                <button type="button" onclick="copyRvkDiagnosis();" class="btn btn-outline-dark col-auto" style="position: relative; top: 2.4rem;">Копировать диагноз РВК</button>
+            </div>
                 <textarea class="form-control" id="diagnosisTextarea" maxlength="2500" rows="5"
                     placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentDocument["diagnosis"]))
                         echo $currentDocument["diagnosis"]; ?></textarea>

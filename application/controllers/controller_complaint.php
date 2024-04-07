@@ -8,7 +8,7 @@ class Controller_Complaint extends Controller
 			if(isset($_GET["id"]))
 				$data["documentID"] = $_GET["id"]; 
 
-			$data["complaint"] = Helper::getConscriptsWithDocuments("complaint", Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"]);
+			$data["complaint"] = Helper::getConscriptsWithDocuments("complaint", 1, Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"]);
 			$this->view->generateView('complaint_view.php', "Жалобы", $data);
 		}
 		else

@@ -4,7 +4,7 @@
 > содержит разметку основной страницы.
 */
 
-if(isset($_GET["conscript"])) {
+if (isset($_GET["conscript"])) {
     echo "<script>
             document.addEventListener('DOMContentLoaded', () => {
                 openConscriptModal(" . $_GET["conscript"] . ");
@@ -16,6 +16,7 @@ if(isset($_GET["conscript"])) {
 
 
 <div class="row row-cols-2">
+
     <div class="col-3">
         <div class="p-4 mb-3 rounded-3 border shadow" style="overflow-wrap: break-word;">
             <h3 class="display-6 lh-1 fs-2">Информация</h3>
@@ -37,24 +38,34 @@ if(isset($_GET["conscript"])) {
                 <button class="btn btn-outline-danger w-100" id="logout">Выход из аккаунта</button>
             </div>
         </div>
+
+        <div class="p-4 mb-3 rounded-3 border shadow">
+            <h3 class="display-6 lh-1 fs-2">Документы</h3>
+            <div class="d-flex">
+                <canvas class="chartAdjustment"></canvas>
+            </div>
+        </div>
     </div>
 
     <div class="col-9">
+
         <div class="p-4 mb-3 rounded-3 border shadow">
             <div class="row">
                 <div class="col">
                     <h3 class="display-6 lh-1 fs-2">Поиск учетных карт призывников</h3>
                 </div>
 
-                <?  if (Profile::isHavePermission("canAdd")) { ?>
-                <div class="col-md-auto"><a href="/conscription/editor?back=" class="btn btn-outline-success">Регистрация призывника</a></div>
+                <? if (Profile::isHavePermission("canAdd")) { ?>
+                    <div class="col-md-auto"><a href="/conscription/editor?back="
+                            class="btn btn-outline-success">Регистрация призывника</a></div>
                 <? } ?>
             </div>
 
 
-            <div class="mt-2 d-flex">
+            <div class="mt-3 d-flex">
                 <input id="showSelect" class="d-none" value="false">
-                <input type="text" id="searchInput" class="form-control me-2" placeholder="Введите запрос..." autocomplete="off">
+                <input type="text" id="searchInput" class="form-control me-2" placeholder="Введите запрос..."
+                    autocomplete="off">
 
                 <select id="searchType" class="form-control form-select" style="width: 80%;cursor:pointer;">
                     <?
@@ -70,31 +81,57 @@ if(isset($_GET["conscript"])) {
         </div>
 
         <div class="p-4 mb-3 rounded-3 border shadow">
-            <div class="d-flex">
-                <div class="col-4 col-xl-6">
-                    <h3 class="display-6 lh-1 fs-2">Общая информация</h3>
-                    <div id="statisticText" class="lead mb-1 pt-lg-3">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden"></span>
-                        </div>
+            <h3 class="display-6 lh-1 fs-2">Статистика изменений</h3>
+            <div id="statisticText" class="lead col align-items-center">
+                <div class="d-flex mt-4">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden"></span>
                     </div>
-                </div>
-                <div class="col-8 col-xl-6">
-                    <canvas class="chartAdjustment"></canvas>
+                    <div class="ms-3">Загрузка статистики...</div>
                 </div>
             </div>
         </div>
 
-            <div class="p-4 mb-3 rounded-3 border shadow">
-                <h3 class="display-6 lh-1 fs-2">Изменение категории, жалобы и возвраты</h3>
-                <div class="pt-lg-3 d-flex">
-                    <div class="col w-50">
-                        <canvas class="chartComplaint1"></canvas>
-                    </div>
-                    <div class="col w-50">
-                        <canvas class="chartComplaint2"></canvas>
-                    </div>
+
+        <div class="p-4 mb-3 rounded-3 border shadow">
+            <h3 class="display-6 lh-1 fs-2">Итоговые категории по документам</h3>
+            <div class="pt-lg-3 d-flex">
+                <div class="col w-50">
+                    <canvas class="chartControl">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden"></span>
+                        </div>
+                    </canvas>
+                </div>
+                <div class="col w-50">
+                    <canvas class="chartComplaint">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden"></span>
+                        </div>
+                    </canvas>
                 </div>
             </div>
+
+            <div class="pt-lg-3 d-flex">
+                <div class="col w-50">
+                    <canvas class="chartReturn">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden"></span>
+                        </div>
+                    </canvas>
+                </div>
+                <div class="col w-50">
+                    <canvas class="chartChangeCategory">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden"></span>
+                        </div>
+                    </canvas>
+                </div>
+            </div>
+        </div>
     </div>
+
+
+
+
 </div>

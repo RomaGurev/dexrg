@@ -31,7 +31,16 @@ class Controller_Document extends Controller
     
     //Функция для получения списка шаблонов активного пользователя
 	function getPatternList() {
-		return Database::execute("SELECT * FROM patternList WHERE ownerID=:id ORDER BY id DESC", ["id" => Profile::$user["id"]]);
+		$quary = "SELECT * FROM patternList";
+
+		if(!Profile::isHavePermission("viewForAll")) 
+		{
+			$quary .= " WHERE ownerID=:id";
+			$data = array("id" => Profile::$user["id"]);
+		}
+		$quary .= " ORDER BY id DESC";
+		
+		return Database::execute($quary, $data);
 	}
 
     //Функция для получения призывника по ID
