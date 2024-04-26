@@ -37,7 +37,7 @@
 </div>
 
 <!-- Модальное окно подтверждения действия-->
-<div class="modal fade" id="areYouSureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="areYouSureModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="font-family: 'Segoe UI';">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -48,8 +48,8 @@
         <div id="areYouSureModalContent">{содержимое окна}</div>
       </div>
       <div class="modal-footer">
-        <button type="button" id="areYouSureModalClose" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
-        <button type="button" id="areYouSureModalConfirm" class="btn btn-primary">Да</button>
+        <button type="button" id="areYouSureModalClose" class="btn btn-secondary w-20" data-bs-dismiss="modal">Нет</button>
+        <button type="button" id="areYouSureModalConfirm" class="btn btn-primary w-20">Да</button>
       </div>
     </div>
   </div>

@@ -28,8 +28,7 @@
 
                     <div class="mb-3">
                         <label for="addAccount[name]" class="form-label">ФИО</label>
-                        <input type="text" class="form-control" name="addAccount[name]" id="userAccountName"
-                            placeholder="Иванов И.И." required>
+                        <input type="text" class="form-control" name="addAccount[name]" id="userAccountName" required>
                         <div class="invalid-feedback">
                             Введите ФИО.
                         </div>

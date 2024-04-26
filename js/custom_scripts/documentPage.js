@@ -32,15 +32,15 @@ $("#pattern").on("change", function (event) {
     event.preventDefault();
     let valueSelected = $("#pattern").val();
 
-    if (isEmpty(valueSelected)) {
+    if (valueSelected == "") {
+        $('#complaintTextarea').val("");
+        $('#anamnezTextarea').val("");
+        $('#objectDataTextarea').val("");
+        $('#specialResultTextarea').val("");
+        $('#diagnosisTextarea').val("");
+        $('#healthCategorySelect').val("");
+        $('#articleInput').val("");
         showLoading(false);
-        $('#complaintTextarea').val();
-        $('#anamnezTextarea').val();
-        $('#objectDataTextarea').val();
-        $('#specialResultTextarea').val();
-        $('#diagnosisTextarea').val();
-        $('#healthCategorySelect').val();
-        $('#articleInput').val();
     }
     else {
         $.post({
@@ -62,6 +62,16 @@ $("#pattern").on("change", function (event) {
                 $('#diagnosisTextarea').val(dataPattern["diagnosis"]);
                 $('#healthCategorySelect').val(dataPattern["healthCategory"]);
                 $('#articleInput').val(dataPattern["article"]);
+                $('#reasonForCancelTextarea').val(dataPattern["reasonForCancel"]);
+
+                $('#complaintTextarea').trigger("change");
+                $('#anamnezTextarea').trigger("change");
+                $('#objectDataTextarea').trigger("change");
+                $('#specialResultTextarea').trigger("change");
+                $('#diagnosisTextarea').trigger("change");
+                $('#healthCategorySelect').trigger("change");
+                $('#articleInput').trigger("change");
+                $('#reasonForCancelTextarea').trigger("change");
             }
         });
     }
@@ -113,7 +123,8 @@ $("#addDocumentForm").submit(function (event) {
                 documentType: $('#documentType').val(),
                 postPeriodSelect: $('#postPeriodSelect').val(),
                 reasonForCancelTextarea: $('#reasonForCancelTextarea').val(),
-                documentDate: $('#documentDate').val()
+                documentDate: $('#documentDate').val(),
+                destinationPointsInput: $('#destinationPointsInput').val()
             }
         },
         success: function (data) {
@@ -155,7 +166,8 @@ $("#editDocumentForm").submit(function (event) {
                 documentID: $('#documentID').val(),
                 postPeriodSelect: $('#postPeriodSelect').val(),
                 reasonForCancelTextarea: $('#reasonForCancelTextarea').val(),
-                documentDate: $('#documentDate').val()
+                documentDate: $('#documentDate').val(),
+                destinationPointsInput: $('#destinationPointsInput').val()
             }
         },
         success: function (data) {

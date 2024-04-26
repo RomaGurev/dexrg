@@ -31,7 +31,8 @@ $("#addPatternForm").submit(function (event) {
                     specialResultTextarea: $('#specialResultTextarea').val(),
                     diagnosisTextarea: $('#diagnosisTextarea').val(),
                     healthCategorySelect: $('#healthCategorySelect').val(),
-                    articleInput: $('#articleInput').val()
+                    articleInput: $('#articleInput').val(),
+                    reasonForCancelTextarea: $('#reasonForCancelTextarea').val()
                 }
             },
             success: function (data) {
@@ -79,7 +80,8 @@ $("#editPatternForm").submit(function (event) {
                     specialResultTextarea: $('#specialResultTextarea').val(),
                     diagnosisTextarea: $('#diagnosisTextarea').val(),
                     healthCategorySelect: $('#healthCategorySelect').val(),
-                    articleInput: $('#articleInput').val()
+                    articleInput: $('#articleInput').val(),
+                    reasonForCancelTextarea: $('#reasonForCancelTextarea').val()
                 }
             },
             success: function (data) {

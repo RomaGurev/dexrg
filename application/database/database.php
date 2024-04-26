@@ -9,7 +9,7 @@ class Database
 {
 
     //Конструктор экземпляра PDO, выполняет подключение и возвращает объект
-    public static function pdo(): PDO
+    private static function pdo(): PDO
     {
         static $pdo;
 
@@ -77,7 +77,6 @@ class Database
             $sth->execute();
             $sth->fetchAll(PDO::FETCH_ASSOC);
             $sth->closeCursor();
-
         } catch (PDOException $exception) {
             echo "<div class='alert alert-danger'>Инициализация базы данных $dbname запросом $quary<br>Ошибка: " . $exception->getMessage() . "</div>";
         }

@@ -8,6 +8,7 @@ require_once '../database/database.php';
 require_once '../core/config.php';
 require_once '../core/profile.php';
 require_once '../core/route.php';
+require_once '../additions/helper.php';
 
 //Обработка запроса статистики и отправка в формате JSON
 Profile::authInit();
@@ -25,8 +26,10 @@ class Statistic
         $query = "SELECT `documents`.creatorID, conscriptID, SUBSTRING(`conscript`.healthCategory, 1, 1) AS conCat, SUBSTRING(`documents`.healthCategory, 1, 1) AS docCat, documentType, CASE WHEN documentType = 'complaint' THEN 0 WHEN documentType = 'return' THEN 1 WHEN documentType = 'control' THEN 2 ELSE 3 END AS docPriority FROM documents INNER JOIN `conscript` ON `documents`.`conscriptID`=`conscript`.`id`";
         if(!Profile::isHavePermission("viewForAll")) 
         {
-            $query .= " WHERE `documents`.creatorID=:userID";
+            $query .= " WHERE `documents`.creatorID=:userID AND inProcess=0";
             $data = ["userID" => $userID];
+        } else {
+            $query .= " WHERE inProcess=0";
         }
         $query .= " ORDER BY docPriority";
         $queryResult = Database::execute($query, $data, "current");
@@ -47,8 +50,13 @@ class Statistic
             $resultDocArr[$value["conscriptID"]] = ["conCat" => $value["conCat"], "docCat" => $value["docCat"], "documentType" => $value["documentType"]];
         }
 
-        foreach ($resultDocArr as $value) 
-            $statistic[$value["documentType"] . Config::getValue("categoryConverter")[$value["conCat"]] . "To" . Config::getValue("categoryConverter")[$value["docCat"]]]++;
+        foreach ($resultDocArr as $key => $value) {
+
+            if ($value["docCat"] == mb_substr(Helper::getFinalHealthResult($key)["healthCategory"], 0, 1))
+                $statistic[$value["documentType"] . Config::getValue("categoryConverter")[$value["conCat"]] . "To" . Config::getValue("categoryConverter")[$value["docCat"]]]++;
+            //else
+            //    $statistic["debug"] .= "[" . $value["documentType"] . "{" . $value["docCat"] . "} | " . Helper::getFinalHealthResult($key)["documentType"]  . "{". mb_substr(Helper::getFinalHealthResult($key)["healthCategory"], 0, 1) . "}]";
+        }
 
         //chartAdjustment
         $chartAdjustment["controlCount"] = $this->nullCheck($controlCount);
@@ -81,8 +89,8 @@ class Statistic
 
     function prepareChartChangeCategory($statistic)
     {
-        $changeCategoryA = $this->nullCheck($statistic["changeCategoryAToA"]+$statistic["changeCategoryAToB"]);
-        $changeCategoryB = $this->nullCheck($statistic["changeCategoryBToA"]+$statistic["changeCategoryBToB"]);
+        $changeCategoryA = $this->nullCheck($statistic["changeCategoryToA"]+$statistic["changeCategoryAToA"]+$statistic["changeCategoryBToA"]);
+        $changeCategoryB = $this->nullCheck($statistic["changeCategoryToB"]+$statistic["changeCategoryAToB"]+$statistic["changeCategoryBToB"]);
 
         $obj = [
             "labels" => ['А', 'Б'],
@@ -94,12 +102,12 @@ class Statistic
 
     function prepareChartControl($statistic)
     {
-        $controlA = $this->nullCheck($statistic["controlAToA"]+$statistic["controlAToB"]+$statistic["controlAToV"]+$statistic["controlAToG"]+$statistic["controlAToD"]+$statistic["controlAToO"]);
-        $controlB = $this->nullCheck($statistic["controlBToA"]+$statistic["controlBToB"]+$statistic["controlBToV"]+$statistic["controlBToG"]+$statistic["controlBToD"]+$statistic["controlBToO"]);
-        $controlV = $this->nullCheck($statistic["controlVToA"]+$statistic["controlVToB"]+$statistic["controlVToV"]+$statistic["controlVToG"]+$statistic["controlVToD"]+$statistic["controlVToO"]);
-        $controlG = $this->nullCheck($statistic["controlGToA"]+$statistic["controlGToB"]+$statistic["controlGToV"]+$statistic["controlGToG"]+$statistic["controlGToD"]+$statistic["controlGToO"]);
-        $controlD = $this->nullCheck($statistic["controlDToA"]+$statistic["controlDToB"]+$statistic["controlDToV"]+$statistic["controlDToG"]+$statistic["controlDToD"]+$statistic["controlDToO"]);
-        $controlO = $this->nullCheck($statistic["controlOToA"]+$statistic["controlOToB"]+$statistic["controlOToV"]+$statistic["controlOToG"]+$statistic["controlOToD"]+$statistic["controlOToO"]);
+        $controlA = $this->nullCheck($statistic["controlToA"]+$statistic["controlAToA"]+$statistic["controlBToA"]+$statistic["controlVToA"]+$statistic["controlGToA"]+$statistic["controlDToA"]+$statistic["controlOToA"]);
+        $controlB = $this->nullCheck($statistic["controlToB"]+$statistic["controlAToB"]+$statistic["controlBToB"]+$statistic["controlVToB"]+$statistic["controlGToB"]+$statistic["controlDToB"]+$statistic["controlOToB"]);
+        $controlV = $this->nullCheck($statistic["controlToV"]+$statistic["controlAToV"]+$statistic["controlBToV"]+$statistic["controlVToV"]+$statistic["controlGToV"]+$statistic["controlDToV"]+$statistic["controlOToV"]);
+        $controlG = $this->nullCheck($statistic["controlToG"]+$statistic["controlAToG"]+$statistic["controlBToG"]+$statistic["controlVToG"]+$statistic["controlGToG"]+$statistic["controlDToG"]+$statistic["controlOToG"]);
+        $controlD = $this->nullCheck($statistic["controlToD"]+$statistic["controlAToD"]+$statistic["controlBToD"]+$statistic["controlVToD"]+$statistic["controlGToD"]+$statistic["controlDToD"]+$statistic["controlOToD"]);
+        $controlO = $this->nullCheck($statistic["controlToO"]+$statistic["controlAToO"]+$statistic["controlBToO"]+$statistic["controlVToO"]+$statistic["controlGToO"]+$statistic["controlDToO"]+$statistic["controlOToO"]);
 
         $obj = [
             "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
@@ -111,12 +119,12 @@ class Statistic
 
     function prepareChartComplaint($statistic)
     {
-        $complaintA = $this->nullCheck($statistic["complaintAToA"]+$statistic["complaintAToB"]+$statistic["complaintAToV"]+$statistic["complaintAToG"]+$statistic["complaintAToD"]+$statistic["complaintAToO"]);
-        $complaintB = $this->nullCheck($statistic["complaintBToA"]+$statistic["complaintBToB"]+$statistic["complaintBToV"]+$statistic["complaintBToG"]+$statistic["complaintBToD"]+$statistic["complaintBToO"]);
-        $complaintV = $this->nullCheck($statistic["complaintVToA"]+$statistic["complaintVToB"]+$statistic["complaintVToV"]+$statistic["complaintVToG"]+$statistic["complaintVToD"]+$statistic["complaintVToO"]);
-        $complaintG = $this->nullCheck($statistic["complaintGToA"]+$statistic["complaintGToB"]+$statistic["complaintGToV"]+$statistic["complaintGToG"]+$statistic["complaintGToD"]+$statistic["complaintGToO"]);
-        $complaintD = $this->nullCheck($statistic["complaintDToA"]+$statistic["complaintDToB"]+$statistic["complaintDToV"]+$statistic["complaintDToG"]+$statistic["complaintDToD"]+$statistic["complaintDToO"]);
-        $complaintO = $this->nullCheck($statistic["complaintOToA"]+$statistic["complaintOToB"]+$statistic["complaintOToV"]+$statistic["complaintOToG"]+$statistic["complaintOToD"]+$statistic["complaintOToO"]);
+        $complaintA = $this->nullCheck($statistic["complaintToA"]+$statistic["complaintAToA"]+$statistic["complaintBToA"]+$statistic["complaintVToA"]+$statistic["complaintGToA"]+$statistic["complaintDToA"]+$statistic["complaintOToA"]);
+        $complaintB = $this->nullCheck($statistic["complaintToB"]+$statistic["complaintAToB"]+$statistic["complaintBToB"]+$statistic["complaintVToB"]+$statistic["complaintGToB"]+$statistic["complaintDToB"]+$statistic["complaintOToB"]);
+        $complaintV = $this->nullCheck($statistic["complaintToV"]+$statistic["complaintAToV"]+$statistic["complaintBToV"]+$statistic["complaintVToV"]+$statistic["complaintGToV"]+$statistic["complaintDToV"]+$statistic["complaintOToV"]);
+        $complaintG = $this->nullCheck($statistic["complaintToG"]+$statistic["complaintAToG"]+$statistic["complaintBToG"]+$statistic["complaintVToG"]+$statistic["complaintGToG"]+$statistic["complaintDToG"]+$statistic["complaintOToG"]);
+        $complaintD = $this->nullCheck($statistic["complaintToD"]+$statistic["complaintAToD"]+$statistic["complaintBToD"]+$statistic["complaintVToD"]+$statistic["complaintGToD"]+$statistic["complaintDToD"]+$statistic["complaintOToD"]);
+        $complaintO = $this->nullCheck($statistic["complaintToO"]+$statistic["complaintAToO"]+$statistic["complaintBToO"]+$statistic["complaintVToO"]+$statistic["complaintGToO"]+$statistic["complaintDToO"]+$statistic["complaintOToO"]);
         
         $obj = [
             "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
@@ -128,12 +136,12 @@ class Statistic
 
     function prepareChartReturns($statistic)
     {
-        $returnA = $this->nullCheck($statistic["returnAToA"]+$statistic["returnAToB"]+$statistic["returnAToV"]+$statistic["returnAToG"]+$statistic["returnAToD"]+$statistic["returnAToO"]);
-        $returnB = $this->nullCheck($statistic["returnBToA"]+$statistic["returnBToB"]+$statistic["returnBToV"]+$statistic["returnBToG"]+$statistic["returnBToD"]+$statistic["returnBToO"]);
-        $returnV = $this->nullCheck($statistic["returnVToA"]+$statistic["returnVToB"]+$statistic["returnVToV"]+$statistic["returnVToG"]+$statistic["returnVToD"]+$statistic["returnVToO"]);
-        $returnG = $this->nullCheck($statistic["returnGToA"]+$statistic["returnGToB"]+$statistic["returnGToV"]+$statistic["returnGToG"]+$statistic["returnGToD"]+$statistic["returnGToO"]);
-        $returnD = $this->nullCheck($statistic["returnDToA"]+$statistic["returnDToB"]+$statistic["returnDToV"]+$statistic["returnDToG"]+$statistic["returnDToD"]+$statistic["returnDToO"]);
-        $returnO = $this->nullCheck($statistic["returnOToA"]+$statistic["returnOToB"]+$statistic["returnOToV"]+$statistic["returnOToG"]+$statistic["returnOToD"]+$statistic["returnOToO"]);
+        $returnA = $this->nullCheck($statistic["returnToA"]+$statistic["returnAToA"]+$statistic["returnBToA"]+$statistic["returnVToA"]+$statistic["returnGToA"]+$statistic["returnDToA"]+$statistic["returnOToA"]);
+        $returnB = $this->nullCheck($statistic["returnToB"]+$statistic["returnAToB"]+$statistic["returnBToB"]+$statistic["returnVToB"]+$statistic["returnGToB"]+$statistic["returnDToB"]+$statistic["returnOToB"]);
+        $returnV = $this->nullCheck($statistic["returnToV"]+$statistic["returnAToV"]+$statistic["returnBToV"]+$statistic["returnVToV"]+$statistic["returnGToV"]+$statistic["returnDToV"]+$statistic["returnOToV"]);
+        $returnG = $this->nullCheck($statistic["returnToG"]+$statistic["returnAToG"]+$statistic["returnBToG"]+$statistic["returnVToG"]+$statistic["returnGToG"]+$statistic["returnDToG"]+$statistic["returnOToG"]);
+        $returnD = $this->nullCheck($statistic["returnToD"]+$statistic["returnAToD"]+$statistic["returnBToD"]+$statistic["returnVToD"]+$statistic["returnGToD"]+$statistic["returnDToD"]+$statistic["returnOToD"]);
+        $returnO = $this->nullCheck($statistic["returnToO"]+$statistic["returnAToO"]+$statistic["returnBToO"]+$statistic["returnVToO"]+$statistic["returnGToO"]+$statistic["returnDToO"]+$statistic["returnOToO"]);
         
         $obj = [
             "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
@@ -224,8 +232,7 @@ class Statistic
                         О — " . $this->nullCheck($statistic["controlDToO"]) . "
                     </div>
                 </div>
-            </div>
-
+            </div>  
         <!-- Конец -->
         </div>
         <div class='tab-pane fade' id='pills-complaint' role='tabpanel' aria-labelledby='pills-complaint-tab'>
@@ -292,7 +299,6 @@ class Statistic
                     </div>
                 </div>
             </div>
-
         <!-- Конец -->
         
         </div>
@@ -360,7 +366,6 @@ class Statistic
                     </div>
                 </div>
             </div>
-
         <!-- Конец -->
 
         </div>
@@ -385,10 +390,9 @@ class Statistic
             </div>
 
         </div>
-
     <!-- Конец -->
         
-        
+       
         </div>
       </div>
             

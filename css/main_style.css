@@ -1,4 +1,8 @@
-﻿button .svg-search image {
+﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button .svg-search image {
     filter: invert(100%);
     transition: 0.15s ease-in-out;
 }
@@ -60,6 +64,12 @@ button .svg-search:hover image {
 
 .finalResults {
     background-color: rgba(33, 37, 41, 0.03);
+}
+
+.archiveModeSelect:focus {
+    border:0 !important;
+    outline: none !important;
+    box-shadow: none!important;
 }
 
 .documentItem {

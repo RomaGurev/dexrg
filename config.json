@@ -1,6 +1,6 @@
 {
-    "version" : "0.91",
-    "versionDate" : "07.04.2024",
+    "version" : "1.06А",
+    "versionDate" : "26.04.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -100,20 +100,27 @@
         "%ВК_ИМЯ%" : "vkName",
         "%НАЗНАЧЕНИЕ%" : "appointment",
         "%РЕШЕНИЕ%" : "result",
-        "%ВХ_НАЗНАЧЕНИЕ%" : "rvkAppointment",
-        "%ВХ_ДИАГНОЗ%" : "rvkDiagnosis",
+        "%РВК_НАЗНАЧЕНИЕ%" : "rvkAppointment",
+        "%РВК_ДИАГНОЗ%" : "rvkDiagnosis",
         "%ПРИЧИНА_ИЗМЕНЕНИЯ_РЕШЕНИЯ%" : "reasonToChangeResult",
         "%НОМЕР_ПРОТОКОЛА%" : "protocolNumber",
         "%ДАТА_ПРОТОКОЛА%" : "protocolDate",
+        "%РВК_НОМЕР_ПРОТОКОЛА%" : "rvkProtocolNumber",
+        "%РВК_ДАТА_ПРОТОКОЛА%" : "rvkProtocolDate",
         "%ДАТА_ПИСЬМА%" : "letterDate",
-        "%НОМЕР_ПИСЬМА%" : "letterNumber"
+        "%НОМЕР_ПИСЬМА%" : "letterNumber",
+        "%ПУНКТЫ_ПРЕДНАЗНАЧЕНИЯ%" : "destinationPoints",
+        "%ОСНОВАНИЕ%" : "base",
+        "%ПРИЗНАТЬ%" : "admit",
+        "%ЗАКЛЮЧЕНИЕ%" : "conclusion",
+        "%ПРИЛОЖЕНИЕ%" : "appendix"
     },
     "customScripts" : {
-        "admin": "adminPage.js",
-        "main": "mainPage.js",
-        "pattern": "patternPage.js",
-        "conscription": "conscriptionPage.js",
-        "document": "documentPage.js"
+        "admin" : "adminPage.js",
+        "main" : "mainPage.js",
+        "pattern" : "patternPage.js",
+        "conscription" : "conscriptionPage.js",
+        "document" : "documentPage.js"
     },
     "categoryConverter" : {
         "А" : "A",
@@ -123,5 +130,4 @@
         "Д" : "D",
         "О" : "O"
     }
-    
 }

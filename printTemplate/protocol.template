@@ -1,4 +1,4 @@
-<table class="printTable" width="840px" height="1200px">
+<table class="printTable" width="840px" height="1200px" style="word-break: break-word;">
 	<tr>
 		<td class="font-10 va-middle" width="30px">
 			№ <br> п/п
@@ -31,10 +31,11 @@
 			<div class="fw-bold">Военный комиссариат<br>%ВК_ИМЯ%</div>
 		</td>
 		<td width="260px">
-			<div class="text-start mb-3">Диагноз: %ВХ_ДИАГНОЗ%</div>
-			<div class="fw-bold">%ВХ_НАЗНАЧЕНИЕ%</div>
+			<div class="text-start mb-3">Диагноз: %РВК_ДИАГНОЗ%</div>
+			<div class="fw-bold">%РВК_НАЗНАЧЕНИЕ%</div>
 		</td>
-		<td class="text-start gumma white-space"><div style="height: 1100px; width: 260px;">%ЖАЛОБЫ%%АНАМНЕЗ%</div></td>
+		<td class="text-start gumma white-space"><div style="height: 1100px; width: 260px;">%ЖАЛОБЫ%
+		%АНАМНЕЗ%</div></td>
 	</tr>
 </table>
 <hr>
@@ -61,8 +62,9 @@
 		<td>3</td>
 		<td>4</td>
 	</tr>
-	<tr height="1100px">
-		<td class="text-start gumma white-space" width="260px"><div style="height: 1100px; width: 260px;">%ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%
+	<tr id="explorerTr" height="1100px">
+		<td class="text-start gumma white-space" width="260px"><div id="explorerResult" style="height: 1100px; width: 260px;">%ДАННЫЕ_ОБЪЕКТИВНОГО_ИССЛЕДОВАНИЯ%
+		%РЕЗУЛЬТАТЫ_СПЕЦИАЛЬНЫХ_ИССЛЕДОВАНИЙ%
 			Диагноз: %ДИАГНОЗ%</div></td>
 		<td width="260px">
 			<div class="fw-bold">%НАЗНАЧЕНИЕ%</div>
@@ -76,7 +78,7 @@
 
 <style>
 	body {
-		font-family: 'Times New Roman', Times, serif;
+		font-family: 'Times New Roman', Times, serif !important;
 		font-size: 12pt;
 	}
 	table tbody{
@@ -111,5 +113,15 @@
 		document.querySelectorAll(".gumma").forEach(el => el.addEventListener("input", fGummaFontSize));
 		document.querySelectorAll(".gumma").forEach(el => el.addEventListener("paste", fGummaFontSize));
 		window.onload = fGummaResizeAll; // Запуск после загрузки контента
+
+		$(function () {
+        	if($('zub').length > 0) {
+				console.log("Обнаружена зубная формула. Столбец расширен.");
+        	    $('#explorerResult').width(450);
+				$('#explorerResult').height(1000);
+				$('#explorerTr').height(1000);
+        	}
+    	});
 	});
 </script>
+

@@ -13,7 +13,6 @@ class Controller_Conscription extends Controller
 				$data["activeMenuItem"] = "";
 
 			$data["vkList"] = $this->getVKList();
-			$data["nextConscriptID"] = $this->getNextConscriptID();
 
 			if(isset($_GET["id"])) {
 				$data['currentConscript'] = $this->getConscriptByID($_GET["id"]);
@@ -33,13 +32,9 @@ class Controller_Conscription extends Controller
 
 	//Функция для получения списка военных комиссариатов
 	function getVKList() {
-		return Database::execute("SELECT * FROM vkList");
+		return Database::execute("SELECT * FROM vkList ORDER BY name");
 	}
 
-	//Функция для получения следующего номера документа
-	function getNextConscriptID() {
-		return Database::execute("SELECT id FROM conscript ORDER BY id DESC LIMIT 1", null, "current")[0]["id"]+1;
-	}
 
 	//Функция для получения призывника по ID
 	function getConscriptByID($id)

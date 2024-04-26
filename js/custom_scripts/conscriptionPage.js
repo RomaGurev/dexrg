@@ -43,10 +43,11 @@ $("#addConscriptForm").submit(function (event) {
         },
         success: function (data) {
             window.scrollTo(0, 0);
-            if (data == "reloadPage") {
-                showAlert(true, "Призывник успешно зарегистрирован");
+            let isNum = /^\d+$/.test(data);
+            if (isNum) {
+                showAlert(true, "Призывник успешно зарегистрирован.");
                 setInterval(() =>
-                    location.href = '/?conscript=' + $('#conscriptNumber').val(), 1000
+                    location.href = '/?conscript=' + data, 1000
                 );
             } else {
                 showAlert(true, data, "danger", "");

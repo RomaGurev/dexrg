@@ -11,6 +11,8 @@
         <a href="/pattern/editor" class="btn btn-outline-success mb-3 col-auto">Добавить шаблон</a>
     </div>
 
+
+    <input type="text" id="searchDocumentInput" class="form-control mb-2" placeholder="Введите запрос...">
     
     <?
     if (count($data['userPatternList']) > 0) {

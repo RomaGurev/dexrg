@@ -1,7 +1,18 @@
 <div style="padding-left: 30px; padding-right: 30px;">
 	<div class="fw-bold text-center mb-3" style="font-size: 14pt;">ВЫПИСКА ИЗ РЕШЕНИЯ ПРИЗЫВНОЙ КОМИССИИ<br>НОВОСИБИРСКОЙ ОБЛАСТИ</div>
-	<div>%НАЗНАЧЕНИЕ%</div>
-	%РЕШЕНИЕ%
+	
+	<div class='mb-3'>Решение призывной комиссии %ВК_ИМЯ%</div>
+	<div class='mb-3'>От %РВК_ДАТА_ПРОТОКОЛА% № %РВК_НОМЕР_ПРОТОКОЛА%</div>
+	<div class='mb-3'>по гражданину %ФИО% %ДАТА_РОЖДЕНИЯ% г.р.</div>
+	%НАЗНАЧЕНИЕ%
+	<div class='mb-3 mt-3'><b><u>%РЕШЕНИЕ%</u></b></div>
+	<div class='mb-3'>Признать %ПРИЗНАТЬ%</div>
+	<div class='mb-3'>Основание: %ОСНОВАНИЕ%</div>
+	%ЗАКЛЮЧЕНИЕ%
+
+
+	<div class='mb-3 mt-3'>Протокол от %ДАТА_ПРОТОКОЛА% № %НОМЕР_ПРОТОКОЛА%</div>
+
 	<div class="d-flex">
 		<div class="col">
 			Секретарь призывной комиссии
@@ -22,9 +33,19 @@
 
 <script>
 	document.addEventListener('DOMContentLoaded', () => {
-		let name = "%ФИО%";
-		name = name.trim().replace("<div contenteditable='true' style='display: inline;outline: none;'>", "").replace("</div>", "").split(' ');
+		let name = $('#name').text();
+		name = name.trim().split(' ');
 		let dativeName = petrovich({last: name[0], first: name[1], middle: name[2]}, 'dative');
-		$('#name').append(dativeName.last + ' ' + dativeName.first + ' ' + dativeName.middle);
+
+		if((dativeName.last + ' ' + dativeName.first + ' ' + dativeName.middle).length > 0) 
+		{
+			$("#name").empty();
+			$('#name').append(dativeName.last + ' ' + dativeName.first + ' ' + dativeName.middle);
+		}
 	});
+
+	window.onafterprint = function () 
+	{
+		$('#contenteditable').val($('#contenteditable').trim());
+   	}
 </script>

@@ -106,7 +106,7 @@
         <td style="padding-left: 25px;"><br>
             <span style="font-size: 16pt; font-family: Times New Roman;">
                 %ГОДНОСТЬ%
-                <br>
+                %ПУНКТЫ_ПРЕДНАЗНАЧЕНИЯ%
                 %ПРИЧИНА_ИЗМЕНЕНИЯ_РЕШЕНИЯ%
             </span>
         </td>

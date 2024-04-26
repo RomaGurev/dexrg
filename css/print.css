@@ -44,9 +44,31 @@
     line-height: 1!important;
 }
 
+.contenteditable {
+    display: inline;
+    white-space: pre-wrap;
+    border: 1px dotted grey;
+}
+
+.contenteditable div {
+    border: 1px dotted grey;
+}
+
+zub {
+    background-color: blanchedalmond;
+}
+
 @media screen {
     .print-padding {
         padding-top: 5rem !important;
+    }
+
+    .contenteditable:empty {
+        display: block;
+    }
+
+    .protocol-padding {
+        padding-top: 11rem !important;
     }
 
     #print_panel {
@@ -61,14 +83,39 @@
     #print_panel {
         display: none !important;
     }
-    #print-padding {
+    .print-padding {
         padding-top: 0 !important;
+    }
+    .protocol-padding {
+        padding-top: 0 !important;
+    }
+
+    .contenteditable {
+        outline: none;
+        border: 0;
+    }
+
+    .contenteditable div {
+        border: 0;
+    }
+
+    .contenteditable:empty {
+        display: none;
+    }
+    
+    .contenteditable div:empty {
+        display: none;
     }
 
     .printInputField {
         border: 0 !important;
+        opacity: 0!important;
     }
 
     hr {PAGE-BREAK-AFTER: always; visibility: hidden;}
+
+    zub {
+        background-color: none;
+    }
 }
 

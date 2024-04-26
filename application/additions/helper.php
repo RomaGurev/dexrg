@@ -61,11 +61,6 @@ class Helper
         return Database::execute("SELECT * FROM vkList WHERE id=:id", ["id" => $vkId])[0];
     }
 
-    public static function getVKNames()
-    {
-        return Database::execute("SELECT id, name FROM vkList");
-    }
-
     public static function getProfileByUserID($userID)
     {
         return Database::execute("SELECT * from staff WHERE id = :id", ["id" => $userID])[0];
@@ -76,13 +71,24 @@ class Helper
         $documents = Helper::getResultDocuments($userID);
 
         if (count($documents) > 0) {
-            $healthResult = ["healthCategory" => $documents[0]["healthCategory"], "article" => $documents[0]["article"], "documentType" => $documents[0]["documentType"]];
+            $healthResult = ["healthCategory" => $documents[0]["healthCategory"], "article" => $documents[0]["article"], "documentType" => $documents[0]["documentType"], "postPeriod" => $documents[0]["postPeriod"]];
             foreach ($documents as $value) {
-                if($healthResult["healthCategory"] < $value["healthCategory"]) {
+                if($healthResult["healthCategory"] < $value["healthCategory"]) 
+                {
                     $healthResult["healthCategory"] = $value["healthCategory"];
                     $healthResult["article"] = $value["article"];
                     $healthResult["documentType"] = $value["documentType"];
                 }
+
+                if($healthResult["healthCategory"] == $value["healthCategory"] && $value["healthCategory"] == "Г") 
+                {
+                    if($healthResult["postPeriod"] < $value["postPeriod"]) 
+                    {
+                        $healthResult["postPeriod"] = $value["postPeriod"];
+                        $healthResult["article"] = $value["article"];
+                    }
+                }
+
             }
         } else
             $healthResult = null;
@@ -98,10 +104,16 @@ class Helper
     public static function getConscriptsWithDocuments($documentType = null, $inProcess = null, $creatorID = null, $additionQueryToConscript = null, $additionQueryToDocument = null)
     {
         $result = array();
-        $conscriptQuery = "SELECT * FROM `conscript` WHERE `inProcess` = :inProcess";
+        $conscriptQuery = "SELECT * FROM `conscript`";
+
+        if($inProcess != null) {
+            $conscriptQuery .= " WHERE `inProcess` = :inProcess";
+        }
 
         if ($additionQueryToConscript != null)
             $conscriptQuery .= " " . $additionQueryToConscript;
+
+        $conscriptQuery .= " ORDER BY id DESC";
 
         $conscripts = Database::execute($conscriptQuery, ["inProcess" => $inProcess], "current");
 
@@ -154,6 +166,11 @@ class Helper
         return $result;
     }
 
+    public static function GetInProccesStatus($userID) 
+    {
+        return Database::execute("SELECT inProcess FROM `conscript` WHERE id=:id", ["id" => $userID], "current")[0]["inProcess"];
+    } 
+
     public static function convertDateToPrintFormat($date) 
     {
         if(!empty($date)) {
@@ -176,6 +193,11 @@ class Helper
 	        }
 	        return "«".$date[0]."» ".$mm." ".$date[2]."г.";
         } else
-            return "{ошибка конвертации даты}";
+            return "";
+    }
+
+    public static function getProtocolChanges($userID) 
+    {
+        return Database::execute("SELECT * FROM `protocolChanges` WHERE conscriptID=:conscriptID", ["conscriptID" => $userID], "current");
     }
 }

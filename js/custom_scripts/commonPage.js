@@ -1,5 +1,9 @@
 const isEmpty = str => !str.trim().length;
 
+document.addEventListener('DOMContentLoaded', () => {
+    $(".autogrow").autogrow();
+});
+
 //Поиск призывника
 $("#searchInput").on("input", function () {
     let searchValue = $("#searchInput").val().trim();
@@ -85,14 +89,23 @@ openConscriptModal = function (conscriptID) {
             $("#modalContent").empty();
             $("#modalContent").append(data);
 
-            //window.location.href += '?conscript=' + conscriptID;
-            window.history.pushState("", "", "/?conscript=" + conscriptID);
+            const url = new URL(document.location);
+            const searchParams = url.searchParams;
+            searchParams.set('conscript', conscriptID);
+            window.history.pushState({}, '', url.toString());
             new bootstrap.Modal(document.getElementById('RGModal')).show();
         }
     });
 }
 
-openAreYouSureModal = function (contentText, callback, callbackParam) {
+$("#RGModal").on("hidden.bs.modal", function () {
+    const url = new URL(document.location);
+    const searchParams = url.searchParams;
+    searchParams.delete('conscript');
+    window.history.pushState({}, '', url.toString());
+});
+
+function openAreYouSureModal(contentText, callback, callbackParam) {
     $("#areYouSureModalContent").empty();
     $("#areYouSureModalContent").append(contentText);
     

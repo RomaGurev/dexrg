@@ -3,15 +3,6 @@
 Файл, подключаемый controller_main.php.
 > содержит разметку основной страницы.
 */
-
-if (isset($_GET["conscript"])) {
-    echo "<script>
-            document.addEventListener('DOMContentLoaded', () => {
-                openConscriptModal(" . $_GET["conscript"] . ");
-            });
-          </script>";
-}
-
 ?>
 
 
@@ -21,20 +12,35 @@ if (isset($_GET["conscript"])) {
         <div class="p-4 mb-3 rounded-3 border shadow" style="overflow-wrap: break-word;">
             <h3 class="display-6 lh-1 fs-2">Информация</h3>
             <div class="pt-lg-3">
-                <p class="lead mb-1">
-                    <b>ФИО:</b>
-                    <? echo Profile::$user["name"]; ?>
-                </p>
+                <div class="lead mb-1 d-flex">
+                    <div class="col-auto lead">
+                        <b>ФИО:</b>
+                    </div>
+                    <div class="col lead" style="margin-left: 0.4rem;">
+                        <input type="text" style="font-size: 1.25rem; font-weight: 300; background: 0; border: 0; padding: 0;" class="form-control" disabled value="<? echo Profile::$user["name"]; ?>">
+                    </div>
+                    <div class="col-auto d-flex align-items-center" style="margin-left: 0.4rem;">
+                        <i class='fa fa-pencil'></i>
+                    </div>
+                </div>
                 <p class="lead mb-1">
                     <b>Специальность:</b><a title="<? foreach (Profile::$user["permissions"] as $key => $value)
                         echo strtoupper($value) . " "; ?>">
                         <? echo Config::getValue('userType')[Profile::$user["position"]][0]; ?>
                     </a>
                 </p>
-                <p class="lead mb-3">
-                    <b>База данных:</b>
-                    <? echo Helper::convertAdventPeriodToString(Database::getCurrentBase()); ?>
-                </p>
+                <div class="lead mb-3 d-flex">
+                    <div class="col-auto">
+                        <b>База данных:</b>
+                    </div>
+                    <div class="col">
+                        <select id="archiveModeSelect" class="form-control form-select border-0 p-0 archiveModeSelect" style="cursor:pointer; font-size: 1.25rem; font-weight: 300; margin-left: 0.4rem;">
+                            <option value="<? echo Database::getCurrentBase(); ?>"><? echo Helper::convertAdventPeriodToString(Database::getCurrentBase()); ?></option>
+                            <option value="0" style="font-weight: 300;">Тест1</option>
+                            <option value="0" style="font-weight: 300;">Тест2</option>
+                        </select>
+                    </div>
+                </div>
                 <button class="btn btn-outline-danger w-100" id="logout">Выход из аккаунта</button>
             </div>
         </div>

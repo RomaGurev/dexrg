@@ -14,24 +14,21 @@ if ($data["currentConscript"] != null) {
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
         <h3 class="display-6 lh-1 col m-0"><? echo $edit ? "Редактирование призывника" : "Регистрация призывника"; ?></h3>
-        <a onclick="location.href='<? echo $back ?>'"
+        <a onclick="history.back();"
             class="btn btn-outline-secondary col-auto w-10">Назад</a>
     </div>
 
     <form <? echo $edit ? "id='editConscriptForm'" : "id='addConscriptForm'" ?> method="POST" class="mt-3 mb-0">
 
         <div class="mb-3 d-flex">
-            <div class="col me-3">
-                <label for="conscriptNumber" class="form-label">Уникальный номер призывника</label>
-                <input type="number" class="form-control" id="conscriptNumber" maxlength="10" value="<? echo $edit ? $currentConscript["id"] : $data["nextConscriptID"];  ?>" disabled>
-            </div>
+                <input type="number" id="conscriptNumber" class="d-none" value="<? echo $currentConscript["id"]; ?>">
 
             <div class="col me-3">
             <label for="vk" class="form-label">Военный комиссариат</label>
                 <select id="vk" class="form-control form-select" style="cursor:pointer;">
                     <option value="">Не выбрано</option>
                     <? foreach ($data["vkList"] as $key => $value)
-                        echo "<option value=" . $key . ">" . $value["name"] . "</option>";
+                        echo "<option value=" . $value["id"] . ">" . $value["name"] . "</option>";
                     ?>
                 </select>
             </div>
@@ -46,7 +43,7 @@ if ($data["currentConscript"] != null) {
         <div class="mb-3 d-flex">
             <div class="col me-3">
                 <label for="fullName" class="form-label">ФИО призывника*</label>
-                <input type="text" class="form-control" id="fullName" placeholder="Пример: Иванов Иван Иванович"
+                <input type="text" class="form-control" id="fullName"
                 <?  if (isset($currentConscript["name"])) echo "value='" . $currentConscript["name"] . "'" ?>
                 maxlength="255" required>
             </div>
@@ -75,8 +72,7 @@ if ($data["currentConscript"] != null) {
 
         <div class="mb-3">
                 <label for="diagnosisTextarea" class="form-label">Диагноз РВК</label>
-                <textarea class="form-control" id="diagnosisTextarea" maxlength="2500" rows="5"
-                    placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentConscript["rvkDiagnosis"])) echo $currentConscript["rvkDiagnosis"]; ?></textarea>
+                <textarea class="form-control autogrow" id="diagnosisTextarea" maxlength="2500" rows="5"><? if (isset($currentConscript["rvkDiagnosis"])) echo $currentConscript["rvkDiagnosis"]; ?></textarea>
         </div>
 
         <div class="mb-3 d-flex">
@@ -106,7 +102,7 @@ if ($data["currentConscript"] != null) {
 
             <div class="col">
                 <label for="rvkArticle" class="form-label">Статья РВК</label>
-                <input type="text" class="form-control" placeholder="Пример: 23в" id="rvkArticle" <?  if (isset($currentConscript["rvkArticle"])) echo "value='" . $currentConscript["rvkArticle"] . "'" ?> maxlength="10">
+                <input type="text" class="form-control" id="rvkArticle" <?  if (isset($currentConscript["rvkArticle"])) echo "value='" . $currentConscript["rvkArticle"] . "'" ?> maxlength="300">
             </div>
         </div>
 
@@ -117,7 +113,7 @@ if ($data["currentConscript"] != null) {
             </div>
             <div class="col">
                 <label for="rvkProtocolNumber" class="form-label">Номер протокола РВК</label>
-                <input type="text" class="form-control" placeholder="Пример: 216" id="rvkProtocolNumber" <?  if (isset($currentConscript["rvkProtocolNumber"])) echo "value='" . $currentConscript["rvkProtocolNumber"] . "'" ?>>
+                <input type="text" class="form-control" id="rvkProtocolNumber" <?  if (isset($currentConscript["rvkProtocolNumber"])) echo "value='" . $currentConscript["rvkProtocolNumber"] . "'" ?>>
             </div>
         </div>
 

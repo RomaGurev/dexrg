@@ -28,7 +28,7 @@ class ConscriptBuilder
         ';
 
         if($showSelectButton == "true"){
-            $result .=  '<button type="button" onclick="select(' . $conscript['id'] . ', \'' . $conscript['name'] . (!empty($conscript['birthDate']) ? ' [' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . '\')" class="btn btn-outline-success" style="align-self: center;">Выбрать призывника</button>';
+            $result .=  '<button type="button" onclick="select(' . $conscript['id'] . ', \'' . $conscript['name'] . (!empty($conscript['birthDate']) ? ' [' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . " - " . (!empty($conscript['vk']) ? Helper::getVKNameById($conscript['vk'])["name"] : "") . '\')" class="btn btn-outline-success" style="align-self: center;">Выбрать призывника</button>';
         } else {
             $result .= '<button type="button" onclick="openConscriptModal(' . $conscript['id'] . ')" class="btn btn-outline-primary" style="align-self: center;">Открыть УКП</button>';
         }
@@ -117,10 +117,10 @@ class ConscriptBuilder
         //Вывод результатов в переменную result
         $result .= '
         <div class="d-flex">
-            <div class="row col me-3">
+            <div class="row col me-3" style="word-break: break-all;">
                 <p class="card-text mb-0 lead"><b>ФИО: </b>' . $conscript['name'] . ' [' . $conscript['id'] . ']</p>
                 <p class="card-text mb-0 lead"><b>Дата рождения: </b>' . (!empty($conscript['birthDate']) ? Helper::formatDateToView($conscript['birthDate']) : 'Информация не указана'). '</p>
-                <p class="card-text mb-2 lead"><b>Статус УКП: </b>' . ($conscript['inProcess'] == true ? 'В работе' : '<span class="text-danger">Завершен</span>') . '</p>
+                <p class="card-text mb-0 lead"><b>Статус УКП: </b>' . ($conscript['inProcess'] == true ? 'В работе' : '<span class="text-danger">Завершен</span>') . '</p>
                 <p class="card-text mb-0 lead"><b>Военный комиссариат: </b>' . (!empty($conscript['vk']) ? Helper::getVKNameById($conscript['vk'])["name"] : 'Информация не указана'). '</p>
                 <p class="card-text mb-0 lead"><b>Период призыва: </b>' . Helper::convertAdventPeriodToString($conscript["adventPeriod"]) . '</p>
                 <p class="card-text mb-0 lead"><b>Статья РВК: </b>' . (!empty($conscript['rvkArticle']) ? $conscript["rvkArticle"] : 'Информация не указана') . '</p>
@@ -171,8 +171,8 @@ class ConscriptBuilder
             $result .= '<div>
             <div class="mt-3 mb-2" style="margin: 0 -1rem;border-top: 1px dashed #C0C0C0;"></div>
                     <p class="card-text mb-1 lead"><b>Итоговый документ: </b></p>
-                    <p class="card-text mb-1 lead">' . Config::getValue("documentType")[$finalHealthResult["documentType"]] . ' с категорией ' . (empty($finalHealthResult["healthCategory"]) ? "отсутствует" : "«" . $finalHealthResult["healthCategory"] . "» - " . Helper::getHealthCategoryNameByID($finalHealthResult["healthCategory"])) . '
-                    ' . (empty($finalHealthResult["article"]) ? "" : " по статье " . $finalHealthResult["article"]) . '
+                    <p class="card-text mb-1 lead">' . Config::getValue("documentType")[$finalHealthResult["documentType"]] . (empty($finalHealthResult["healthCategory"]) ? "" : " с категорией «" . $finalHealthResult["healthCategory"] . "» - " . Helper::getHealthCategoryNameByID($finalHealthResult["healthCategory"])) . '
+                    ' . (empty($finalHealthResult["postPeriod"]) ? "" : " сроком на " . Config::getValue("postPeriod")[$finalHealthResult["postPeriod"]]) . (empty($finalHealthResult["article"]) ? "" : " по статье " . $finalHealthResult["article"]) . '
                     </p>
                 </div>';
         }
@@ -183,11 +183,11 @@ class ConscriptBuilder
                     <input id="protocolConscriptID" class="d-none" type="text" value="' . $conscript['id'] . '">
                     <div class="col me-2">
                         <label for="letterNumber" class="form-label"><b>Номер письма</b></label>
-                        <input type="text" autocomplete="off" class="form-control" id="letterNumber" placeholder="Например: 5" value="' . $conscript['letterNumber'] . '">
+                        <input type="text" autocomplete="off" class="form-control" id="letterNumber" value="' . $conscript['letterNumber'] . '">
                     </div>
                     <div class="col me-2">
                         <label for="protocolNumber" class="form-label"><b>Номер протокола</b></label>
-                        <input type="text" autocomplete="off" class="form-control" id="protocolNumber" placeholder="Например: 32" value="' . $conscript['protocolNumber'] . '">
+                        <input type="text" autocomplete="off" class="form-control" id="protocolNumber" value="' . $conscript['protocolNumber'] . '">
                     </div>
                     <div class="col align-self-end">
                         <label for="protocolDate" class="form-label"><b>Дата протокола</b></label>
@@ -196,7 +196,7 @@ class ConscriptBuilder
                 </div>
 
                 <div class="d-flex" style="flex-wrap: wrap;">
-                    <div class="col me-2"><button type="button" onclick="printLetter(' . $conscript['id'] . ');" class="btn btn-outline-primary w-100">Письмо</button></div>
+                    <div class="col me-2"><button type="button" onclick="printLetter(' . $conscript['id'] . ');" class="btn btn-dark w-100">Письмо</button></div>
                     <div class="col me-0 me-lg-2 mb-2 mb-lg-0"><button type="button" onclick="printExtract(' . $conscript['id'] . ');" class="btn btn-success w-100">Выписка</button></div>
                     <div class="col"><button type="button" onclick="printProtocol(' . $conscript['id'] . ');" class="btn btn-primary w-100">Протокол</button></div>
                 </div>';
@@ -207,8 +207,8 @@ class ConscriptBuilder
         $result .= '
         <script>
         $(function () {
-            $(\'[data-toggle="tooltip"]\').tooltip()
-        })
+            $(\'[data-toggle="tooltip"]\').tooltip();
+        });
 
         $("#protocolNumber").on("change", function () {
             saveProtocolChanges(null);

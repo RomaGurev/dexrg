@@ -23,9 +23,13 @@ class Controller_Print extends Controller
 		}
 	}
 
-	function getEditableString($string)
+	function getEditableString($string, $elemID = null)
 	{
-		return "<div contenteditable='true' style='display: inline;outline: none;'>" . $string . "</div>";
+		$editableName = array_search($elemID, Config::getValue("printValues"));
+		$editableName = str_replace("%", "", $editableName);
+		$editableName = str_replace("_", " ", $editableName);
+
+		return "<div class='contenteditable' contenteditable='true' data-toggle='tooltip' data-bs-original-title='" . $editableName . "'" . ($elemID != null ? "id='$elemID'" : "") .  ">" . $string . "</div>";
 	}
 
 	function getInputField($placeholder, $width, $fontSize, $fontWeight = 400)
@@ -36,7 +40,7 @@ class Controller_Print extends Controller
 	function replaceData($data, $fileContent)
 	{
 		foreach (Config::getValue("printValues") as $key => $value)
-			$fileContent = str_replace($key, isset($data[$value]) ? (empty($data[$value]) ? $this->getEditableString("{НЕ ЗАПОЛНЕНО}") : $this->getEditableString($data[$value])) : $this->getEditableString("{НЕКОРРЕКТНОЕ ЗНАЧЕНИЕ}"), $fileContent);
+			$fileContent = str_replace($key, isset($data[$value]) ? (empty($data[$value]) ? $this->getEditableString("", $value) : $this->getEditableString($data[$value], $value)) : $this->getEditableString("{НЕКОРРЕКТНОЕ ЗНАЧЕНИЕ}", $value), $fileContent);
 
 		return $fileContent;
 	}
@@ -72,12 +76,12 @@ class Controller_Print extends Controller
 				$postPeriod = $document["postPeriod"];
 		}
 
-		$data["complaint"] = implode("<br>", $complaint);
+		$data["complaint"] = implode("<br>", $complaint) == "нет" ? "Жалоб нет." : "Жалобы: " . implode("<br>", $complaint);
+		$data["anamnez"] = implode("<br>", $anamnez);
 		$data["objectData"] = implode("<br>", $objectData);
 		$data["specialResult"] = implode("<br>", $specialResult);
 		$data["diagnosis"] = implode("<br>", $diagnosis);
-		$data["anamnez"] = implode("<br>", $anamnez);
-
+		
 		//РВК Назначение
 		$rvkHealthCategory = mb_substr($data["healthCategory"], 0, 1);
 		$rvkMedicalAppointment = mb_substr($data["healthCategory"], 1, 1);
@@ -103,7 +107,7 @@ class Controller_Print extends Controller
 		//Назначение
 		$healthCategory = mb_substr($finalCategory, 0, 1);
 		$medicalAppointment = mb_substr($finalCategory, 1, 1);
-		$data["appointment"] = "Статья " . implode(", ", $article) . ($healthCategory == "О" ? "" : "<br>Категория годности<br>«" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory)) . (!empty($medicalAppointment) ? "<br>Показатель предназначения - " . $medicalAppointment : "");
+		$data["appointment"] = "Статья " . implode(", ", $article) . ($healthCategory == "О" ? "" : "<br>Категория годности<br>«" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory)) . ($healthCategory == "Г" && !empty($postPeriod) ? " сроком на " . Config::getValue("postPeriod")[$postPeriod] : "") . (!empty($medicalAppointment) ? "<br>Показатель предназначения - " . $medicalAppointment : "");
 		if ($healthCategory == "О")
 			$data["appointment"] .= "<br>Подлежит обследованию.";
 		//Назначение
@@ -120,7 +124,7 @@ class Controller_Print extends Controller
 					$data["result"] .= "Принять решение в<br>соответствии со ст. 28<br>п.1 ФЗ «О воинской обязанности и военной службе» - освободить от призыва на военную службу.";
 					break;
 				case 'Г':
-					$data["result"] .= "Принять решение в<br>соответствии со ст. 24<br>п.1 «а» ФЗ «О воинской обязанности и военной службе» - предоставить<br>отсрочку от призыва на военную службу сроком на " . Config::getValue("postPeriod")[$postPeriod];
+					$data["result"] .= "Принять решение в<br>соответствии со ст. 24<br>п.1 «а» ФЗ «О воинской обязанности и военной службе» - предоставить<br>отсрочку от призыва на военную службу.";
 					break;
 				case 'Д':
 					$data["result"] .= "Принять решение в<br>соответствии со ст.28<br>п.1 ФЗ «О воинской обязанности и военной службе» - освободить от исполнения воинской обязанности.";
@@ -131,9 +135,22 @@ class Controller_Print extends Controller
 			}
 		}
 		$data["result"] .= "<br>Протокол № " . $data["protocolNumber"] . " <br> от " . $data["protocolDate"] . "г.";
-		if (!($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А"))
-			$data["result"] .= "<br>Служебное письмо<br>от " . $data["protocolDate"] . "г.<br>№ " . $this->getInputField("номер", 60, "12", 700);
+		if (!($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А") && $healthCategory != "О")
+			$data["result"] .= "<br>Служебное письмо<br>от " . $data["protocolDate"] . "г.<br>№ " . $data["letterNumber"];
 		//Решение
+
+		//Костыль на загрузку изменений (P.S. меня заставили)
+		$protocolChanges = Helper::getProtocolChanges($id);
+
+		if(count($protocolChanges) > 0) 
+		{
+			$data["complaint"] = $protocolChanges[0]["complaint"];
+			$data["anamnez"] = $protocolChanges[0]["anamnez"];
+			$data["objectData"] = $protocolChanges[0]["objectData"];
+			$data["specialResult"] = $protocolChanges[0]["specialResult"];
+			$data["diagnosis"] = $protocolChanges[0]["diagnosis"];
+		}
+		//Костыль на загрузку изменений
 
 		$fileContent = $this->replaceData($data, $fileContent);
 		return $fileContent;
@@ -142,7 +159,7 @@ class Controller_Print extends Controller
 	function letterPrepare($fileContent, $id)
 	{
 		$data = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $id], "current")[0];
-		$data["vkName"] = Helper::getVKNameById($data["vk"])["fullNameNotUnique"];
+		$data["vkName"] = Helper::getVKNameById($data["vk"])["letterAdresant"];
 		$documents = Helper::getResultDocuments($id);
 
 		$article = array();
@@ -164,14 +181,20 @@ class Controller_Print extends Controller
 
 		$healthCategory = mb_substr($finalCategory, 0, 1);
 
-		$data["healthCategory"] = "«" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory) . (empty($postPeriod) ? "" : " сроком на " . Config::getValue("postPeriod")[$postPeriod]);
+		$data["healthCategory"] = $healthCategory != "О" ? "признан по ст. " . implode(", ", $article) . " графы I расписания болезней и ТДТ (приложение к Положению о военно-врачебной экспертизе, утвержденному постановлением Правительства РФ 2013 года № 565) «" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory) . (empty($postPeriod) ? "." : " сроком на " . Config::getValue("postPeriod")[$postPeriod]) : "возвращается с пункта (сборного) военного комиссариата Новосибирской области. Подлежит обследованию.";
 
-		$data["diagnosis"] = implode("<br>", $diagnosis);
-		$data["reasonToChangeResult"] = count($reasonForCancel) > 0 ? "Причина отмены решения: " . implode("<br>", $reasonForCancel) : " ";
+		$data["diagnosis"] = $healthCategory != "О" && mb_strlen(implode("<br>", $diagnosis)) > 0 ? "Диагноз: " . implode("<br>", $diagnosis) : "";
+		$data["reasonToChangeResult"] = count($reasonForCancel) > 0 ? "Причина отмены решения: " . implode("<br>", $reasonForCancel) : "";
 		$data["result"] = "Ранее вынесенное решение призывной комиссии " . Helper::getVKNameById($data["vk"])["fullNameUnique"] . " отменить.";
-		$data["article"] = implode(", ", $article);
 		$data["letterDate"] = Helper::convertDateToPrintFormat($data["protocolDate"] == "" ? date("d.m.Y") : $data["protocolDate"]);
-		$data["letterNumber"] = $this->getInputField("номер", 60, "12");
+
+		if($healthCategory == "О")
+			$data["appendix"] = "Приложение: личное дело";
+		else
+			$data["appendix"] = "";
+
+		if(empty($data["letterNumber"]))
+			$data["letterNumber"] = $this->getInputField("номер", 60, "12");
 
 		$fileContent = $this->replaceData($data, $fileContent);
 		return $fileContent;
@@ -194,17 +217,13 @@ class Controller_Print extends Controller
 		}
 
 		$rvkHealthCategory = mb_substr($data["healthCategory"], 0, 1);
-
 		$healthCategory = mb_substr($finalCategory, 0, 1);
+		$data["name"] = "<span id='name'>" . $data["name"] . "</span>";
+		$data["vkName"] = Helper::getVKNameById($data["vk"])["shortNameUnique"];
+		$data["rvkProtocolDate"] = Helper::convertDateToPrintFormat($data["rvkProtocolDate"]);
 
-		$data["appointment"] = "<div class='mb-3'>Решение призывной комиссии " . Helper::getVKNameById($data["vk"])["shortNameUnique"] . "</div>";
-		$data["appointment"] .= "<div class='mb-3'>От " . Helper::convertDateToPrintFormat($data["rvkProtocolDate"]) . " № " . $data["rvkProtocolNumber"] . "</div>";
-		$data["appointment"] .= "<div class='mb-3'>по гражданину <span id='name'></span> " . $data["birthDate"] . " г.р.</div>";
-
-		
 		if ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А") 
 		{
-			$data["appointment"] .= "<div class='mb-3'>";
 			switch ($rvkHealthCategory) {
 				case 'А':
 				case 'Б':
@@ -220,46 +239,54 @@ class Controller_Print extends Controller
 					$data["appointment"] .= "об освобождении от исполнения воинской обязанности";
 					break;
 			}
-			$data["appointment"] .= "</div>";
+		} else {
+			$data["appointment"] = "";
 		}
-
-		$data["result"] .= ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А" ? "<div class='mb-3'><b><u>УТВЕРДИТЬ</u></b></div>" : "<div class='mb-3'><b><u>ОТМЕНИТЬ</u></b></div> <div class='mb-3'>Основание: ст. 29 п.3 ФЗ «О воинской обязанности и военной службе»</div>");
-		$data["result"] .= "<div class='mb-3'>Признать " . ($healthCategory == "О" ? "Подлежит обследованию." : "ст. " . implode(", ", $article) . " «" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory)) . (empty($postPeriod) ? "" : " сроком на " . Config::getValue("postPeriod")[$postPeriod]) . "</div>";
+		$data["result"] .= ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А" ? "УТВЕРДИТЬ" : "ОТМЕНИТЬ");
+		$data["admit"] .= ($healthCategory == "О" ? "подлежит обследованию." : "ст. " . implode(", ", $article) . " «" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory)) . (empty($postPeriod) ? "" : " сроком на " . Config::getValue("postPeriod")[$postPeriod]);
 
 		if ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А") {
+			$data["conclusion"] = "";
+			
 			switch ($healthCategory) {
 				case 'А':
 				case 'Б':
-					$data["result"] .= "<div class='mb-3'>Основание: п.1 ст. 22 ФЗ «О воинской обязанности и военной службе»</div>";
+					$data["base"] .= "п.1 ст. 22 ФЗ «О воинской обязанности и военной службе»";
 					break;
 				case 'В':
-					$data["result"] .= "<div class='mb-3'>Основание: ст. 23   п.1 «а» ФЗ «О воинской обязанности и военной службе»</div>";
+					$data["base"] .= "ст. 23 п.1 «а» ФЗ «О воинской обязанности и военной службе»";
 					break;
 				case 'Г':
-					$data["result"] .= "<div class='mb-3'>Основание: ст. 24. п.1 «а» ФЗ «О воинской обязанности и военной службе»</div>";
+					$data["base"] .= "ст. 24 п.1 «а» ФЗ «О воинской обязанности и военной службе»";
 					break;
 				case 'Д':
-					$data["result"] .= "<div class='mb-3'>Основание: ст. 23   п.4 ФЗ «О воинской обязанности и военной службе»</div>";
+					$data["base"] .= "ст. 23 п.4 ФЗ «О воинской обязанности и военной службе»";
 					break;
 			}
 		} else {
+			$data["base"] .= "ст. 29 п.3 ФЗ «О воинской обязанности и военной службе»";
+
 			switch ($healthCategory) {
 				case 'А':
 				case 'Б':
-					$data["result"] .= "<div class='mb-3'>ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>призвать на военную службу. Предназначить в остальные воинские части Сухопутных войск.</b></div>";
+					$data["conclusion"] .= "ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>призвать на военную службу. Предназначить в остальные воинские части Сухопутных войск.</b>";
 					break;
 				case 'В':
-					$data["result"] .= "<div class='mb-3'>ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>освободить от призыва на военную службу.</b></div>";
+					$data["conclusion"] .= "ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>освободить от призыва на военную службу.</b>";
 					break;
 				case 'Г':
-					$data["result"] .= "<div class='mb-3'>ст. 28. п.1 ФЗ «О воинской обязанности и военной службе» - <b>предоставить отсрочку от призыва на военную службу.</b></div>";
+					$data["conclusion"] .= "ст. 28. п.1 ФЗ «О воинской обязанности и военной службе» - <b>предоставить отсрочку от призыва на военную службу.</b>";
 					break;
 				case 'Д':
-					$data["result"] .= "<div class='mb-3'>ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>освободить от исполнения воинской обязанности.</b></div>";
+					$data["conclusion"] .= "ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>освободить от исполнения воинской обязанности.</b>";
+					break;
+				default:
+					$data["conclusion"] = "";
 					break;
 			}
 		}
-		$data["result"] .= "<div class='mb-3'>Протокол от " . Helper::convertDateToPrintFormat($data["protocolDate"]) . " № " . $data["protocolNumber"] . "</div>";
+
+		$data["protocolDate"] = Helper::convertDateToPrintFormat($data["protocolDate"]);
 
 		$fileContent = $this->replaceData($data, $fileContent);
 		return $fileContent;
@@ -276,8 +303,9 @@ class Controller_Print extends Controller
 		$data["name"] = $conscript["name"];
 		$data["birthDate"] = $conscript["birthDate"];
 		$data["rvkArticle"] = $conscript["rvkArticle"];
-		$data["healthCategory"] = "«" . $data["healthCategory"] . "» - " . Helper::getHealthCategoryNameByID($data["healthCategory"]) . (empty($data["postPeriod"]) ? "" : " сроком на " . Config::getValue("postPeriod")[$data["postPeriod"]]);
-		$data["reasonToChangeResult"] = empty($data["reasonForCancel"]) ? " " : "Причина изменения решения: " . $data["reasonForCancel"];
+		$data["healthCategory"] = $data["healthCategory"] == "О" ? "Подлежит обследованию." : "«" . $data["healthCategory"] . "» - " . Helper::getHealthCategoryNameByID($data["healthCategory"]) . (empty($data["postPeriod"]) ? "" : " сроком на " . Config::getValue("postPeriod")[$data["postPeriod"]]);
+		$data["destinationPoints"] = empty($data["destinationPoints"]) ? " " : "<br>Пункты предназначения: " . $data["destinationPoints"];
+		$data["reasonToChangeResult"] = empty($data["reasonForCancel"]) ? " " : "<br>Причина изменения решения: " . $data["reasonForCancel"];
 
 		$fileContent = $this->replaceData($data, $fileContent);
 

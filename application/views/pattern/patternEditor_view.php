@@ -25,52 +25,48 @@ if ($data["currentPattern"] != null) {
             <div class="mb-3">
                 <label for="patternName" class="form-label">Название шаблона</label>
                 <input type="text" class="form-control" id="patternName" maxlength="100" <? if (isset($currentPattern["name"]))
-            echo "value='" . $currentPattern["name"] . "'" ?>
-                    placeholder="Пример: пониженное питание">
+            echo "value='" . $currentPattern["name"] . "'" ?>>
                 <div class="invalid-feedback mt-1">
                     Неверное название шаблона
                 </div>
             </div>
 
-            <div class="mb-3 d-flex">
-                <div class="col me-3">
+            <div class="mb-3">
                     <label for="complaintTextarea" class="form-label">Жалобы</label>
-                    <textarea class="form-control" id="complaintTextarea" maxlength="2500" rows="4"
-                        placeholder="Пример: Головокружение при перемене положения, с тошнотой, головные боли в височно-теменной области, давящего характера, слабость, потливость."><? if (isset($currentPattern["complaint"]))
+                    <textarea class="form-control autogrow" id="complaintTextarea" maxlength="2500" rows="4"><? if (isset($currentPattern["complaint"]))
             echo $currentPattern["complaint"]; ?></textarea>
-            </div>
-            <div class="col">
-                <label for="anamnezTextarea" class="form-label">Анамнез</label>
-                <textarea class="form-control" id="anamnezTextarea" maxlength="2500" rows="4"><? if (isset($currentPattern["anamnez"]))
-                    echo $currentPattern["anamnez"]; ?></textarea>
-            </div>
         </div> 
 
         <div class="mb-3">
+            <label for="anamnezTextarea" class="form-label">Анамнез</label>
+            <textarea class="form-control autogrow" id="anamnezTextarea" maxlength="2500" rows="4"><? if (isset($currentPattern["anamnez"]))
+                echo $currentPattern["anamnez"]; ?></textarea>
+        </div> 
+
+
+        <div class="mb-3">
             <label for="objectDataTextarea" class="form-label">Данные объективного исследования</label>
-            <textarea class="form-control" id="objectDataTextarea" maxlength="2500" rows="6"><? if (isset($currentPattern["objectData"]))
+            <textarea class="form-control autogrow" id="objectDataTextarea" maxlength="2500" rows="6"><? if (isset($currentPattern["objectData"]))
                 echo $currentPattern["objectData"]; ?></textarea>
         </div>
 
         <div class="mb-3">
             <label for="specialResultTextarea" class="form-label">Результаты специальных исследований</label>
-            <textarea class="form-control" id="specialResultTextarea" maxlength="2500" rows="6"><? if (isset($currentPattern["specialResult"]))
+            <textarea class="form-control autogrow" id="specialResultTextarea" maxlength="2500" rows="6"><? if (isset($currentPattern["specialResult"]))
                 echo $currentPattern["specialResult"]; ?></textarea>
         </div>
 
         <div class="mb-3">
             <label for="diagnosisTextarea" class="form-label">Диагноз</label>
-            <textarea class="form-control" id="diagnosisTextarea" maxlength="2500" rows="5"
-                placeholder="Пример: Отдалённые последствия черепно-мозговых травм"><? if (isset($currentPattern["diagnosis"]))
+            <textarea class="form-control autogrow" id="diagnosisTextarea" maxlength="2500" rows="5"><? if (isset($currentPattern["diagnosis"]))
                     echo $currentPattern["diagnosis"]; ?></textarea>
         </div>
 
         <div class="mb-3 d-flex">
             <div class="col me-3">
                 <label for="articleInput" class="form-label">Статья</label>
-                <input type="text" class="form-control" id="articleInput" maxlength="10" <? if (isset($currentPattern["article"]))
-                    echo "value='" . $currentPattern["article"] . "'" ?>
-                        placeholder="Пример: 23в">
+                <input type="text" class="form-control" id="articleInput" maxlength="300" <? if (isset($currentPattern["article"]))
+                    echo "value='" . $currentPattern["article"] . "'" ?>>
                 </div>
 
                 <div class="col">
@@ -84,6 +80,12 @@ if ($data["currentPattern"] != null) {
                 ?>
                 </select>
             </div>
+        </div>
+
+        <div class="mb-3">
+                <label for="reasonForCancelTextarea" class="form-label">Причина отмены решения</label>
+                <textarea class="form-control autogrow" id="reasonForCancelTextarea" maxlength="2500" rows="3"><? if (isset($currentPattern["reasonForCancel"]))
+                    echo $currentPattern["reasonForCancel"]; ?></textarea>
         </div>
 
         <div class="row">

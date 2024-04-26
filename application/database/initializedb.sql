@@ -8,7 +8,7 @@ CREATE TABLE `conscript` (
   `creationDate` varchar(100) NOT NULL,
   `name` varchar(255) NOT NULL,
   `birthDate` varchar(100) NOT NULL,
-  `rvkArticle` varchar(10) NOT NULL,
+  `rvkArticle` varchar(300) NOT NULL,
   `rvkDiagnosis` varchar(2500) NOT NULL,
   `vk` varchar(255) NOT NULL,
   `healthCategory` varchar(100) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE `conscript` (
 CREATE TABLE `documents` (
   `id` int(11) NOT NULL,
   `conscriptID` int(11) NOT NULL,
-  `article` varchar(10) NOT NULL,
+  `article` varchar(300) NOT NULL,
   `healthCategory` varchar(100) NOT NULL,
   `creatorID` int(11) NOT NULL,
   `complaint` varchar(2500) NOT NULL,
@@ -36,7 +36,18 @@ CREATE TABLE `documents` (
   `postPeriod` varchar(11) NOT NULL,
   `documentDate` varchar(100) NOT NULL,
   `documentType` varchar(100) NOT NULL,
+  `destinationPoints` varchar(30) NOT NULL,
   `reasonForCancel` varchar(2500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `protocolChanges` (
+  `id` int(11) NOT NULL,
+  `conscriptID` int(11) NOT NULL,
+  `complaint` varchar(2500) NOT NULL,
+  `anamnez` varchar(2500) NOT NULL,
+  `objectData` varchar(2500) NOT NULL,
+  `specialResult` varchar(2500) NOT NULL,
+  `diagnosis` varchar(2500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `conscript`
@@ -45,9 +56,15 @@ ALTER TABLE `conscript`
 ALTER TABLE `documents`
   ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `protocolChanges`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `conscript`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `protocolChanges`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;

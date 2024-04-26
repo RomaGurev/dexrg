@@ -156,7 +156,7 @@ class postHandler
         if ($param['patternName'] === "")
             return "Введите название шаблона";
         else {
-            $query = "INSERT INTO `patternList` (name, complaint, anamnez, objectData, specialResult, diagnosis, healthCategory, article,ownerID) VALUES (:name, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :healthCategory, :article, :ownerID);";
+            $query = "INSERT INTO `patternList` (name, complaint, anamnez, objectData, specialResult, diagnosis, healthCategory, article, reasonForCancel, ownerID) VALUES (:name, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :healthCategory, :article, :reasonForCancel, :ownerID);";
             $dataArr = [
                 "name" => $param['patternName'],
                 "complaint" => $param['complaintTextarea'],
@@ -166,12 +166,14 @@ class postHandler
                 "diagnosis" => $param['diagnosisTextarea'],
                 "healthCategory" => $param['healthCategorySelect'],
                 "article" => $param['articleInput'],
+                "reasonForCancel" => $param['reasonForCancelTextarea'],
                 "ownerID" => Profile::$user['id']
             ];
             Database::execute($query, $dataArr);
             return "reloadPage";
         }
     }
+
 
     //Метод редактирования шаблона
     static function editPattern($param)
@@ -180,7 +182,7 @@ class postHandler
             return "Введите название шаблона";
         else {
 
-            $query = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis, healthCategory = :healthCategory, article = :article WHERE id = :id;";
+            $query = "UPDATE patternList SET name = :name, complaint = :complaint, anamnez = :anamnez, objectData = :objectData, specialResult = :specialResult, diagnosis = :diagnosis, healthCategory = :healthCategory, reasonForCancel = :reasonForCancel, article = :article WHERE id = :id;";
             $dataArr = [
                 "name" => $param['patternName'],
                 "complaint" => $param['complaintTextarea'],
@@ -190,6 +192,7 @@ class postHandler
                 "diagnosis" => $param['diagnosisTextarea'],
                 "healthCategory" => $param['healthCategorySelect'],
                 "article" => $param['articleInput'],
+                "reasonForCancel" => $param['reasonForCancelTextarea'],
                 "id" => $param['patternID']
             ];
 
@@ -230,7 +233,7 @@ class postHandler
                 $dataArr = [
                     "creatorID" => Profile::$user['id'],
                     "creationDate" => Helper::formatDateToView($param['creationDate']),
-                    "name" => $param['fullName'],
+                    "name" => preg_replace('/\s\s+/', ' ', $param['fullName']),
                     "birthDate" => Helper::formatDateToView($param['birthDate']),
                     "rvkArticle" => $param['rvkArticle'],
                     "rvkDiagnosis" => $param['rvkDiagnosis'],
@@ -242,7 +245,8 @@ class postHandler
                     "rvkProtocolNumber" => $param['rvkProtocolNumber']
                 ];
                 Database::execute($query, $dataArr, "current");
-                return "reloadPage";
+
+                return Database::pdoCurrentBase()->lastInsertId();
             } else {
                 return "<div>Призывник <a href='/?conscript=" . $duplicateCheck[0]["id"] . "' style='text-decoration: none;'> " . $param['fullName'] . " [" . Helper::formatDateToView($param['birthDate']) . "]</a> уже существует.</div>";
             }
@@ -302,17 +306,26 @@ class postHandler
 
             switch ($param['type']) {
                 case 'vk':
-                    $keys = array_column(Helper::getVKNames(), 'name');
+                    $keys = array_column(Database::execute("SELECT id, name FROM vkList"), 'name');
                     $keys = array_map('mb_strtolower', $keys);
                     $matches = preg_grep('#((?i)' . trim(mb_strtolower($param['value'])) . '(\W*))#i', $keys);
-                    $param['value'] = key($matches);
+                    $param['value'] = empty(key($matches)) ? "'RGNSK'" : key($matches)+1;
+                    
+                    $query = "SELECT * FROM `conscript` WHERE `vk`= " . $param['value'] . " ORDER BY id DESC LIMIT 5";
                     break;
                 case 'article':
-                    echo "<div id='resizeDiv' class='lead'>Не реализовано.</div>";
+                    $tr = Database::execute("SELECT conscriptID FROM documents WHERE article=:article", ["article" => $param['value']], "current");
+
+                    $conscripts = array();
+                    foreach ($tr as $value)
+                        array_push($conscripts, $value["conscriptID"]);
+
+                    $query = "SELECT * FROM `conscript` WHERE id REGEXP '" . (count($conscripts) > 0 ? implode("|", $conscripts) : "RGNSK") . "' ORDER BY id DESC LIMIT 5";
+                    break;
+                default:
+                    $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 5";
                     break;
             }
-
-            $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 5";
             $ans = Database::execute($query, null, "current");
 
             if (count($ans) == 0)
@@ -358,7 +371,7 @@ class postHandler
                 else 
                     $additionQuery = null;
 
-                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") || $param["type"] == "id" ? null : Profile::$user["id"], null, $additionQuery);
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], null, Profile::isHavePermission("viewForAll") || $param["type"] == "id" ? null : Profile::$user["id"], null, $additionQuery);
                 break;
         }
 
@@ -439,7 +452,7 @@ class postHandler
 
     static function addDocument($param)
     {
-        $query = "INSERT INTO `documents` (conscriptID, article, healthCategory, creatorID, complaint, anamnez, objectData, specialResult, diagnosis, documentDate, documentType, postPeriod, reasonForCancel) VALUES (:conscriptID, :article, :healthCategory, :creatorID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :documentDate, :documentType, :postPeriod, :reasonForCancel);";
+        $query = "INSERT INTO `documents` (conscriptID, article, healthCategory, creatorID, complaint, anamnez, objectData, specialResult, diagnosis, documentDate, documentType, postPeriod, reasonForCancel, destinationPoints) VALUES (:conscriptID, :article, :healthCategory, :creatorID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis, :documentDate, :documentType, :postPeriod, :reasonForCancel, :destinationPoints);";
         $dataArr = [
             "conscriptID" => $param['conscriptID'],
             "article" => $param['articleInput'],
@@ -453,7 +466,8 @@ class postHandler
             "documentDate" => Helper::formatDateToView($param["documentDate"]),
             "documentType" => $param['documentType'],
             "postPeriod" => $param['postPeriodSelect'],
-            "reasonForCancel" => $param['reasonForCancelTextarea']
+            "reasonForCancel" => $param['reasonForCancelTextarea'],
+            "destinationPoints" => $param['destinationPointsInput']
         ];
         Database::execute($query, $dataArr, "current");
         return "reloadPage";
@@ -461,7 +475,7 @@ class postHandler
 
     static function editDocument($param)
     {
-        $query = "UPDATE `documents` SET  article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate, postPeriod=:postPeriod, reasonForCancel=:reasonForCancel WHERE id = :id;";
+        $query = "UPDATE `documents` SET  article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate, postPeriod=:postPeriod, reasonForCancel=:reasonForCancel, destinationPoints=:destinationPoints WHERE id = :id;";
         $dataArr = [
             "article" => $param['articleInput'],
             "healthCategory" => $param['healthCategorySelect'],
@@ -473,6 +487,7 @@ class postHandler
             "documentDate" => Helper::formatDateToView($param["documentDate"]),
             "postPeriod" => $param['postPeriodSelect'],
             "reasonForCancel" => $param['reasonForCancelTextarea'],
+            "destinationPoints" => $param['destinationPointsInput'],
             "id" => $param['documentID']
         ];
         Database::execute($query, $dataArr, "current");
@@ -494,4 +509,84 @@ class postHandler
     }
 
     //<-------------------------------------Страница добавления/редактирования документов------------------------------------->//
+
+    //<-------------------------------------Страница печати------------------------------------->//
+    static function setInProcessFalse($param)
+    {
+        if ($param['conscriptID'] === "")
+            return "Ошибка изменения статуса. ID призывника не найден.";
+        else {
+            $query = "UPDATE `conscript` SET inProcess=0 WHERE id=:id";
+            $dataArr = [
+                "id" => $param['conscriptID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+            return "reloadPage";
+        }
+    }
+
+    static function saveProtocolValuesChanges($param) 
+    {
+        if ($param['conscriptID'] === "")
+            return "Ошибка сохранения изменений. ID призывника не найден.";
+        else {
+
+            if(!empty($param['conscriptID']) && !empty(Helper::formatDateToView($param['birthDate'])) && !empty($param['rvkDiagnosis'])) {
+                $queryConscript = "UPDATE `conscript` SET name=:name, birthDate=:birthDate, rvkDiagnosis=:rvkDiagnosis WHERE id=:id";
+                $dataArrConscript = [
+                    "id" => $param['conscriptID'],
+                    "name" => preg_replace('/\s\s+/', ' ', trim($param['name'])),
+                    "birthDate" => Helper::formatDateToView($param['birthDate']),
+                    "rvkDiagnosis" => trim($param['rvkDiagnosis'])
+                ];
+                Database::execute($queryConscript, $dataArrConscript, "current");
+            }
+            
+            $protocolChanges = Helper::getProtocolChanges($param['conscriptID']);
+		    if(count($protocolChanges) > 0) 
+		    {
+		    	$queryProtocol = "UPDATE `protocolChanges` SET complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis WHERE id=:id";
+                $dataArrProtocol = [
+                    "id" => $protocolChanges[0]["id"],
+                    "complaint" => trim($param['complaint']),
+                    "anamnez" => trim($param['anamnez']),
+                    "objectData" => trim($param['objectData']),
+                    "specialResult" => trim($param['specialResult']),
+                    "diagnosis" => trim($param['diagnosis'])
+                ];
+                Database::execute($queryProtocol, $dataArrProtocol, "current");
+                return "Изменения внесены в запись.";
+		    } else {
+                $queryProtocol = "INSERT INTO `protocolChanges` (conscriptID, complaint, anamnez, objectData, specialResult, diagnosis) VALUES (:conscriptID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis);";
+                $dataArrProtocol = [
+                    "conscriptID" => $param['conscriptID'],
+                    "complaint" => trim($param['complaint']),
+                    "anamnez" => trim($param['anamnez']),
+                    "objectData" => trim($param['objectData']),
+                    "specialResult" => trim($param['specialResult']),
+                    "diagnosis" => trim($param['diagnosis'])
+                ];
+                Database::execute($queryProtocol, $dataArrProtocol, "current");
+
+                return "Изменения добавлены.";
+            }
+            
+        }
+    }
+
+    static function deleteProtocolValuesChanges($param)
+    {
+        if ($param['conscriptID'] === "")
+            return "Ошибка удаления документа. ID не найден.";
+        else {
+            $query = "DELETE FROM `protocolChanges` WHERE conscriptID=:conscriptID";
+            $dataArr = [
+                "conscriptID" => $param['conscriptID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+            return "reloadPage";
+        }
+    }
+
+    //<-------------------------------------Страница печати------------------------------------->//
 }
