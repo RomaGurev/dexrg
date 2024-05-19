@@ -37,7 +37,8 @@ CREATE TABLE `documents` (
   `documentDate` varchar(100) NOT NULL,
   `documentType` varchar(100) NOT NULL,
   `destinationPoints` varchar(30) NOT NULL,
-  `reasonForCancel` varchar(2500) NOT NULL
+  `reasonForCancel` varchar(2500) NOT NULL,
+  `countable` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `protocolChanges` (

@@ -71,5 +71,4 @@ class Route
 		header("Status: 404 Not Found");
 		Route::Direct("error");
 	}
-
 }

@@ -12,7 +12,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="/bootstrap/bootstrap.css" />
-	<link rel="stylesheet" href="/css/main_style.css" />
+	<link rel="stylesheet" href="/css/main_style.css?ct=<? echo filemtime("css\\main_style.css") ?>"/>
 	<link rel="stylesheet" href="/css/print.css?ct=<? echo filemtime("css\\print.css") ?>" />
 
 	<title><?= $title ?></title>
@@ -48,7 +48,7 @@
         </div>
 	</div>
 	<?
-	if($_GET["template"] == "protocol" && Helper::GetInProccesStatus($_GET["id"])) {
+	if($_GET["template"] == "protocol" && Helper::getInProccesStatus($_GET["id"])) {
 		echo "<script>
 			window.onafterprint = function () 
 			{

@@ -72,6 +72,8 @@ $("#pattern").on("change", function (event) {
                 $('#healthCategorySelect').trigger("change");
                 $('#articleInput').trigger("change");
                 $('#reasonForCancelTextarea').trigger("change");
+
+                showToast('Шаблон ' + dataPattern["name"] + ' загружен.', 'Данные документа');
             }
         });
     }
@@ -95,7 +97,7 @@ copyRvkDiagnosis = function() {
             if(data.length > 0)
                 $('#diagnosisTextarea').val(data);
             else
-                alert("Диагноз РВК пуст."); //TODO: Реализовать сообщение
+                showToast('Диагноз РВК пуст.', 'Данные документа');
         }
     });
 };
@@ -131,6 +133,10 @@ $("#addDocumentForm").submit(function (event) {
             window.scrollTo(0, 0);
             if (data == "reloadPage") {
                 showAlert(true, "Документ успешно добавлен");
+
+                if($('#documentType').val() == "confirmation")
+                    setInProcessFalse($('#conscriptID').val());
+
                 setInterval(() =>
                     location.href = '/?conscript=' + $('#conscriptID').val(), 1000
                 );

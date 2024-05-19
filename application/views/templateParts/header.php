@@ -9,7 +9,7 @@ $menuItems = Config::getValue("menuItems");
 ?>
 
 
-<header class="bg-dark text-white p-3 shadow">
+<header class="bg-dark bg-gradient text-white p-3 shadow">
     <div class="container p-0">
 
         <? if (Profile::$isAuth) { ?>
@@ -19,9 +19,9 @@ $menuItems = Config::getValue("menuItems");
                 <div id="logoFlex" class="col-xl-3 col-7 me-2">
                     <a href="/" class="text-dark text-decoration-none d-flex">
                         <svg width="48" height="48">
-                            <image xlink:href="/images/logo.svg" src="/images/logo.svg" width="48" height="48" />
+                            <image xlink:href="/images/<? echo Profile::isArchiveMode() ? "logo_archive" : "logo" ?>.svg" src="/images/<? echo Profile::isArchiveMode() ? "logo_archive" : "logo" ?>.svg" width="48" height="48" />
                         </svg>
-                        <p class="display-6 text-white mb-0 ms-2 me-2">ВВК</p>
+                        <div class="display-6 text-white mb-0 ms-2 me-2 d-flex align-items-center"><? echo Profile::isArchiveMode() ? "ВВК Архив" : "ВВК" ?></div>
                     </a>
                 </div>
 
@@ -35,6 +35,10 @@ $menuItems = Config::getValue("menuItems");
                                 else
                                     $active = $data["activeMenuItem"] == $menuItems[$value][1] ? "active" : "text-white";
 
+                                
+                                if(Profile::isArchiveMode() && $value == "pattern")
+                                    continue;
+
                                 echo "<li class='nav-item'><a href='/" . $menuItems[$value][1] . "' class='nav-link $active'>" . $menuItems[$value][0] . "</a></li>";
                             }
                         }
@@ -46,11 +50,11 @@ $menuItems = Config::getValue("menuItems");
 
         <? } else { ?>
             <div class="d-flex">
-                <a href="/" class="text-decoration-none mx-auto d-flex">
+                <a href="/" class="text-dark text-decoration-none mx-auto d-flex">
                     <svg width="48" height="48">
-                        <image xlink:href="/images/logo.svg" src="/images/logo.svg" width="48" height="48" />
+                        <image xlink:href="/images/<? echo Profile::isArchiveMode() ? "logo_archive" : "logo" ?>.svg" src="/images/<? echo Profile::isArchiveMode() ? "logo_archive" : "logo" ?>.svg" width="48" height="48" />
                     </svg>
-                    <p class="display-6 text-white mb-0 ms-2 me-2">ВВК</p>
+                    <p class="display-6 text-white mb-0 ms-2 me-2"><? echo Profile::isArchiveMode() ? "ВВК Архив" : "ВВК" ?></p>
                 </a>
             </div>
         <? } ?>

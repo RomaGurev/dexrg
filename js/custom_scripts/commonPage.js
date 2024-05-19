@@ -2,6 +2,10 @@ const isEmpty = str => !str.trim().length;
 
 document.addEventListener('DOMContentLoaded', () => {
     $(".autogrow").autogrow();
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 });
 
 //Поиск призывника
@@ -23,8 +27,7 @@ $("#searchInput").on("input", function () {
         success: function (data) {
             $("#searchResult").append(data);
             showLoading(false);
-            let newheight = data == "" ? 0 : $('#resizeDiv').height();
-            $("#searchResult").stop().animate({ height: newheight });
+            resizeResultDiv();
         }
     });
 });
@@ -50,12 +53,34 @@ $("#searchDocumentInput").on("input", function () {
         success: function (data) {
             $("#searchResult").append(data);
             showLoading(false);
-            let newheight = data == "" ? 0 : $('#resizeDiv').height();
-            $("#searchResult").stop().animate({ height: newheight });
+            resizeResultDiv();
         }
     });
 });
 //Поиск документа
+
+//Поиск шаблона
+$("#searchPatternInput").on("input", function () {
+    let searchValue = $("#searchPatternInput").val().trim();
+    $("#searchResult").empty();
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            searchPattern: {
+                value: searchValue
+            }
+        },
+        success: function (data) {
+            $("#searchResult").append(data);
+            showLoading(false);
+            resizeResultDiv();
+        }
+    });
+});
+//Поиск шаблона
 
 //Поиск
 $("#searchType").on("change", function() {
@@ -69,10 +94,14 @@ changeProccessMode = function(value) {
 };
 
 $(window).on("resize", function() {
-    let newheight = $('#resizeDiv').length ? $('#resizeDiv').height() : 0;
-    $("#searchResult").stop().animate({ height: newheight });
+    resizeResultDiv();
 });
 //Поиск
+
+resizeResultDiv = function () {
+    let newheight = $('#resizeDiv').length ? $('#resizeDiv').height() : 0;
+    $("#searchResult").stop().animate({ height: newheight });
+}
 
 //Модальные окна
 openConscriptModal = function (conscriptID) {
@@ -96,6 +125,18 @@ openConscriptModal = function (conscriptID) {
             new bootstrap.Modal(document.getElementById('RGModal')).show();
         }
     });
+}
+
+//Всплывающиее сообщение
+showToast = function (message, title) {
+    let name = "toast" + Math.round(Math.random()*100);
+    $("#toastContainer").append('<div id="' + name + '" class="toast" role="alert" aria-live="assertive" aria-atomic="true"><div class="toast-header"><svg width="18" height="18" class="me-2"><image xlink:href="/images/icons/info-circle.svg" width="18" height="18" /></svg><strong class="me-auto">' + title + '</strong><button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button></div><div class="toast-body">' + message + '</div></div>');
+    let rgToast = bootstrap.Toast.getOrCreateInstance($("#" + name));
+    rgToast.show();
+
+    $("#" + name).on('hidden.bs.toast', function () {
+        $("#" + name).remove();
+    })
 }
 
 $("#RGModal").on("hidden.bs.modal", function () {
@@ -163,17 +204,19 @@ function deleteConscript(id) {
         }
     });
 }
-function addChangeCategory(id) {
-    location.href = "/document?conscript=" + id + "&documentType=changeCategory";
+
+function addDocument(id) {
+    let docType = document.querySelector("#addDocumentType");
+    location.href = "/document?conscript=" + id + "&documentType=" + docType.value;
 }
-function addControl(id) {
-    location.href = "/document?conscript=" + id + "&documentType=control";
-}
-function addReturn(id) {
-    location.href = "/document?conscript=" + id + "&documentType=return";
-}
-function addComplaint(id) {
-    location.href = "/document?conscript=" + id + "&documentType=complaint";
+
+function subscribeCollapseObjects() {
+    $('.collapse').on("hidden.bs.collapse", function() {
+        resizeResultDiv();
+    });
+    $('.collapse').on("shown.bs.collapse", function() {
+        resizeResultDiv();
+    });
 }
 
 saveProtocolChanges = function(func) {
@@ -234,3 +277,40 @@ showAlert = function (state, data = "", type = "success", icon = "info", size = 
     }
 }
 //Alert
+
+//Блокировка УКП
+function setInProcessFalse(id) {
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            setInProcessFalse: {
+                conscriptID: id
+            }
+        },
+        success: function (data) {
+            window.scrollTo(0, 0);
+            showLoading(false);
+        }
+    });
+}
+
+//Разблокировка УКП после обследования
+function unlockCard(id) {
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            unlockCard: {
+                conscriptID: id
+            }
+        },
+        success: function (data) {
+            location.reload();
+        }
+    });
+}

@@ -75,7 +75,6 @@ class postHandler
             return "Базы данных $dbname не существует.";
         } else {
             Database::setCurrentBase($dbname);
-            //$current = explode("-", Database::getCurrentBase());
             return "success";
         }
 
@@ -113,6 +112,23 @@ class postHandler
 
     //<-------------------------------------Аккаунты пользователей------------------------------------->//
 
+    //Метод изменения имени
+    static function changeUserName($param)
+    {
+        if ($param['name'] == "" || empty($param['name']))
+            return "Ошибка изменения имени.";
+        else {
+            $query = "UPDATE staff SET name=:name WHERE id=:id";
+            $dataArr = [
+                "name" => $param['name'],
+                "id" => Profile::$user["id"]
+            ];
+            Database::execute($query, $dataArr);
+            $_SESSION['name'] = $param['name'];
+            return true;
+        }
+    }
+
     //Метод входа в аккаунт
     static function authUser($param)
     {
@@ -136,6 +152,17 @@ class postHandler
                 return "Специалист не найден";
             }
 
+        }
+    }
+
+    //Выбор базы данных для пользователя (вход/выход режим архива)
+    static function selectUserDatabase($param)
+    {
+        if ($param['database'] == "")
+            return "Ошибка выбора базы данных.";
+        else {
+            $_SESSION['selectedBase'] = $param['database'];
+            return "reloadPage";
         }
     }
 
@@ -173,7 +200,6 @@ class postHandler
             return "reloadPage";
         }
     }
-
 
     //Метод редактирования шаблона
     static function editPattern($param)
@@ -294,6 +320,18 @@ class postHandler
             return "reloadPage";
         }
     }
+
+    static function getDocumentDiagnosisByConscriptID($param)
+    {
+        $resultDocuments = Helper::getResultDocuments($param['conscriptID']);
+        $diagnosis = $resultDocuments[0]["diagnosis"];
+
+        if (mb_strlen($diagnosis) > 0) {
+            return $diagnosis;
+        }
+
+        return "";
+    }
     //<-------------------------------------Страницы шаблонов (conscription)------------------------------------->//
 
     //<-------------------------------------Поиск на сайте------------------------------------->//
@@ -309,8 +347,8 @@ class postHandler
                     $keys = array_column(Database::execute("SELECT id, name FROM vkList"), 'name');
                     $keys = array_map('mb_strtolower', $keys);
                     $matches = preg_grep('#((?i)' . trim(mb_strtolower($param['value'])) . '(\W*))#i', $keys);
-                    $param['value'] = empty(key($matches)) ? "'RGNSK'" : key($matches)+1;
-                    
+                    $param['value'] = empty(key($matches)) ? "'RGNSK'" : key($matches) + 1;
+
                     $query = "SELECT * FROM `conscript` WHERE `vk`= " . $param['value'] . " ORDER BY id DESC LIMIT 5";
                     break;
                 case 'article':
@@ -329,7 +367,7 @@ class postHandler
             $ans = Database::execute($query, null, "current");
 
             if (count($ans) == 0)
-                return "<div id='resizeDiv' class='lead'>Учетная карта не найдена." . (Profile::isHavePermission("canAdd") ? " Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>" : "</div>");
+                return "<div id='resizeDiv' class='lead'>Учетная карта не найдена." . (Profile::isHavePermission("canAdd") && !Profile::isArchiveMode() ? " Необходимо <a style='text-decoration: none;' href='/conscription/editor?back='>зарегистрировать</a> призывника.</div>" : "</div>");
             else {
                 $result = "<div id='resizeDiv' class='d-grid gap-2'>";
                 foreach ($ans as $conscript)
@@ -355,20 +393,20 @@ class postHandler
             case "rvkArticle":
             case "birthDate":
             case "creationDate":
-                if($valueLength >= 3)
+                if ($valueLength >= 3)
                     $additionQuery = "AND " . $param["type"] . " LIKE '%" . $param['value'] . "%'";
-                elseif ($param["type"] == "rvkArticle" && $valueLength > 0) 
+                elseif ($param["type"] == "rvkArticle" && $valueLength > 0)
                     $additionQuery = "AND " . $param["type"] . " LIKE '" . $param['value'] . "%'";
                 else
                     $additionQuery = null;
 
                 $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], $additionQuery);
                 break;
-            
+
             default:
-                if($valueLength > 0)
-                    $additionQuery = "AND " . $param["type"] . " LIKE '%" . $param['value'] . "%'";
-                else 
+                if ($valueLength > 0)
+                    $additionQuery = "AND " . $param["type"] . " LIKE '" . $param['value'] . "'";
+                else
                     $additionQuery = null;
 
                 $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], null, Profile::isHavePermission("viewForAll") || $param["type"] == "id" ? null : Profile::$user["id"], null, $additionQuery);
@@ -377,10 +415,10 @@ class postHandler
 
         $result = "<div id='resizeDiv' class='d-grid gap-2'>";
 
-        if($valueLength < 3 && $valueLength != 0 && $param["type"] != "rvkArticle" && $param["type"] != "id" && $param["type"] != "article")
+        if ($valueLength < 3 && $valueLength != 0 && $param["type"] != "rvkArticle" && $param["type"] != "id" && $param["type"] != "article")
             $result .= "<div class='lead'>Введите больше 2 символов.</div>";
 
-        if(count($conscriptsWithDocuments) > 0) {
+        if (count($conscriptsWithDocuments) > 0) {
             foreach ($conscriptsWithDocuments as $conscript)
                 $result .= DocumentBuilder::getConscriptWithDocumentsCard($conscript);
         } else {
@@ -391,7 +429,29 @@ class postHandler
         return $result;
     }
 
-    static function saveProtocolChanges($param) 
+    static function searchPattern($param)
+    {
+        $valueLength = mb_strlen($param['value'], "UTF-8");
+
+        $patternList = Helper::getUserPatternList($param["value"]);
+
+        $result = "<div id='resizeDiv' class='d-grid'>";
+
+        if ($valueLength < 3 && $valueLength != 0)
+            $result .= "<div class='lead'>Введите больше 2 символов.</div>";
+
+        if (count($patternList) > 0) {
+            foreach ($patternList as $pattern)
+                $result .= DocumentBuilder::getPatternCard($pattern);
+        } else {
+            $result .= "<div class='lead'>Шаблоны не найдены.</div>";
+        }
+        $result .= "</div>";
+
+        return $result;
+    }
+
+    static function saveProtocolChanges($param)
     {
         if ($param['conscriptID'] === "")
             return "Ошибка сохранения информации протокола. ID призывника не найден.";
@@ -439,7 +499,7 @@ class postHandler
         }
     }
 
-    static function getRvkDiagnosisByConscriptID($param) 
+    static function getRvkDiagnosisByConscriptID($param)
     {
         $diagnosis = Database::execute("SELECT rvkDiagnosis FROM `conscript` WHERE id=:id", ["id" => $param['conscriptID']], "current")[0];
 
@@ -475,8 +535,9 @@ class postHandler
 
     static function editDocument($param)
     {
-        $query = "UPDATE `documents` SET  article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate, postPeriod=:postPeriod, reasonForCancel=:reasonForCancel, destinationPoints=:destinationPoints WHERE id = :id;";
+        $query = "UPDATE `documents` SET documentType=:documentType, article=:article, healthCategory=:healthCategory, complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis, documentDate=:documentDate, postPeriod=:postPeriod, reasonForCancel=:reasonForCancel, destinationPoints=:destinationPoints WHERE id = :id;";
         $dataArr = [
+            "documentType" => $param['documentType'],
             "article" => $param['articleInput'],
             "healthCategory" => $param['healthCategorySelect'],
             "complaint" => $param['complaintTextarea'],
@@ -525,13 +586,40 @@ class postHandler
         }
     }
 
-    static function saveProtocolValuesChanges($param) 
+    static function unlockCard($param)
+    {
+        if ($param['conscriptID'] === "")
+            return "Ошибка изменения статуса. ID призывника не найден.";
+        else {
+            $query = "UPDATE `conscript` SET inProcess=1 WHERE id=:id";
+            $dataArr = [
+                "id" => $param['conscriptID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+
+            $query = "UPDATE `documents` SET countable=0 WHERE conscriptID=:id";
+            $dataArr = [
+                "id" => $param['conscriptID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+
+            $query = "DELETE FROM `protocolChanges` WHERE conscriptID=:id";
+            $dataArr = [
+                "id" => $param['conscriptID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+
+            return "reloadPage";
+        }
+    }
+
+    static function saveProtocolValuesChanges($param)
     {
         if ($param['conscriptID'] === "")
             return "Ошибка сохранения изменений. ID призывника не найден.";
         else {
 
-            if(!empty($param['conscriptID']) && !empty(Helper::formatDateToView($param['birthDate'])) && !empty($param['rvkDiagnosis'])) {
+            if (!empty($param['conscriptID']) && !empty(Helper::formatDateToView($param['birthDate'])) && !empty($param['rvkDiagnosis'])) {
                 $queryConscript = "UPDATE `conscript` SET name=:name, birthDate=:birthDate, rvkDiagnosis=:rvkDiagnosis WHERE id=:id";
                 $dataArrConscript = [
                     "id" => $param['conscriptID'],
@@ -541,11 +629,10 @@ class postHandler
                 ];
                 Database::execute($queryConscript, $dataArrConscript, "current");
             }
-            
+
             $protocolChanges = Helper::getProtocolChanges($param['conscriptID']);
-		    if(count($protocolChanges) > 0) 
-		    {
-		    	$queryProtocol = "UPDATE `protocolChanges` SET complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis WHERE id=:id";
+            if (count($protocolChanges) > 0) {
+                $queryProtocol = "UPDATE `protocolChanges` SET complaint=:complaint, anamnez=:anamnez, objectData=:objectData, specialResult=:specialResult, diagnosis=:diagnosis WHERE id=:id";
                 $dataArrProtocol = [
                     "id" => $protocolChanges[0]["id"],
                     "complaint" => trim($param['complaint']),
@@ -556,7 +643,7 @@ class postHandler
                 ];
                 Database::execute($queryProtocol, $dataArrProtocol, "current");
                 return "Изменения внесены в запись.";
-		    } else {
+            } else {
                 $queryProtocol = "INSERT INTO `protocolChanges` (conscriptID, complaint, anamnez, objectData, specialResult, diagnosis) VALUES (:conscriptID, :complaint, :anamnez, :objectData, :specialResult, :diagnosis);";
                 $dataArrProtocol = [
                     "conscriptID" => $param['conscriptID'],
@@ -570,7 +657,7 @@ class postHandler
 
                 return "Изменения добавлены.";
             }
-            
+
         }
     }
 

@@ -1,6 +1,6 @@
 {
-    "version" : "1.06А",
-    "versionDate" : "26.04.2024",
+    "version" : "1.21",
+    "versionDate" : "19.05.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -13,7 +13,8 @@
         "complaint" : ["Жалобы", "complaint"],
         "control" : ["Контроль", "control"],
         "return" : ["Возвраты", "return"],
-        "pattern" : ["Шаблоны", "pattern"]
+        "pattern" : ["Шаблоны", "pattern"],
+        "confirmation" : ["Утверждение", "confirmation"]
     },
     "userType" : {
         "0" : ["Администратор", "admin"],
@@ -29,16 +30,17 @@
         "10" : ["Медицинская сестра", "belocercovec"]
     },
     "permissionSet" : {
-        "specialist": ["main", "control", "complaint", "return", "changeCategory", "pattern", "canAdd"],
+        "specialist": ["main", "control", "complaint", "return", "confirmation", "changeCategory", "pattern", "canAdd"],
         "viewer" : ["main", "control", "complaint", "return", "changeCategory", "pattern", "viewForAll", "canAdd"],
         "belocercovec" : ["main", "viewForAll"],
-        "admin" : ["main", "admin"]
+        "admin" : ["main", "admin", "viewForAll"]
     },
     "documentType" : {
         "control" : "Контроль",
         "return" : "Возврат",
         "complaint" : "Жалоба",
-        "changeCategory" : "Изменение категории"
+        "changeCategory" : "Изменение категории",
+        "confirmation" : "Утверждение"
     },
     "searchType" : {
         "name" : "Поиск по ФИО",

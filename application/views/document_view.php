@@ -32,7 +32,6 @@ $documentName = $edit ? "Редактирование документа - " . C
     </div>
 
     <input class="d-none" type="text" id="conscriptID">
-    <input class="d-none" type="text" id="documentType" value="<? echo $_GET['documentType'] ?>">
     <input id="showSelect" class="d-none" value="true">
 
     <div id="search" class="mt-3">
@@ -56,7 +55,7 @@ $documentName = $edit ? "Редактирование документа - " . C
         <form <? echo $edit ? "id='editDocumentForm'" : "id='addDocumentForm'" ?> method="POST" class="mt-3 mb-0">
 
             <input class="form-control d-none"
-                value="<? echo $edit ? $currentDocument['id'] : $data['nextDocumentID'] ?>" id="documentID">
+                value="<? echo $edit ? $currentDocument['id'] : '' ?>" id="documentID">
 
             <div class="mb-3 d-flex">
                 <div class="col me-3">
@@ -160,46 +159,73 @@ $documentName = $edit ? "Редактирование документа - " . C
 
             <div class="mb-3">
                 <label for="destinationPointsInput" class="form-label">Пункты предназначения</label>
-                    <input type="text" class="form-control" id="destinationPointsInput" maxlength="30" <? if (isset($currentDocument["destinationPoints"]))
-                        echo "value='" . $currentDocument["destinationPoints"] . "'" ?>>
-            </div>
+                <input type="text" class="form-control" id="destinationPointsInput" maxlength="30" <? if (isset($currentDocument["destinationPoints"]))
+                    echo "value='" . $currentDocument["destinationPoints"] . "'" ?>>
+                </div>
 
-        <div class="mb-3">
-            <label for="reasonForCancelTextarea" class="form-label">Причина отмены решения</label>
-            <textarea class="form-control autogrow" id="reasonForCancelTextarea" maxlength="2500" rows="3"><? if (isset($currentDocument["reasonForCancel"]))
+                <div class="mb-3">
+                    <label for="reasonForCancelTextarea" class="form-label">Причина отмены решения</label>
+                    <textarea class="form-control autogrow" id="reasonForCancelTextarea" maxlength="2500" rows="3"><? if (isset($currentDocument["reasonForCancel"]))
                     echo $currentDocument["reasonForCancel"]; ?></textarea>
-        </div>
-
-
-    <div class="row">
-        <?
-        if ($edit) {
-            ?>
-            <div class="col-auto">
-                <button type="button"
-                    onclick="openAreYouSureModal('Вы уверены, что хотите удалить документ?', deleteDocument, <? echo $currentDocument['id'] ?>);"
-                    class="btn btn-outline-danger">Удалить документ</button>
             </div>
-        <?
-        }
-        ?>
-        <div class="col"></div>
-        <div class="col-auto">
-            <button id="saveButton" name="submit" type="submit"
-                class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Добавить документ"; ?></button>
-        </div>
+
+            
+                <div class="row">
+
+                    <?
+                    if ($edit && !Profile::isArchiveMode()) { //Меня заставили, сорри.
+                        ?>
+                        <div class="col-auto">
+                            <button type="button"
+                                onclick="openAreYouSureModal('Вы уверены, что хотите удалить документ?', deleteDocument, <? echo $currentDocument['id'] ?>);"
+                                class="btn btn-outline-danger">Удалить документ</button>
+                        </div>
+
+                        <div class="col-auto">
+                            <select id="documentType" class="form-control form-select" style="cursor:pointer;">
+                                <option value="control">Тип документа: Контроль</option>
+                                <option value="return">Тип документа: Возврат</option>
+                                <option value="complaint">Тип документа: Жалоба</option>
+                                <option value="changeCategory">Тип документа: Изменение категории</option>
+                            </select>
+                        </div>
+                    <?
+                    } else {
+                        ?>
+                        <input class="d-none" type="text" id="documentType" value="<? echo $_GET['documentType'] ?>">
+                    <?
+                    }
+                    ?>
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button id="saveButton" name="submit" type="submit"
+                            class="btn btn-outline-success"><? echo $edit ? "Сохранить изменения" : "Добавить документ"; ?></button>
+                    </div>
+                </div>
+        </form>
     </div>
-    </form>
-</div>
 </div>
 
 <?
 if ($edit) {
     echo "<script>
+        document.getElementById('documentType').value = '" . $currentDocument['documentType'] . "';
         document.getElementById('healthCategorySelect').value = '" . $currentDocument['healthCategory'] . "';
         document.getElementById('postPeriodSelect').value = '" . $currentDocument['postPeriod'] . "';
         document.addEventListener('DOMContentLoaded', () => {
             $('#healthCategorySelect').trigger('change');
         });
     </script>";
+} else {
+    if(isset($data["confirmationInfo"]))
+    {
+        echo "<script>
+            document.getElementById('healthCategorySelect').value = '" . $data["confirmationInfo"]['healthCategory'] . "';
+            document.getElementById('diagnosisTextarea').value = '" . $data["confirmationInfo"]['rvkDiagnosis'] . "';
+            document.addEventListener('DOMContentLoaded', () => {
+                $('#healthCategorySelect').trigger('change');
+            });
+        </script>";
+    }
 }
+

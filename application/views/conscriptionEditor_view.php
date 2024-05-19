@@ -71,9 +71,16 @@ if ($data["currentConscript"] != null) {
         </div>
 
         <div class="mb-3">
-                <label for="diagnosisTextarea" class="form-label">Диагноз РВК</label>
-                <textarea class="form-control autogrow" id="diagnosisTextarea" maxlength="2500" rows="5"><? if (isset($currentConscript["rvkDiagnosis"])) echo $currentConscript["rvkDiagnosis"]; ?></textarea>
-        </div>
+                <label for="diagnosisTextarea" class="form-label col">Диагноз</label>
+                <div>
+                    <textarea class="form-control autogrow" id="diagnosisTextarea" maxlength="2500" rows="5"><? if (isset($currentConscript["rvkDiagnosis"])) echo $currentConscript["rvkDiagnosis"]; ?></textarea>
+                    <? if($edit) { ?>
+                    <button type="button" onclick="copyDocumentDiagnosis();" class="btn btn-outline-dark col-auto"
+                        style="position: relative;float: right;bottom: 2.5rem;">Копировать диагноз из документа</button>
+                    <? } ?>
+                </div>
+        
+            </div>
 
         <div class="mb-3 d-flex">
             <div class="col me-3">
@@ -119,7 +126,7 @@ if ($data["currentConscript"] != null) {
 
         <div class="row">
             <?
-            if($edit) {
+            if($edit && !Profile::isArchiveMode()) {
             ?>
             <div class="col-auto">
                 <button type="button" onclick="openAreYouSureModal('Вы уверены, что хотите удалить призывника и все связанные с ним документы?', deleteConscript, <?echo $currentConscript['id']?>);" class="btn btn-outline-danger">Удалить призывника</button>

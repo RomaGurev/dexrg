@@ -30,7 +30,7 @@ class Database
 
         if (!$pdo) {
             // Подключение к БД
-            $dsn = 'mysql:dbname=' . static::getCurrentBase() . ';host=' . $_SERVER['SERVER_ADDR'];
+            $dsn = 'mysql:dbname=' . Profile::getSelectedBase() . ';host=' . $_SERVER['SERVER_ADDR'];
             $pdo = new PDO($dsn, Config::getValue('database')['db_user'], Config::getValue('database')['db_pass']);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
@@ -91,7 +91,9 @@ class Database
         for ($i = 0; $i < count($databases); $i++) {
             if ($databases[$i]["Database"] != "information_schema" && $databases[$i]["Database"] != "mysql" && $databases[$i]["Database"] != "performance_schema" && $databases[$i]["Database"] != "vvk_settings") {
                 $result[] = $databases[$i]["Database"];
+                rsort($result);
             }
+
         }
         return $result;
     }
@@ -100,6 +102,18 @@ class Database
     {
         $quaryResult = Database::execute("SELECT selectedDatabase FROM dbSettings");
         return $quaryResult[0]["selectedDatabase"];
+    }
+
+    public static function getLastArchiveBase()
+    {
+        $databases = Database::execute("SHOW DATABASES");
+        for ($i = 0; $i < count($databases); $i++) {
+            if ($databases[$i]["Database"] != "information_schema" && $databases[$i]["Database"] != "mysql" && $databases[$i]["Database"] != "performance_schema" && $databases[$i]["Database"] != "vvk_settings" && $databases[$i]["Database"] != static::getCurrentBase()) {
+                $result[] = $databases[$i]["Database"];
+            }
+        }
+        rsort($result);
+        return $result[0];
     }
 
     public static function setCurrentBase($dbName)

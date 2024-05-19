@@ -51,11 +51,8 @@ class Statistic
         }
 
         foreach ($resultDocArr as $key => $value) {
-
             if ($value["docCat"] == mb_substr(Helper::getFinalHealthResult($key)["healthCategory"], 0, 1))
                 $statistic[$value["documentType"] . Config::getValue("categoryConverter")[$value["conCat"]] . "To" . Config::getValue("categoryConverter")[$value["docCat"]]]++;
-            //else
-            //    $statistic["debug"] .= "[" . $value["documentType"] . "{" . $value["docCat"] . "} | " . Helper::getFinalHealthResult($key)["documentType"]  . "{". mb_substr(Helper::getFinalHealthResult($key)["healthCategory"], 0, 1) . "}]";
         }
 
         //chartAdjustment
@@ -63,11 +60,22 @@ class Statistic
         $chartAdjustment["complaintCount"] = $this->nullCheck($complaintCount);
         $chartAdjustment["returnCount"] = $this->nullCheck($returnCount);
         $chartAdjustment["changeCategoryCount"] = $this->nullCheck($changeCategoryCount);
+        $chartAdjustment["confirmationCount"] = $this->nullCheck($confirmationCount);
         $chartAdjustment["allCount"] = $this->nullCheck(count($queryResult));
         //chartAdjustment
 
+        //chartConscripts
+        $chartConscripts["conscriptCount"] = Database::execute("SELECT count(id) AS count FROM conscript", null, "current")[0]["count"]; //Общее количество зарегистрированных призывников
+
+        $conscriptsForDate = Database::execute("SELECT * FROM (SELECT count(id) AS count, creationDate AS date FROM conscript GROUP BY creationDate ORDER BY STR_TO_DATE(creationDate, '%d.%m.%Y') DESC LIMIT 5) AS XYITA ORDER BY STR_TO_DATE(XYITA.date, '%d.%m.%Y') ASC", null, "current");
+        foreach ($conscriptsForDate as $value)
+            $resArr[$value["date"]] = $value["count"];
+        $chartConscripts["dates"] = $resArr;
+        //chartConscripts
+
         $statistic["chartChangeCategory"] = $chartChangeCategory;
         $statistic["chartAdjustment"] = $chartAdjustment;
+        $statistic["chartConscripts"] = $chartConscripts;
         return $statistic;
     }
 
@@ -79,9 +87,20 @@ class Statistic
     function prepareChartAdjustment($statistic)
     {
         $obj = [
-            "labels" => ['Контроль', 'Жалобы', 'Возвраты','Изменение категории'],
-            "data" => [$statistic["controlCount"], $statistic["complaintCount"], $statistic["returnCount"], $statistic["changeCategoryCount"]],
+            "labels" => ['Контроль', 'Жалобы', 'Возвраты', 'Изменение категории', 'Утверждение'],
+            "data" => [$statistic["controlCount"], $statistic["complaintCount"], $statistic["returnCount"], $statistic["changeCategoryCount"], $statistic["confirmationCount"]],
             "titleText" => "Общее количество документов: " . $statistic["allCount"]
+        ];
+
+        return $obj;
+    }
+
+    function prepareChartConscripts($statistic)
+    {
+        $obj = [
+            "labels" => array_keys($statistic["dates"]),
+            "data" => array_values($statistic["dates"]),
+            "titleText" => "Зарегистрировано призывников: " . $statistic["conscriptCount"]
         ];
 
         return $obj;
@@ -167,7 +186,11 @@ class Statistic
         <li class='nav-item' role='presentation'>
           <button class='nav-link' id='pills-changecategory-tab' data-bs-toggle='pill' data-bs-target='#pills-changecategory' type='button' role='tab' aria-controls='pills-changecategory' aria-selected='false'>Изменение категории</button>
         </li>
-      </ul>
+        " . (Profile::isHavePermission("confirmation") ? "
+        <li class='nav-item' role='presentation'>
+          <button class='nav-link' id='pills-confirmation-tab' data-bs-toggle='pill' data-bs-target='#pills-confirmation' type='button' role='tab' aria-controls='pills-confirmation' aria-selected='false'>Утверждение</button>
+        </li>" : "") .
+      "</ul>
       <div class='tab-content' id='pills-tabContent'>
         <div class='tab-pane fade show active' id='pills-control' role='tabpanel' aria-labelledby='pills-control-tab'>
         
@@ -390,9 +413,73 @@ class Statistic
             </div>
 
         </div>
-    <!-- Конец -->
-        
-       
+        <!-- Конец -->
+        </div>
+
+        <div class='tab-pane fade' id='pills-confirmation' role='tabpanel' aria-labelledby='pills-confirmation-tab'>
+        <!-- Начало -->
+            <div class='d-flex gap-2' style='flex-flow: wrap;'>
+                <div class='healthCard me-2'>
+                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>A <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
+                    <div class='healthBody'>
+                        А — " . $this->nullCheck($statistic["confirmationAToA"]) . " <br>
+                        Б — " . $this->nullCheck($statistic["confirmationAToB"]) . " <br>
+                        В — " . $this->nullCheck($statistic["confirmationAToV"]) . " <br>
+                        Г — " . $this->nullCheck($statistic["confirmationAToG"]) . " <br>
+                        Д — " . $this->nullCheck($statistic["confirmationAToD"]) . " <br>
+                        О — " . $this->nullCheck($statistic["confirmationAToO"]) . "
+                    </div>
+                </div>
+
+                <div class='healthCard me-2'>
+                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>Б <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
+                    <div class='healthBody'>
+                        А — " . $this->nullCheck($statistic["confirmationBToA"]) . " <br>
+                        Б — " . $this->nullCheck($statistic["confirmationBToB"]) . " <br>
+                        В — " . $this->nullCheck($statistic["confirmationBToV"]) . " <br>
+                        Г — " . $this->nullCheck($statistic["confirmationBToG"]) . " <br>
+                        Д — " . $this->nullCheck($statistic["confirmationBToD"]) . " <br>
+                        О — " . $this->nullCheck($statistic["confirmationBToO"]) . "
+                    </div>
+                </div>
+
+                <div class='healthCard me-2'>
+                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>В <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
+                    <div class='healthBody'>
+                        А — " . $this->nullCheck($statistic["confirmationVToA"]) . " <br>
+                        Б — " . $this->nullCheck($statistic["confirmationVToB"]) . " <br>
+                        В — " . $this->nullCheck($statistic["confirmationVToV"]) . " <br>
+                        Г — " . $this->nullCheck($statistic["confirmationVToG"]) . " <br>
+                        Д — " . $this->nullCheck($statistic["confirmationVToD"]) . " <br>
+                        О — " . $this->nullCheck($statistic["confirmationVToO"]) . "
+                    </div>
+                </div>
+
+                <div class='healthCard me-2'>
+                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>Г <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
+                    <div class='healthBody'>
+                        А — " . $this->nullCheck($statistic["confirmationGToA"]) . " <br>
+                        Б — " . $this->nullCheck($statistic["confirmationGToB"]) . " <br>
+                        В — " . $this->nullCheck($statistic["confirmationGToV"]) . " <br>
+                        Г — " . $this->nullCheck($statistic["confirmationGToG"]) . " <br>
+                        Д — " . $this->nullCheck($statistic["confirmationGToD"]) . " <br>
+                        О — " . $this->nullCheck($statistic["confirmationGToO"]) . "
+                    </div>
+                </div>
+
+                <div class='healthCard'>
+                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>Д <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
+                    <div class='healthBody'>
+                        А — " . $this->nullCheck($statistic["confirmationDToA"]) . " <br>
+                        Б — " . $this->nullCheck($statistic["confirmationDToB"]) . " <br>
+                        В — " . $this->nullCheck($statistic["confirmationDToV"]) . " <br>
+                        Г — " . $this->nullCheck($statistic["confirmationDToG"]) . " <br>
+                        Д — " . $this->nullCheck($statistic["confirmationDToD"]) . " <br>
+                        О — " . $this->nullCheck($statistic["confirmationDToO"]) . "
+                    </div>
+                </div>
+            </div>  
+        <!-- Конец -->
         </div>
       </div>
             
@@ -427,6 +514,7 @@ class Statistic
 
         $result = [
             "chartAdjustment" => $this->prepareChartAdjustment($statistic["chartAdjustment"]),
+            "chartConscripts" => $this->prepareChartConscripts($statistic["chartConscripts"]),
             "chartChangeCategory" => $this->prepareChartChangeCategory($statistic),
             "chartControl" => $this->prepareChartControl($statistic),
             "chartComplaint" => $this->prepareChartComplaint($statistic),

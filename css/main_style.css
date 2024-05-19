@@ -57,6 +57,17 @@ button .svg-search:hover image {
     top: 11px;
 }
 
+.point-uncountable {
+    width: 12px;
+    height: 12px;
+    background-color: #F8F8F8;
+    border-radius: 2px;
+    position: relative;
+    right: 7px;
+    top: 11px;
+    border: 3px solid #0d6efd;
+}
+
 .documentLine {
     border-left: 3px solid #0d6efd; 
     margin: 0px 0px 0px 10px;
@@ -99,4 +110,12 @@ button .svg-search:hover image {
 
 .w-15 {
     width: 15% !important;
+}
+
+.changeNameInput {
+    background: 0 !important; 
+}
+
+.changeNameActiveInput {
+    background-color: #e9ecef;
 }

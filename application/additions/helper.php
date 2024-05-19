@@ -96,6 +96,31 @@ class Helper
         return $healthResult;
     }
 
+    public static function getUserPatternList($additionQuery = null)
+	{
+		$quary = "SELECT * FROM `patternList`";
+
+        if(!Profile::isHavePermission("viewForAll") || $additionQuery != null)
+            $quary .= " WHERE";
+
+		if(!Profile::isHavePermission("viewForAll")) {
+			$quary .= " ownerID=:ownerID";
+            if($additionQuery != null)
+                $quary .= " AND";
+			$dataArr = [
+				"ownerID" => Profile::$user['id']
+			];
+		}
+
+        if($additionQuery != null) {
+            $quary .= " name LIKE '%" . $additionQuery . "%'";
+        }
+
+		$quary .= " ORDER BY ID desc;";
+
+		return Database::execute($quary, $dataArr);
+	}
+
     public static function getShortenString($str, $limit = 300)
     {
         return mb_strimwidth($str, 0, $limit, "...");
@@ -152,7 +177,7 @@ class Helper
     public static function getResultDocuments($userID) 
     {
         $documentPriority = ["complaint" => 0, "return" => 1, "control" => 2, "changeCategory" => 3];
-        $documents = Database::execute("SELECT * FROM `documents` WHERE conscriptID=:conscriptID", ["conscriptID" => $userID], "current");
+        $documents = Database::execute("SELECT * FROM `documents` WHERE conscriptID=:conscriptID AND countable=1", ["conscriptID" => $userID], "current");
         $result = array();
 
         foreach ($documents as $value) {
@@ -166,7 +191,7 @@ class Helper
         return $result;
     }
 
-    public static function GetInProccesStatus($userID) 
+    public static function getInProccesStatus($userID) 
     {
         return Database::execute("SELECT inProcess FROM `conscript` WHERE id=:id", ["id" => $userID], "current")[0]["inProcess"];
     } 

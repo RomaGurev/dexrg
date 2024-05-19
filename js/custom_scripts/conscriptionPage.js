@@ -103,3 +103,27 @@ $("#editConscriptForm").submit(function (event) {
 
 
 });
+
+//Копирование диагноза РВК
+copyDocumentDiagnosis = function() {
+    showLoading(true);
+
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            getDocumentDiagnosisByConscriptID: {
+                conscriptID: $('#conscriptNumber').val()
+            }
+        },
+        success: function (data) {
+            showLoading(false);
+
+            if(data.length > 0)
+                $('#diagnosisTextarea').val(data);
+            else
+                showToast('Диагноз документа пуст.', 'Данные призывника');
+        }
+    });
+};

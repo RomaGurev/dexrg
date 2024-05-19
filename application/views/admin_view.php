@@ -18,14 +18,10 @@
 <div class="row row-cols-2">
     <div class="col-3">
 
-        <div class="p-4 mb-3 rounded-3 border shadow">
-
+        <div class="p-4 mb-3 rounded-3 border shadow d-none">
             <h3 class="display-6 lh-1 fs-2">Добавить аккаунт</h3>
             <div class="pt-lg-3">
-
-
                 <form id="addUserForm" method="POST" class="mb-0">
-
                     <div class="mb-3">
                         <label for="addAccount[name]" class="form-label">ФИО</label>
                         <input type="text" class="form-control" name="addAccount[name]" id="userAccountName" required>
@@ -62,11 +58,7 @@
                     <button name="submit" type="submit" class="btn btn-outline-secondary w-100">Создать учетную
                         запись</button>
                 </form>
-
-
-
             </div>
-
         </div>
 
         <div class="p-4 mb-3 rounded-3 border shadow">
@@ -194,25 +186,31 @@
             </div>
         </div>
 
-        <div class="p-4 rounded-3 border shadow">
-            <h3 class="display-6 lh-1 fs-2">Информация о базе данных</h3>
-            <div class="pt-lg-3">
-                <p class="lead mb-3">
-                    В данном разделе отображается информация о выбранной базе данных.
-                </p>
-            </div>
-        </div>
-
         <div class="p-4 rounded-3 border shadow mt-3">
             <h3 class="display-6 lh-1">Тестирование</h3>
             <div class="pt-lg-3">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-lg-3">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#RGModal"
                         class="btn btn-primary px-4">Модалка Тест</button>
-                    <button type="button" class="btn btn-outline-secondary px-4" id="liveToastBtn">Сообщение
+                    <button type="button" class="btn btn-outline-secondary px-4" onclick="showToast('Тест', 'Заголовок');">Сообщение
                         тест</button>
                 </div>
             </div>
+        </div>
+
+        <div class="p-4 rounded-3 border shadow mt-3">
+            <h3 class="display-6 lh-1">Профиль</h3>
+            <?  
+            print_r(Profile::$user);
+            ?>
+            <h3 class="display-6 lh-1">Режим архива</h3>
+            <?  
+            $stat["isArchiveMode"] = Profile::isArchiveMode();
+            $stat["getCurrentBase From Database class"] = Database::getCurrentBase();
+            $stat["getSelectedBase From Profile class"] = Profile::getSelectedBase();
+            
+            print_r($stat);
+            ?>
         </div>
 
     </div>

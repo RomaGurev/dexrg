@@ -8,7 +8,7 @@
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
         <h3 class="display-6 lh-1 col m-0">Контроль</h3>
-        <? if (Profile::isHavePermission("canAdd")) { ?>
+        <? if (Profile::isHavePermission("canAdd") && !Profile::isArchiveMode()) { ?>
             <a href="/document?documentType=control" class="btn btn-outline-success col-auto">Добавить контроль</a>
         <? } ?>
     </div>

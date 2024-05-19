@@ -27,24 +27,6 @@ function resizeInput() {
         this.style.width = "50px";
 }
 
-function setInProcessFalse(id) {
-    showLoading(true);
-    $.post({
-        url: '/application/core/postHandler.php',
-        method: 'post',
-        dataType: 'text',
-        data: {
-            setInProcessFalse: {
-                conscriptID: id
-            }
-        },
-        success: function (data) {
-            window.scrollTo(0, 0);
-            showLoading(false);
-        }
-    });
-}
-
 
 function saveProtocolValuesChanges(id) {
     showLoading(true);

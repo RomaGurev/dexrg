@@ -11,7 +11,8 @@ class Profile
         "id" => -1,
         "position" => -1,
         "name" => "",
-        "permissions" => []
+        "permissions" => [],
+        "selectedBase" => ""
     ];
 
     public static $isAuth = false;
@@ -20,13 +21,22 @@ class Profile
     {
         session_start();
         static::$isAuth = static::login();
+
+        if(isset($_GET["archive"]))
+            $_SESSION['archiveMode'] = true;
+
+        if($_SESSION['archiveMode']) {
+            $_SESSION['selectedBase'] = $_SESSION['selectedBase'] ?? Database::getLastArchiveBase();
+        }
+
         if (isset($_SESSION['id'])) {
             static::$user["id"] = $_SESSION['id'];
 
-            if (isset($_SESSION['position']) && isset($_SESSION['name']) && isset($_SESSION['permissions'])) {
+            if (isset($_SESSION['position']) && isset($_SESSION['name']) && isset($_SESSION['permissions']) && isset($_SESSION['selectedBase'])) {
                 static::$user["position"] = $_SESSION['position'];
                 static::$user["name"] = $_SESSION['name'];
                 static::$user["permissions"] = $_SESSION['permissions'];
+                static::$user["selectedBase"] = $_SESSION['selectedBase'];
             } else {
                 $quary = "SELECT name, position FROM `staff` WHERE id=:id";
                 $dataArr = ["id" => $_SESSION['id']];
@@ -34,6 +44,12 @@ class Profile
                 static::$user["position"] = $ans[0]["position"];
                 static::$user["name"] = $ans[0]["name"];
                 static::$user["permissions"] = Config::getValue("permissionSet")[Config::getValue("userType")[static::$user["position"]][1]];
+                static::$user["selectedBase"] = $_SESSION['selectedBase'] ?? Database::getCurrentBase();
+
+                $_SESSION['position'] = static::$user["position"];
+                $_SESSION['name'] = static::$user["name"];
+                $_SESSION['permissions'] = static::$user["permissions"];
+                $_SESSION['selectedBase'] = static::$user["selectedBase"];
             }
         }
     }
@@ -49,7 +65,13 @@ class Profile
         $_SESSION['id'] = "";
         setcookie("PHPSESSID", "", time() - 360000, '/');
 
-        return "reloadPage";
+
+        $_SESSION['selectedBase'] = $_SESSION['selectedBase'] ?? Database::getLastArchiveBase();
+
+        if($_SESSION['archiveMode'])
+            return "reloadPageArchive";
+        else
+            return "reloadPage";
     }
 
     public static function isAdmin()
@@ -60,6 +82,18 @@ class Profile
             return false;
     }
 
+    public static function getSelectedBase()
+    {
+        if(isset($_SESSION['selectedBase']))
+            return $_SESSION['selectedBase'];
+
+        return Database::getCurrentBase();
+    }
+
+    public static function isArchiveMode() 
+    {
+        return static::getSelectedBase() != Database::getCurrentBase();
+    }
 
     private static function login()
     {

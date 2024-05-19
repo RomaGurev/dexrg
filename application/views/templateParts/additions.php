@@ -5,21 +5,8 @@
 */
 ?>
 
-<!-- Всплывающее сообщение -->
-<div class="container toast-container position-fixed bottom-0 end-0 p-3 mb-5">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <svg width="18" height="18" class="me-2">
-        <image xlink:href="/images/icons/info-circle.svg" width="18" height="18" />
-      </svg>
-      <strong class="me-auto">Сообщение</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      Тестовое сообщение
-    </div>
-  </div>
-</div>
+<!-- Контейнер для всплывающих сообщений showToast -->
+<div id="toastContainer" class="container toast-container position-fixed bottom-0 start-0 mb-5"></div>
 
 <!-- Модальное окно -->
 <div class="modal fade" id="RGModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

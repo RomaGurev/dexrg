@@ -8,7 +8,7 @@
 <div class="p-4 align-items-center rounded-3 border shadow">
     <div class="d-flex">
         <h3 class="display-6 lh-1 col m-0">Жалобы</h3>
-        <? if (Profile::isHavePermission("canAdd")) { ?>
+        <? if (Profile::isHavePermission("canAdd") && !Profile::isArchiveMode()) { ?>
             <a href="/document?documentType=complaint" class="btn btn-outline-success col-auto">Добавить жалобу</a>
         <? } ?>
     </div>

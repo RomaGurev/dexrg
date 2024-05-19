@@ -13,8 +13,6 @@ authPosition = function (positionIndex) {
 document.addEventListener('DOMContentLoaded', () => {
     let clownClick = 0;
     $.getJSON('/application/additions/statistic.php', function (result) {
-        console.log(result);
-
         fillCharts(result);
         fillText(result["statisticText"]);
     });
@@ -32,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+//Функция для ресайза чартов
 function resizeCharts() {
     for (let id in Chart.instances) 
             Chart.instances[id].resize();
@@ -40,13 +39,8 @@ function resizeCharts() {
 // Получение случайного цвета для chart'a из заданной цветовой палитры
 function getRandomColorForCharts(sizeOfDataSet) {
     let arrOfColors = [];
-    /*let palette = ['#f3a683', '#f7d794', '#778beb', '#e77f67', '#cf6a87', 
-                    '#f19066', '#f5cd79', '#546de5', '#e15f41', '#c44569',
-                    '#786fa6', '#f8a5c2', '#63cdda', '#ea8685',
-                    '#574b90', '#f78fb3', '#3dc1d3', '#e66767']; */
-
     let palette = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', 
-    '#f1c40f', '#e67e22', '#e74c3c', '#e15f41', '#c44569'];
+    '#ff8c69', '#e67e22', '#e74c3c', '#e15f41', '#c44569'];
 
     for (let i = 0; i < sizeOfDataSet; i++) {
         let indexToDelete = Math.floor(Math.random() * 100) % palette.length;
@@ -57,11 +51,13 @@ function getRandomColorForCharts(sizeOfDataSet) {
     return arrOfColors;
 }
 
+//Заполнение текста статистики из AJAX запроса
 function fillText(statisticText) {
     $('#statisticText').empty();
     $('#statisticText').append(statisticText);
 }
 
+//Заполнение чартов из AJAX запроса
 function fillCharts(statisticObject) {
     new Chart(
         document.querySelector('.chartAdjustment'),
@@ -94,6 +90,39 @@ function fillCharts(statisticObject) {
             }
         }
     );
+
+    new Chart(
+        document.querySelector('.chartConscripts'),
+        {
+            type: 'line',
+            data: {
+                labels: statisticObject["chartConscripts"]["labels"],
+                datasets: [
+                    {
+                        label: '',
+                        data: statisticObject["chartConscripts"]["data"],
+                        backgroundColor: getRandomColorForCharts(statisticObject["chartConscripts"]["data"].length)
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: statisticObject["chartConscripts"]["titleText"]
+                    },
+                    colors: {
+                        forceOverride: false
+                    }
+                },
+                responsive: true
+            }
+        }
+    );
+    
 
     new Chart(
         document.querySelector('.chartChangeCategory'),
@@ -267,6 +296,14 @@ $("#logout").click(function () {
         success: function (data) {
             if (data == "reloadPage") {
                 location.reload();
+            } else if (data = "reloadPageArchive"){
+                
+                const url = new URL(document.location);
+                const searchParams = url.searchParams;
+                searchParams.set('archive', "rgnsk");
+                window.history.pushState({}, '', url.toString());
+
+                location.reload();
             } else {
                 showLoading(false);
             }
@@ -274,11 +311,81 @@ $("#logout").click(function () {
     });
 });
 
-//Нажатие на блок возвратов
-$("#returnBlock").click(function () {
-    location.href = "/return";
+$("#changeNameButton").click(function () {
+    let icon = $("#changeNameIcon");
+    let inp = $("#changeNameInput");
+
+    icon.removeClass("fa-pencil");
+    icon.addClass("fa-save");
+
+    inp.removeClass("changeNameInput");
+    inp.addClass("changeNameActiveInput");
+    inp.prop('disabled', false);
+    inp.focus();
+
+    $("#changeNameButton").on("click.rgnsk", function() {
+        $("#changeNameButton").off("click.rgnsk");
+        saveNameChanges();
+    });
 });
-//Нажатие на блок обследований
-$("#inspectionBlock").click(function () {
-    location.href = "/inspection";
+
+function saveNameChanges() {
+    let icon = $("#changeNameIcon");
+    let inp = $("#changeNameInput");
+    icon.addClass("fa-pencil");
+    icon.removeClass("fa-save");
+    inp.addClass("changeNameInput");
+    inp.removeClass("changeNameActiveInput");
+    inp.prop('disabled', true);
+
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            changeUserName: {
+                name: $("#changeNameInput").val()
+            }
+        },
+        success: function (data) {
+            if (data == "reloadPage") {
+                location.reload();
+            } else {
+                showToast("Изменения сохранены.", "Данные учетной записи");
+                showLoading(false);
+            }
+        }
+    });
+}
+
+let prevSelectVal;
+$('#archiveModeSelect').on('focus', function() {
+    prevSelectVal = this.value;
 });
+
+$("#archiveModeSelect").change(function() {
+    openAreYouSureModal('Вы уверены, что хотите выбрать базу данных ' + $("#archiveModeSelect").val() + '?', selectUserDatabase, $("#archiveModeSelect").val());
+    $("#archiveModeSelect").val(prevSelectVal);
+});
+
+function selectUserDatabase(database) {
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            selectUserDatabase: {
+                database: database
+            }
+        },
+        success: function (data) {
+            if (data == "reloadPage") {
+                location.reload();
+            } else {
+                showLoading(false);
+            }
+        }
+    });
+}

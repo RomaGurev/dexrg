@@ -15,7 +15,6 @@ class View
 
 	function generateView($content_view, $title = "Страница", $data = null, $print_mode = false)
 	{
-		
 		// преобразуем элементы массива данных в переменные
 		if(!empty($data) && is_array($data)) {
 			extract($data);
@@ -25,7 +24,7 @@ class View
 		внутри которого будет встраиваться вид
 		для отображения контента конкретной страницы.
 		*/
-		$title = "$title - ВВК";
+		$title = "$title - " . (Profile::isArchiveMode() ? "ВВК Архив" : "ВВК");
 		if(!$print_mode)
 			include "application/views/template.php";
 		else

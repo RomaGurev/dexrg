@@ -66,8 +66,6 @@ class Controller_Print extends Controller
 			array_push($diagnosis, $document["diagnosis"]);
 			array_push($anamnez, $document["anamnez"]);
 			array_push($article, $document["article"]);
-			if ($documentType == "complaint")
-				$data["anamnez"] .= "Не согласен с решением РПК.";
 
 			if ($document["healthCategory"] > $finalCategory)
 				$finalCategory = $document["healthCategory"];
@@ -77,7 +75,7 @@ class Controller_Print extends Controller
 		}
 
 		$data["complaint"] = implode("<br>", $complaint) == "нет" ? "Жалоб нет." : "Жалобы: " . implode("<br>", $complaint);
-		$data["anamnez"] = implode("<br>", $anamnez);
+		$data["anamnez"] = implode("<br>", $anamnez) . ($documentType == "complaint" ? "<br>Не согласен с решением РПК." : "");
 		$data["objectData"] = implode("<br>", $objectData);
 		$data["specialResult"] = implode("<br>", $specialResult);
 		$data["diagnosis"] = implode("<br>", $diagnosis);
@@ -107,9 +105,10 @@ class Controller_Print extends Controller
 		//Назначение
 		$healthCategory = mb_substr($finalCategory, 0, 1);
 		$medicalAppointment = mb_substr($finalCategory, 1, 1);
-		$data["appointment"] = "Статья " . implode(", ", $article) . ($healthCategory == "О" ? "" : "<br>Категория годности<br>«" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory)) . ($healthCategory == "Г" && !empty($postPeriod) ? " сроком на " . Config::getValue("postPeriod")[$postPeriod] : "") . (!empty($medicalAppointment) ? "<br>Показатель предназначения - " . $medicalAppointment : "");
+		$data["appointment"] = "Статья " . implode(", ", $article) . "<br>Категория годности<br>«" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory) . ($healthCategory == "Г" && !empty($postPeriod) ? " сроком на " . Config::getValue("postPeriod")[$postPeriod] : "") . (!empty($medicalAppointment) ? "<br>Показатель предназначения - " . $medicalAppointment : "");
+		
 		if ($healthCategory == "О")
-			$data["appointment"] .= "<br>Подлежит обследованию.";
+			$data["appointment"] = "Подлежит обследованию.";
 		//Назначение
 
 		//Решение
@@ -251,7 +250,7 @@ class Controller_Print extends Controller
 			switch ($healthCategory) {
 				case 'А':
 				case 'Б':
-					$data["base"] .= "п.1 ст. 22 ФЗ «О воинской обязанности и военной службе»";
+					$data["base"] .= "ст. 22 п.1 ФЗ «О воинской обязанности и военной службе»";
 					break;
 				case 'В':
 					$data["base"] .= "ст. 23 п.1 «а» ФЗ «О воинской обязанности и военной службе»";
@@ -275,7 +274,7 @@ class Controller_Print extends Controller
 					$data["conclusion"] .= "ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>освободить от призыва на военную службу.</b>";
 					break;
 				case 'Г':
-					$data["conclusion"] .= "ст. 28. п.1 ФЗ «О воинской обязанности и военной службе» - <b>предоставить отсрочку от призыва на военную службу.</b>";
+					$data["conclusion"] .= "ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>предоставить отсрочку от призыва на военную службу.</b>";
 					break;
 				case 'Д':
 					$data["conclusion"] .= "ст. 28 п.1 ФЗ «О воинской обязанности и военной службе» - <b>освободить от исполнения воинской обязанности.</b>";

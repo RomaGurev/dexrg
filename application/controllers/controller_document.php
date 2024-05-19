@@ -9,8 +9,6 @@ class Controller_Document extends Controller
 		    $data['currentDocument'] = $this->getDocumentByID($_GET["id"]);
 			$data['currentConscript'] = $this->getConscriptByID($data['currentDocument']['conscriptID']);
 		}
-        else
-            $data['nextDocumentID'] = $this->getNextDocumentID();
 
         if(isset($_GET["conscript"]))
 		    $data['currentConscript'] = $this->getConscriptByID($_GET["conscript"]);
@@ -21,6 +19,10 @@ class Controller_Document extends Controller
         if(isset($_GET["documentType"])) {
 			if(array_key_exists($_GET["documentType"], Config::getValue("documentType"))) {
             	$data["activeMenuItem"] = $_GET["documentType"];
+
+				if($_GET["documentType"] == "confirmation" && !empty($_GET["conscript"]))
+					$data["confirmationInfo"] = $this->getConfirmationInfo($_GET["conscript"]);
+
 		    	$this->view->generateView('document_view.php', isset($_GET["id"]) ? "Редактирование документа" : "Добавление документа", $data);
 			} else
 				$this->view->errorPage("Некорректный тип документа.");
@@ -53,8 +55,8 @@ class Controller_Document extends Controller
 		return Database::execute("SELECT * FROM `documents` WHERE id=:id", ["id" => $id], "current")[0];
 	}
 
-    //Функция для получения следующего номера документа
-	function getNextDocumentID() {
-		return Database::execute("SELECT id FROM `documents` ORDER BY id DESC LIMIT 1", null, "current")[0]["id"]+1;
+	//Функция для получения сведений документа "Утверждение"
+	function getConfirmationInfo($id) {
+		return Database::execute("SELECT rvkDiagnosis, healthCategory FROM `conscript` WHERE id=:id", ["id" => $id], "current")[0];
 	}
 }

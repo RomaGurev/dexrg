@@ -3,6 +3,13 @@
 Файл, подключаемый view.php.
 > содержит основную разметку страницы.
 */
+
+//$debugMode = $_SERVER["SERVER_ADDR"] == "10.0.0.226";
+
+//$debugInfo["isArchiveMode"] = Profile::isArchiveMode();
+//$debugInfo["CurrentBaseDC"] = Database::getCurrentBase();
+//$debugInfo["SelectedBasePC"] = Profile::getSelectedBase();
+//$debugInfo["_GET Archive"] = $_GET["archive"];
 ?>
 
 <!DOCTYPE html class="h-100">
@@ -10,10 +17,10 @@
 
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="/images/<? echo Profile::isArchiveMode() ? "favicon_archive" : "favicon" ?>.ico" type="image/x-icon">
 	<link rel="stylesheet" href="/bootstrap/bootstrap.css" />
 	<link rel="stylesheet" href="/css/font-awesome.min.css" />
-	<link rel="stylesheet" href="/css/main_style.css" />
+	<link rel="stylesheet" href="/css/main_style.css?ct=<? echo filemtime("css\\main_style.css") ?>"/>
 
 	<title>
 		<?= $title ?>
@@ -21,7 +28,15 @@
 </head>
 
 <body class="d-flex flex-column h-100">
-
+	<?
+	/*
+	if($debugMode) {
+		echo "<div class='bg-dark bg-gradient'> <div class='container text-white'>Дебаг информация: ";
+		print_r($debugInfo);
+		echo "</div></div>";
+	}
+	*/
+	?>
 	<!-- HEADER -->
 	<? include 'application/views/templateParts/header.php' ?>
 	<!-- ОСНОВНОЙ КОНТЕНТ -->
@@ -56,5 +71,4 @@
 	}
 	?>
 </body>
-
 </html>
