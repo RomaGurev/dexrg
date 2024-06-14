@@ -40,7 +40,7 @@
 
 
     <div id="searchResult" style="overflow: hidden;" class="mt-2">
-        <div id="resizeDiv">
+        <div id="resizeDiv" class="d-grid gap-2">
             <?
             if (count($data["complaint"]) > 0) {
                 foreach ($data["complaint"] as $value) {

@@ -114,7 +114,7 @@ class Statistic
         $obj = [
             "labels" => ['А', 'Б'],
             "data" => [$changeCategoryA, $changeCategoryB],
-            "titleText" => "Изменение категории"
+            "titleText" => "Документ: изменение категории"
         ];
         return $obj;
     }
@@ -131,7 +131,7 @@ class Statistic
         $obj = [
             "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
             "data" => [$controlA, $controlB, $controlV, $controlG, $controlD, $controlO],
-            "titleText" => "Контроль"
+            "titleText" => "Документ: контроль"
         ];
         return $obj;
     }
@@ -148,7 +148,7 @@ class Statistic
         $obj = [
             "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
             "data" => [$complaintA, $complaintB, $complaintV, $complaintG, $complaintD, $complaintO],
-            "titleText" => "Жалобы"
+            "titleText" => "Документ: жалоба"
         ];
         return $obj;
     }
@@ -165,7 +165,7 @@ class Statistic
         $obj = [
             "labels" => ['А', 'Б', 'В', 'Г', 'Д', 'О'],
             "data" => [$returnA, $returnB, $returnV, $returnG, $returnD, $returnO],
-            "titleText" => "Возвраты"
+            "titleText" => "Документ: возврат"
         ];
         return $obj;
     }
@@ -420,62 +420,23 @@ class Statistic
         <!-- Начало -->
             <div class='d-flex gap-2' style='flex-flow: wrap;'>
                 <div class='healthCard me-2'>
-                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>A <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
-                    <div class='healthBody'>
-                        А — " . $this->nullCheck($statistic["confirmationAToA"]) . " <br>
-                        Б — " . $this->nullCheck($statistic["confirmationAToB"]) . " <br>
-                        В — " . $this->nullCheck($statistic["confirmationAToV"]) . " <br>
-                        Г — " . $this->nullCheck($statistic["confirmationAToG"]) . " <br>
-                        Д — " . $this->nullCheck($statistic["confirmationAToD"]) . " <br>
-                        О — " . $this->nullCheck($statistic["confirmationAToO"]) . "
-                    </div>
-                </div>
-
-                <div class='healthCard me-2'>
-                    <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>Б <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
-                    <div class='healthBody'>
-                        А — " . $this->nullCheck($statistic["confirmationBToA"]) . " <br>
-                        Б — " . $this->nullCheck($statistic["confirmationBToB"]) . " <br>
-                        В — " . $this->nullCheck($statistic["confirmationBToV"]) . " <br>
-                        Г — " . $this->nullCheck($statistic["confirmationBToG"]) . " <br>
-                        Д — " . $this->nullCheck($statistic["confirmationBToD"]) . " <br>
-                        О — " . $this->nullCheck($statistic["confirmationBToO"]) . "
-                    </div>
-                </div>
-
-                <div class='healthCard me-2'>
                     <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>В <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
                     <div class='healthBody'>
-                        А — " . $this->nullCheck($statistic["confirmationVToA"]) . " <br>
-                        Б — " . $this->nullCheck($statistic["confirmationVToB"]) . " <br>
-                        В — " . $this->nullCheck($statistic["confirmationVToV"]) . " <br>
-                        Г — " . $this->nullCheck($statistic["confirmationVToG"]) . " <br>
-                        Д — " . $this->nullCheck($statistic["confirmationVToD"]) . " <br>
-                        О — " . $this->nullCheck($statistic["confirmationVToO"]) . "
+                        " . $this->nullCheck($statistic["confirmationVToV"]) . "
                     </div>
                 </div>
 
                 <div class='healthCard me-2'>
                     <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>Г <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
                     <div class='healthBody'>
-                        А — " . $this->nullCheck($statistic["confirmationGToA"]) . " <br>
-                        Б — " . $this->nullCheck($statistic["confirmationGToB"]) . " <br>
-                        В — " . $this->nullCheck($statistic["confirmationGToV"]) . " <br>
-                        Г — " . $this->nullCheck($statistic["confirmationGToG"]) . " <br>
-                        Д — " . $this->nullCheck($statistic["confirmationGToD"]) . " <br>
-                        О — " . $this->nullCheck($statistic["confirmationGToO"]) . "
+                        " . $this->nullCheck($statistic["confirmationGToG"]) . "
                     </div>
                 </div>
 
                 <div class='healthCard'>
                     <div class='healthHeader'><div class='align-self-center col' style='text-align: center;'>Д <i class='fa fa-angle-double-right' aria-hidden='true'></i></div></div>
                     <div class='healthBody'>
-                        А — " . $this->nullCheck($statistic["confirmationDToA"]) . " <br>
-                        Б — " . $this->nullCheck($statistic["confirmationDToB"]) . " <br>
-                        В — " . $this->nullCheck($statistic["confirmationDToV"]) . " <br>
-                        Г — " . $this->nullCheck($statistic["confirmationDToG"]) . " <br>
-                        Д — " . $this->nullCheck($statistic["confirmationDToD"]) . " <br>
-                        О — " . $this->nullCheck($statistic["confirmationDToO"]) . "
+                        " . $this->nullCheck($statistic["confirmationDToD"]) . "
                     </div>
                 </div>
             </div>  

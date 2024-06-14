@@ -82,7 +82,7 @@ if ($data["currentConscript"] != null) {
         
             </div>
 
-        <div class="mb-3 d-flex">
+        <div class="mb-3 d-flex w-100">
             <div class="col me-3">
                 <label for="healthCategory" class="form-label">Категория годности РВК</label>
                 <select id="healthCategory" class="form-control form-select" style="cursor:pointer;">

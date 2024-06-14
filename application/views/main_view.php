@@ -8,7 +8,7 @@
 
 <div class="row row-cols-2">
 
-    <div class="col-3">
+    <div class="col-xl-3 col-12 order-xl-0 order-1">
         <div class="p-4 mb-3 rounded-3 border shadow" style="overflow-wrap: break-word;">
             <h3 class="display-6 lh-1 fs-2">Информация</h3>
             <div class="pt-lg-3">
@@ -38,7 +38,7 @@
                     </div>
                     <div class="col">
                         <? if($_SESSION['archiveMode']) { ?>
-                        <select id="archiveModeSelect" class="form-control form-select border-0 p-0 archiveModeSelect" style="cursor:pointer; font-size: 1.25rem; font-weight: 300; margin-left: 0.4rem;">
+                        <select id="archiveModeSelect" class="form-control form-select border-0 p-0 archiveModeSelect" style="cursor:pointer; font-size: 1.25rem; font-weight: 300;">
                             <option value="<? echo Profile::getSelectedBase(); ?>"><? echo Helper::convertAdventPeriodToString(Profile::getSelectedBase()); ?></option>
                             <?
                             $databases = Database::getDatabasesList();
@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <div class="col-9">
+    <div class="col-xl-9 col-12">
 
         <div class="p-4 mb-3 rounded-3 border shadow">
             <div class="row">

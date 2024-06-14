@@ -1,6 +1,6 @@
 {
-    "version" : "1.21",
-    "versionDate" : "19.05.2024",
+    "version" : "1.26",
+    "versionDate" : "30.05.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",
@@ -54,6 +54,8 @@
     },
     "searchDocumentType" : {
         "name" : "Поиск по ФИО",
+        "healthCategory" : "Поиск по категории годности",
+        "healthCategoryRVK" : "Поиск по категории годности РВК",
         "article" : "Поиск по итоговой статье",
         "rvkArticle" : "Поиск по статье РВК",
         "birthDate" : "Поиск по дате рождения",

@@ -133,8 +133,9 @@ class Controller_Print extends Controller
 					break;
 			}
 		}
-		$data["result"] .= "<br>Протокол № " . $data["protocolNumber"] . " <br> от " . $data["protocolDate"] . "г.";
-		if (!($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А") && $healthCategory != "О")
+		$data["result"] .= "<br>Протокол № " . $data["protocolNumber"] . " <br> от " . $data["protocolDate"] . "г.";		
+
+		if (!($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А"))
 			$data["result"] .= "<br>Служебное письмо<br>от " . $data["protocolDate"] . "г.<br>№ " . $data["letterNumber"];
 		//Решение
 

@@ -40,7 +40,7 @@
  
 
     <div id="searchResult" style="overflow: hidden;" class="mt-2">
-        <div id="resizeDiv">
+        <div id="resizeDiv" class="d-grid gap-2">
             <?
             if (count($data["changeCategory"]) > 0) {
                 foreach ($data["changeCategory"] as $value) {

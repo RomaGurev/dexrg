@@ -20,13 +20,13 @@
 
 <body style="width: 840px; margin: 8px;">
 
-	<div id="print_panel" class="p-3 bg-white rounded-3 border shadow" style="display: block;position: fixed;width: 840px; mb-5">
+	<div id="print_panel" class="p-2 bg-white rounded-3 border shadow" style="display: block;position: fixed;width: 840px; mb-5">
 		<div class="d-flex">
 			<a class="text-dark text-decoration-none d-flex">
-				<svg width="36" height="36">
+				<svg width="36" height="36" style="background-color: rgb(2, 86, 96);border-radius: 50%;">
 					<image xlink:href="/images/logo.svg" src="/images/logo.svg" width="36" height="36"></image>
 				</svg>
-				<p class="mb-0 ms-2 me-2" style="font-size: 1.5rem;">ВВК ПЕЧАТЬ</p>
+				<p class="mb-0 ms-2 me-2" style="font-size: 1.5rem; font-weight: 300;">ВВК Печать</p>
 			</a>
 			<div class="m-auto w-25 d-flex me-2">
 				<a onclick="<? if($_GET["template"] == "protocol") echo "saveProtocolValuesChanges(" . $_GET["id"] . ");" ?> window.print();" class="btn btn-outline-success w-100 align-self-end">Печать</a>
@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div id="protocolChanges" <? if (!(count(Helper::getProtocolChanges($_GET["id"])) > 0 && $_GET["template"] == "protocol")) echo 'class="d-none"' ?>>
-        	<div class="mt-3 mb-3" style="margin: 0 -1rem;border-top: 1px dashed #C0C0C0;"></div>
+        	<div class="mt-2 mb-2" style="margin: 0 -0.5rem;border-top: 1px dashed #C0C0C0;"></div>
 			<div class="d-flex">
 				<div class="col align-self-center">
                 	<p class="card-text mb-1 lead">Протокол содержит изменения, значения из документов (кроме статьи и категории годности) применяться не будут.</p>

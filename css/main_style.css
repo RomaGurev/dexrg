@@ -24,6 +24,10 @@ button .svg-search:hover image {
     cursor: pointer;
 }
 
+.nav-item:hover a {
+    color: #c7c6c6 !important;
+}
+
 #form-select::after {
     display: inline-block;
     margin-left: 0.255em;
@@ -45,6 +49,18 @@ button .svg-search:hover image {
 
 .container {
     max-width: 90% !important;
+}
+
+[data-bs-toggle="collapse"] .fa:before {
+    content: "\f106";
+}
+
+[data-bs-toggle="collapse"].collapsed .fa:before {
+    content: "\f107";
+}
+
+.spinner-border {
+    color: rgb(2, 86, 96) !important;
 }
 
 .point {

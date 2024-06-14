@@ -361,7 +361,7 @@ class postHandler
                     $query = "SELECT * FROM `conscript` WHERE id REGEXP '" . (count($conscripts) > 0 ? implode("|", $conscripts) : "RGNSK") . "' ORDER BY id DESC LIMIT 5";
                     break;
                 default:
-                    $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '%" . $param['value'] . "%' ORDER BY id DESC LIMIT 5";
+                    $query = "SELECT * FROM `conscript` WHERE " . $param['type'] . " LIKE '" . $param['value'] . "%' ORDER BY id DESC LIMIT 5";
                     break;
             }
             $ans = Database::execute($query, null, "current");
@@ -403,6 +403,22 @@ class postHandler
                 $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], $additionQuery);
                 break;
 
+            case "healthCategory":
+                if ($valueLength > 0)
+                    $additionQuery = "AND " . $param["type"] . " LIKE '" . $param['value'] . "%'";
+                else
+                    $additionQuery = null;
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], null, $additionQuery);
+                break;
+
+            case "healthCategoryRVK":
+                if ($valueLength > 0)
+                    $additionQuery = "AND healthCategory LIKE '" . $param['value'] . "%'";
+                else
+                    $additionQuery = null;
+                $conscriptsWithDocuments = Helper::getConscriptsWithDocuments($param["documentType"], $param["inProcess"], Profile::isHavePermission("viewForAll") ? null : Profile::$user["id"], $additionQuery);
+                break;
+
             default:
                 if ($valueLength > 0)
                     $additionQuery = "AND " . $param["type"] . " LIKE '" . $param['value'] . "'";
@@ -415,7 +431,7 @@ class postHandler
 
         $result = "<div id='resizeDiv' class='d-grid gap-2'>";
 
-        if ($valueLength < 3 && $valueLength != 0 && $param["type"] != "rvkArticle" && $param["type"] != "id" && $param["type"] != "article")
+        if ($valueLength < 3 && $valueLength != 0 && $param["type"] != "rvkArticle" && $param["type"] != "id" && $param["type"] != "article" && $param["type"] != "healthCategory" && $param["type"] != "healthCategoryRVK")
             $result .= "<div class='lead'>Введите больше 2 символов.</div>";
 
         if (count($conscriptsWithDocuments) > 0) {
@@ -424,6 +440,7 @@ class postHandler
         } else {
             $result .= "<div class='lead'>Документы не найдены.</div>";
         }
+
         $result .= "</div>";
 
         return $result;
@@ -435,7 +452,7 @@ class postHandler
 
         $patternList = Helper::getUserPatternList($param["value"]);
 
-        $result = "<div id='resizeDiv' class='d-grid'>";
+        $result = "<div id='resizeDiv' class='d-grid gap-2'>";
 
         if ($valueLength < 3 && $valueLength != 0)
             $result .= "<div class='lead'>Введите больше 2 символов.</div>";
@@ -571,7 +588,7 @@ class postHandler
 
     //<-------------------------------------Страница добавления/редактирования документов------------------------------------->//
 
-    //<-------------------------------------Страница печати------------------------------------->//
+    //<-------------------------------------УКП и страница печати------------------------------------->//
     static function setInProcessFalse($param)
     {
         if ($param['conscriptID'] === "")
@@ -606,6 +623,22 @@ class postHandler
             $query = "DELETE FROM `protocolChanges` WHERE conscriptID=:id";
             $dataArr = [
                 "id" => $param['conscriptID'],
+            ];
+            Database::execute($query, $dataArr, "current");
+
+            return "reloadPage";
+        }
+    }
+
+    static function changeDocumentCountable($param)
+    {
+        if ($param['documentID'] === "")
+            return "Ошибка изменения статуса документа. ID документа не найден.";
+        else {
+            $query = "UPDATE `documents` SET countable=:state WHERE id=:id";
+            $dataArr = [
+                "id" => $param['documentID'],
+                "state" => $param['state']
             ];
             Database::execute($query, $dataArr, "current");
 
@@ -675,5 +708,5 @@ class postHandler
         }
     }
 
-    //<-------------------------------------Страница печати------------------------------------->//
+    //<-------------------------------------УКП и страница печати------------------------------------->//
 }

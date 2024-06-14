@@ -176,7 +176,7 @@ class Helper
 
     public static function getResultDocuments($userID) 
     {
-        $documentPriority = ["complaint" => 0, "return" => 1, "control" => 2, "changeCategory" => 3];
+        $documentPriority = ["complaint" => 0, "return" => 1, "control" => 2, "changeCategory" => 3, "confirmation" => 4];
         $documents = Database::execute("SELECT * FROM `documents` WHERE conscriptID=:conscriptID AND countable=1", ["conscriptID" => $userID], "current");
         $result = array();
 

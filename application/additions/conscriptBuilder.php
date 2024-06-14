@@ -6,10 +6,10 @@ class ConscriptBuilder
         $result = '<div class="card">
         <div class="card-header lead d-flex">
         <div class="col">
-        <b><a ' . ($showSelectButton == "true" ? 'onclick="select(' . $conscript['id'] . ', \'' . $conscript['name'] . (!empty($conscript['birthDate']) ? ' [' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . '\')"' : 'onclick="openConscriptModal(' . $conscript['id'] . ')"') . 'style="cursor: pointer;">' . $conscript["name"] . '</a></b> ' . (!empty($conscript['birthDate']) ? '[' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . '
+        <b><a onclick="openConscriptModal(' . $conscript['id'] . ')" style="cursor: pointer;">' . $conscript["name"] . '</a></b> ' . (!empty($conscript['birthDate']) ? '[' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . '
         </div>
         <div class="col-auto">
-            ' . ($conscript['inProcess'] == true ? 'В работе' : '<span class="text-danger">Завершен</span>') .  '
+            ' . ($conscript['inProcess'] ? 'В работе' : '<span class="text-danger">Завершен</span>') .  '
         </div>
         </div>
         <div class="card-body d-flex" style="padding: 0.25rem 1rem">
@@ -24,11 +24,15 @@ class ConscriptBuilder
             <div class="col me-2">
                 <p class="card-text lead"><b>Диагноз РВК: </b>' . (!empty($conscript['rvkDiagnosis']) ? Helper::getShortenString($conscript["rvkDiagnosis"], 45) : 'Информация не указана') . '</p>
             </div>
-            <div class="col-auto d-flex">
+            <div class="col-auto d-flex align-items-center">
         ';
 
         if($showSelectButton == "true"){
-            $result .=  '<button type="button" onclick="select(' . $conscript['id'] . ', \'' . $conscript['name'] . (!empty($conscript['birthDate']) ? ' [' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . " - " . (!empty($conscript['vk']) ? Helper::getVKNameById($conscript['vk'])["name"] : "") . '\')" class="btn btn-outline-success" style="align-self: center;">Выбрать призывника</button>';
+            if($conscript['inProcess']) {
+                $result .=  '<button type="button" onclick="select(' . $conscript['id'] . ', \'' . $conscript['name'] . (!empty($conscript['birthDate']) ? ' [' . Helper::formatDateToView($conscript['birthDate']) . ']' : '') . " - " . (!empty($conscript['vk']) ? Helper::getVKNameById($conscript['vk'])["name"] : "") . '\')" class="btn btn-outline-success" style="align-self: center;">Выбрать призывника</button>';
+            } else {
+                $result .=  '<span style="color: black;" data-toggle="tooltip" title="УКП заблокирована, разблокируйте для добавления документа."><button type="button" class="btn btn-outline-success" style="align-self: center;" disabled>Выбрать призывника</button></span>';
+            }
         } else {
             $result .= '<button type="button" onclick="openConscriptModal(' . $conscript['id'] . ')" class="btn btn-outline-primary" style="align-self: center;">Открыть УКП</button>';
         }
@@ -36,7 +40,14 @@ class ConscriptBuilder
         $result .= '
         </div>
         </div>
-        </div>';
+        </div>
+        
+        <script>
+        $(function () {
+            $(\'[data-toggle="tooltip"]\').tooltip();
+        });
+        </script>';
+
         return $result;
     }
 
@@ -48,6 +59,7 @@ class ConscriptBuilder
         //Добавление в массив документа о создании УКП (регистрации призывника)
         $authorProfile = Helper::getProfileByUserID($conscript['creatorID']);
         array_push($documents, [
+            "id" => "RGNSK",
             "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
             "authorName" => $authorProfile["name"],
             "documentType" => "Регистрация призывника",
@@ -64,6 +76,7 @@ class ConscriptBuilder
             switch ($document["documentType"]) {
                 case 'changeCategory':
                     array_push($documents, [
+                        "id" => $document['id'],
                         "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
                         "authorName" => $authorProfile["name"],
                         "documentType" => "Изменение категории (" . $conscript['healthCategory'] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $document['healthCategory'] . "</b>)",
@@ -75,6 +88,7 @@ class ConscriptBuilder
                 
                 case 'control':
                     array_push($documents, [
+                        "id" => $document['id'],
                         "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
                         "authorName" => $authorProfile["name"],
                         "documentType" => "Контроль от " . $document["documentDate"] . " (" . $conscript['healthCategory'] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $document['healthCategory'] . "</b>)",
@@ -86,9 +100,10 @@ class ConscriptBuilder
                 
                 case 'return':
                     array_push($documents, [
+                        "id" => $document['id'],
                         "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
                         "authorName" => $authorProfile["name"],
-                        "documentType" => "Возврат по статье " . $document["article"] . " от " . $document["documentDate"],
+                        "documentType" => "Возврат" . (empty($document["article"]) ? "" : " по статье " . $document["article"]) . " от " . $document["documentDate"],
                         "documentDate" => "",
                         "documentLink" => "/return?id=" . $document['id'],
                         "documentCountable" => $document['countable']
@@ -97,6 +112,7 @@ class ConscriptBuilder
 
                 case 'complaint':
                     array_push($documents, [
+                        "id" => $document['id'],
                         "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
                         "authorName" => $authorProfile["name"],
                         "documentType" => "Жалоба от " . $document["documentDate"] . " (" . $conscript['healthCategory'] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $document['healthCategory'] . "</b>)",
@@ -108,6 +124,7 @@ class ConscriptBuilder
 
                 case 'confirmation':
                     array_push($documents, [
+                        "id" => $document['id'],
                         "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
                         "authorName" => $authorProfile["name"],
                         "documentType" => "Утверждение от " . $document["documentDate"] . " (<b>" . $document['healthCategory'] . "</b>)",
@@ -119,6 +136,7 @@ class ConscriptBuilder
 
                 default:
                     array_push($documents, [
+                        "id" => $document['id'],
                         "authorPosition" => Config::getValue("userType")[$authorProfile["position"]][0],
                         "authorName" => $authorProfile["name"],
                         "documentType" => "Неизвестный документ",
@@ -193,7 +211,7 @@ class ConscriptBuilder
             if($document["documentCountable"])
                 $countableDocumentsCount++;
             $result .= '<div class="documentItem">
-                        <div class="' . ($document["documentCountable"] ? "point" : "point-uncountable") . '"></div>
+                        <div class="' . ($document["documentCountable"] ? "point" : "point-uncountable") . '" ' . (Profile::isArchiveMode() ? '' : 'style="cursor: pointer;" onclick="changeDocumentCountable(\'' . $document["id"] . '\', ' . !$document["documentCountable"] . ');"') . '></div>
                         <a href="' . $document["documentLink"] . '">' . ($document["documentCountable"] ? $document["documentType"] : '<span style="color: black;" data-toggle="tooltip" title="Документ не учитывается, в связи с повторной явкой призывника">' . $document["documentType"] . '</span>') . ' ' . $document["documentDate"] . ' <span style="color: black;" data-toggle="tooltip" title="' . $document["authorName"] . '"> [' . $document["authorPosition"] . ']</span></a>
                     </div>';
         }
@@ -216,13 +234,13 @@ class ConscriptBuilder
 
         if(Profile::isHavePermission("viewForAll") && $countableDocumentsCount > 1) {
             $result .= '
-                <div class="d-flex mt-4 mb-3" style="flex-wrap: wrap;">
+                <div class="d-flex mt-4 mb-3 gap-2" style="flex-wrap: wrap;">
                     <input id="protocolConscriptID" class="d-none" type="text" value="' . $conscript['id'] . '">
-                    <div class="col me-2">
+                    <div class="col">
                         <label for="letterNumber" class="form-label"><b>Номер письма</b></label>
                         <input type="text" autocomplete="off" class="form-control" id="letterNumber" value="' . $conscript['letterNumber'] . '" ' . ($resultBeChanged ? "disabled" : "") . '>
                     </div>
-                    <div class="col me-2">
+                    <div class="col">
                         <label for="protocolNumber" class="form-label"><b>Номер протокола</b></label>
                         <input type="text" autocomplete="off" class="form-control" id="protocolNumber" value="' . $conscript['protocolNumber'] . '">
                     </div>
@@ -232,15 +250,15 @@ class ConscriptBuilder
                     </div>
                 </div>
 
-                <div class="d-flex" style="flex-wrap: wrap;">
-                    <div class="col me-2">
+                <div class="d-flex gap-2" style="flex-wrap: wrap;">
+                    <div class="col">
 
                     ' . ($resultBeChanged ? '<span style="color: black;" data-toggle="tooltip" title="Служебное письмо недоступно без изменения решения призывной комиссии">
                     <button type="button" class="btn btn-dark w-100" disabled>Письмо</button>
                     </span>' : '<button type="button" onclick="printLetter(' . $conscript['id'] . ');" class="btn btn-dark w-100">Письмо</button>') . '
 
                     </div>
-                    <div class="col me-0 me-lg-2 mb-2 mb-lg-0"><button type="button" onclick="printExtract(' . $conscript['id'] . ');" class="btn btn-success w-100">Выписка</button></div>
+                    <div class="col"><button type="button" onclick="printExtract(' . $conscript['id'] . ');" class="btn btn-success w-100">Выписка</button></div>
                     <div class="col"><button type="button" onclick="printProtocol(' . $conscript['id'] . ');" class="btn btn-primary w-100">Протокол</button></div>
                 </div>';
         }

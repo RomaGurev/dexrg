@@ -7,12 +7,12 @@
 ?>
 
 
-<main class="mt-4 mb-4">
+<main class="mt-3 mb-3">
     <div class="container">
         <div id="alertResult" class="d-none"></div>
 
         <div class="loading-position d-flex p-2 border shadow d-none" id="spinner">
-            <div class="spinner-border text-primary me-3" role="status">
+            <div class="spinner-border me-3" role="status">
                 <span class="visually-hidden"></span>
             </div>
             <p class="lead mb-0"> Загрузка...</p>

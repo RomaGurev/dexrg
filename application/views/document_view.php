@@ -187,6 +187,7 @@ $documentName = $edit ? "Редактирование документа - " . C
                                 <option value="return">Тип документа: Возврат</option>
                                 <option value="complaint">Тип документа: Жалоба</option>
                                 <option value="changeCategory">Тип документа: Изменение категории</option>
+                                <option value="confirmation" style="display: none;">Тип документа: Утверждение</option>
                             </select>
                         </div>
                     <?

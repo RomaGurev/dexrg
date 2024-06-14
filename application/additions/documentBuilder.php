@@ -7,7 +7,7 @@ class DocumentBuilder
         <div class="card">
         <div class="card-header lead d-flex" style="border-bottom: 0;">
             <div class="col">
-                <a style="cursor: pointer;" onclick="openConscriptModal(' . $conscriptWithDocuments['id'] . ')"><b>' . $conscriptWithDocuments["name"] . '</b></a> ' . (!empty($conscriptWithDocuments['birthDate']) ? '[' . Helper::formatDateToView($conscriptWithDocuments['birthDate']) . ']' : '') . '
+                <a style="cursor: pointer;" onclick="openConscriptModal(' . $conscriptWithDocuments['id'] . ')"><b>' . $conscriptWithDocuments["name"] . '</b>' . (!$conscriptWithDocuments['inProcess'] && !empty($conscriptWithDocuments['protocolNumber']) && !empty($conscriptWithDocuments['protocolDate']) ? " по протоколу от " . $conscriptWithDocuments['protocolDate'] . " №" . $conscriptWithDocuments['protocolNumber'] : "") . '</a> ' . (!empty($conscriptWithDocuments['birthDate']) ? '[' . Helper::formatDateToView($conscriptWithDocuments['birthDate']) . ']' : '') . '
             </div>
             <div class="col-auto">'
             . (!empty($conscriptWithDocuments['vk']) ? Helper::getVKNameById($conscriptWithDocuments['vk'])["name"] : 'Нет информации').
@@ -21,16 +21,16 @@ class DocumentBuilder
 
             switch ($value["documentType"]) {
                 case 'changeCategory':
-                    $documentText = "Изменение категории (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
+                    $documentText = "Изменение категории " . (empty($value["article"]) ? "" : " по статье <b>" . $value["article"] . "</b> ") . "(" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
                 case 'control':
-                    $documentText = "Контроль от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
+                    $documentText = "Контроль " . (empty($value["article"]) ? "" : " по статье <b>" . $value["article"] . "</b> ") . "от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
                 case 'return':
-                    $documentText = "Возврат по статье " . $value["article"] . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
+                    $documentText = "Возврат " . (empty($value["article"]) ? "" : " по статье <b>" . $value["article"] . "</b> ") . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
                 case 'complaint':
-                    $documentText = "Жалоба от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
+                    $documentText = "Жалоба " . (empty($value["article"]) ? "" : " по статье <b>" . $value["article"] . "</b> ") . "от " . $value["documentDate"] . " (" . $conscriptWithDocuments["healthCategory"] . " <i class='fa fa-angle-double-right' aria-hidden='true'></i> <b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
                     break;
                 case 'confirmation':
                     $documentText = "Утверждение от " . $value["documentDate"] . " (<b>" . $value["healthCategory"] . "</b>)" . ($conscriptWithDocuments["showCreator"] == true ? " от " . mb_strtolower($author_position) . "а " : "");
@@ -43,8 +43,8 @@ class DocumentBuilder
 
             $result .= ' <div class="card-header lead d-flex" style="border-top: var(--bs-card-border-width) solid var(--bs-card-border-color); border-radius: 0;">
 
-            <div class="col-auto d-flex">
-                <div data-bs-toggle="collapse" class="me-2" style="align-self: center; cursor: pointer;" data-bs-target="#collapse' . $conscriptWithDocuments['id'] . '-' . $value["id"] . '" aria-expanded="true"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
+            <div class="col-auto d-flex" style="width: 25px;">
+                <div data-bs-toggle="collapse" class="me-2 ' . ($conscriptWithDocuments["inProcess"] ? "" : "collapsed") . '" style="align-self: center; cursor: pointer;" data-bs-target="#collapse' . $conscriptWithDocuments['id'] . '-' . $value["id"] . '" aria-expanded="true"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
             </div>
 
             <div class="col" style="align-self: center;">' . $documentText . '</div>
@@ -58,7 +58,7 @@ class DocumentBuilder
             </div>
 
 
-            <div class="card-body row collapse show" rgnskdata="collapseResize" id="collapse' . $conscriptWithDocuments['id'] . '-' . $value["id"] . '" style="padding: 0.25rem 1rem; overflow-wrap: break-word;">
+            <div class="card-body row collapse ' . ($conscriptWithDocuments["inProcess"] ? "show" : "") . '" id="collapse' . $conscriptWithDocuments['id'] . '-' . $value["id"] . '" style="padding: 0.25rem 1rem; overflow-wrap: break-word;">
                 <div class="col w-25">
                     <p class="card-text mb-1 lead "><b>Жалобы: </b></p>
                     ' . (empty($value["complaint"]) ? "Не заполнено" : Helper::getShortenString($value["complaint"])) . '
@@ -88,10 +88,10 @@ class DocumentBuilder
     public static function getPatternCard($pattern)
     {
         $result = '
-        <div class="card mb-2">
+        <div class="card">
         <div class="card-header lead d-flex">
-            <div class="col-auto d-flex">
-                <div data-bs-toggle="collapse" class="me-2" style="align-self: center; cursor: pointer;" data-bs-target="#collapse' . $pattern['id'] . '" aria-expanded="true"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
+            <div class="col-auto d-flex" style="width: 25px;">
+                <div data-bs-toggle="collapse" class="me-2 collapsed" style="align-self: center; cursor: pointer;" data-bs-target="#collapse' . $pattern['id'] . '" aria-expanded="true"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
             </div>
             <div class="col d-flex">
                 <b style="align-self: center;">' . $pattern["name"] . '</b>

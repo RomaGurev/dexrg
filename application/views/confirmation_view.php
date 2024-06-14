@@ -42,7 +42,7 @@
 
 
     <div id="searchResult" style="overflow: hidden;" class="mt-2">
-        <div id="resizeDiv">
+        <div id="resizeDiv" class="d-grid gap-2">
             <?
             if (count($data["confirmation"]) > 0) {
                 foreach ($data["confirmation"] as $value) {

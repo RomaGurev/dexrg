@@ -54,6 +54,7 @@ $("#searchDocumentInput").on("input", function () {
             $("#searchResult").append(data);
             showLoading(false);
             resizeResultDiv();
+            subscribeCollapseObjects();
         }
     });
 });
@@ -77,6 +78,7 @@ $("#searchPatternInput").on("input", function () {
             $("#searchResult").append(data);
             showLoading(false);
             resizeResultDiv();
+            subscribeCollapseObjects();
         }
     });
 });
@@ -310,7 +312,32 @@ function unlockCard(id) {
             }
         },
         success: function (data) {
-            location.reload();
+            if(data == "reloadPage")
+                location.reload();
+            else
+                alert(data);
+        }
+    });
+}
+
+//Изменение состояния "учитывать<->не учитывать" у документа
+function changeDocumentCountable(documentID, state) {
+    showLoading(true);
+    $.post({
+        url: '/application/core/postHandler.php',
+        method: 'post',
+        dataType: 'text',
+        data: {
+            changeDocumentCountable: {
+                documentID: documentID,
+                state: state
+            }
+        },
+        success: function (data) {
+            if(data == "reloadPage")
+                location.reload();
+            else
+                alert(data);
         }
     });
 }
