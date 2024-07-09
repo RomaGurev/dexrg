@@ -2,6 +2,7 @@
 
 class Controller_Complaint extends Controller
 {
+	//Функция отображения страницы документа "Жалоба" с проверкой наличия доступа
 	function action_index()
 	{	
 		if (Profile::isHavePermission("complaint")) {

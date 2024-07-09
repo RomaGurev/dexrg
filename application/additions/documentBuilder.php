@@ -50,7 +50,7 @@ class DocumentBuilder
             <div class="col" style="align-self: center;">' . $documentText . '</div>
             <div class="col-auto">';
 
-            if($value["countable"]) {
+            if($value["countable"] && ($value["creatorID"] == Profile::$user["id"] || Profile::isHavePermission("viewForAll"))) {
                 $result .= '<a class="btn btn-outline-dark me-2" href="/document?documentType=' . $value["documentType"] . '&id=' . $value["id"] . '">Редактировать документ</a>';
             }    
             

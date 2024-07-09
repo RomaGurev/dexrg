@@ -1,6 +1,6 @@
 {
-    "version" : "1.26",
-    "versionDate" : "30.05.2024",
+    "version" : "1.29",
+    "versionDate" : "26.06.2024",
     "database" : {
         "db_settings" : "vvk_settings",
         "db_user" : "med",

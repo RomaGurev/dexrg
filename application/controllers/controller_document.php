@@ -3,6 +3,7 @@
 class Controller_Document extends Controller
 {
 
+	//Функция отображения страницы документа с проверкой наличия доступа
 	function action_index()
 	{	
         if(isset($_GET["id"])) {

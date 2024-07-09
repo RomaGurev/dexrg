@@ -3,6 +3,7 @@
 class Controller_Print extends Controller
 {
 
+	//Функция отображения страницы печати с проверкой наличия доступа
 	function action_index()
 	{
 		if (isset($_GET["template"]) && $_GET["id"]) {
@@ -23,6 +24,7 @@ class Controller_Print extends Controller
 		}
 	}
 
+	//Функция получения редактируемой строки
 	function getEditableString($string, $elemID = null)
 	{
 		$editableName = array_search($elemID, Config::getValue("printValues"));
@@ -32,11 +34,13 @@ class Controller_Print extends Controller
 		return "<div class='contenteditable' contenteditable='true' data-toggle='tooltip' data-bs-original-title='" . $editableName . "'" . ($elemID != null ? "id='$elemID'" : "") .  ">" . $string . "</div>";
 	}
 
+	//Функция получения поля для ввода
 	function getInputField($placeholder, $width, $fontSize, $fontWeight = 400)
 	{
 		return '<input type="text" class="form-control printInputField" placeholder="' . $placeholder . '" style="width: ' . $width . 'px;font-size: ' . $fontSize . 'pt;font-weight: ' . $fontWeight . '">';
 	}
 
+	//Функция замены данных в зависимости от значений шаблона
 	function replaceData($data, $fileContent)
 	{
 		foreach (Config::getValue("printValues") as $key => $value)
@@ -45,6 +49,7 @@ class Controller_Print extends Controller
 		return $fileContent;
 	}
 
+	//Подготовка шаблона протокола
 	function protocolPrepare($fileContent, $id)
 	{
 		$data = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $id], "current")[0];
@@ -112,8 +117,10 @@ class Controller_Print extends Controller
 		//Назначение
 
 		//Решение
-		$data["result"] = "Решение призывной<br>комиссии<br>" . Helper::getVKNameById($data["vk"])["fullNameUnique"] . "<br>" . ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А" ? " утвердить. " : " отменить. ");
-		if (!($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А")) {
+		$resultNotBeChanged = $data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "А" || $healthCategory == "Б" && $rvkHealthCategory == "Б" || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А";
+
+		$data["result"] = "Решение призывной<br>комиссии<br>" . Helper::getVKNameById($data["vk"])["fullNameUnique"] . "<br>" . ($resultNotBeChanged ? " утвердить. " : " отменить. ");
+		if (!$resultNotBeChanged) {
 			switch ($healthCategory) {
 				case 'А':
 				case 'Б':
@@ -135,7 +142,7 @@ class Controller_Print extends Controller
 		}
 		$data["result"] .= "<br>Протокол № " . $data["protocolNumber"] . " <br> от " . $data["protocolDate"] . "г.";		
 
-		if (!($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А"))
+		if (!$resultNotBeChanged && $healthCategory != "О")
 			$data["result"] .= "<br>Служебное письмо<br>от " . $data["protocolDate"] . "г.<br>№ " . $data["letterNumber"];
 		//Решение
 
@@ -156,11 +163,13 @@ class Controller_Print extends Controller
 		return $fileContent;
 	}
 
+	//Подготовка шаблона служебного письма
 	function letterPrepare($fileContent, $id)
 	{
 		$data = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $id], "current")[0];
 		$data["vkName"] = Helper::getVKNameById($data["vk"])["letterAdresant"];
 		$documents = Helper::getResultDocuments($id);
+		$documentType = $documents[0]["documentType"];
 
 		$article = array();
 		$diagnosis = array();
@@ -188,7 +197,7 @@ class Controller_Print extends Controller
 		$data["result"] = "Ранее вынесенное решение призывной комиссии " . Helper::getVKNameById($data["vk"])["fullNameUnique"] . " отменить.";
 		$data["letterDate"] = Helper::convertDateToPrintFormat($data["protocolDate"] == "" ? date("d.m.Y") : $data["protocolDate"]);
 
-		if($healthCategory == "О")
+		if($documentType == "return")
 			$data["appendix"] = "Приложение: личное дело";
 		else
 			$data["appendix"] = "";
@@ -200,6 +209,7 @@ class Controller_Print extends Controller
 		return $fileContent;
 	}
 
+	//Подготовка шаблона выписки
 	function extractPrepare($fileContent, $id)
 	{
 		$data = Database::execute("SELECT * FROM `conscript` WHERE id = :id", ["id" => $id], "current")[0];
@@ -222,7 +232,9 @@ class Controller_Print extends Controller
 		$data["vkName"] = Helper::getVKNameById($data["vk"])["shortNameUnique"];
 		$data["rvkProtocolDate"] = Helper::convertDateToPrintFormat($data["rvkProtocolDate"]);
 
-		if ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А") 
+		$resultNotBeChanged = $data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "А" || $healthCategory == "Б" && $rvkHealthCategory == "Б" || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А";
+
+		if ($resultNotBeChanged) 
 		{
 			switch ($rvkHealthCategory) {
 				case 'А':
@@ -242,10 +254,10 @@ class Controller_Print extends Controller
 		} else {
 			$data["appointment"] = "";
 		}
-		$data["result"] .= ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А" ? "УТВЕРДИТЬ" : "ОТМЕНИТЬ");
+		$data["result"] .= ($resultNotBeChanged ? "УТВЕРДИТЬ" : "ОТМЕНИТЬ");
 		$data["admit"] .= ($healthCategory == "О" ? "подлежит обследованию." : "ст. " . implode(", ", $article) . " «" . $healthCategory . "» - " . Helper::getHealthCategoryNameByID($finalCategory)) . (empty($postPeriod) ? "" : " сроком на " . Config::getValue("postPeriod")[$postPeriod]);
 
-		if ($data["healthCategory"] == $finalCategory || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А") {
+		if ($resultNotBeChanged) {
 			$data["conclusion"] = "";
 			
 			switch ($healthCategory) {
@@ -292,6 +304,7 @@ class Controller_Print extends Controller
 		return $fileContent;
 	}
 
+	//Подготовка шаблона листа медицинского освидетельствования
 	function examinationPrepare($fileContent, $id)
 	{
 		$data = Database::execute("SELECT * FROM `documents` WHERE id = :id", ["id" => $id], "current")[0];

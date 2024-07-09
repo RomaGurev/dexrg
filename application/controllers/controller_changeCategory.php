@@ -2,6 +2,7 @@
 
 class Controller_ChangeCategory extends Controller
 {
+	//Функция отображения страницы документа "Изменение категории" с проверкой наличия доступа
 	function action_index()
 	{	
 		if (Profile::isHavePermission("changeCategory")) {
@@ -14,6 +15,4 @@ class Controller_ChangeCategory extends Controller
 		else
 			$this->view->failAccess();
 	}
-
-
 }

@@ -154,6 +154,7 @@ class ConscriptBuilder
         //Запрос на финальную категорию
 
         //Вывод результатов в переменную result
+        $result = "";
         $result .= '
         <div class="d-flex">
             <div class="row col me-3" style="word-break: break-all;">
@@ -230,7 +231,8 @@ class ConscriptBuilder
 
         $healthCategory = mb_substr($finalHealthResult["healthCategory"], 0, 1);
         $rvkHealthCategory = mb_substr($conscript['healthCategory'], 0, 1);
-        $resultBeChanged = $conscript['healthCategory'] == $finalHealthResult["healthCategory"] || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А";
+        $resultNotBeChanged = $conscript['healthCategory'] == $finalHealthResult["healthCategory"] || $healthCategory == "А" && $rvkHealthCategory == "А" || $healthCategory == "Б" && $rvkHealthCategory == "Б" || $healthCategory == "А" && $rvkHealthCategory == "Б" || $healthCategory == "Б" && $rvkHealthCategory == "А";
+
 
         if(Profile::isHavePermission("viewForAll") && $countableDocumentsCount > 1) {
             $result .= '
@@ -238,7 +240,7 @@ class ConscriptBuilder
                     <input id="protocolConscriptID" class="d-none" type="text" value="' . $conscript['id'] . '">
                     <div class="col">
                         <label for="letterNumber" class="form-label"><b>Номер письма</b></label>
-                        <input type="text" autocomplete="off" class="form-control" id="letterNumber" value="' . $conscript['letterNumber'] . '" ' . ($resultBeChanged ? "disabled" : "") . '>
+                        <input type="text" autocomplete="off" class="form-control" id="letterNumber" value="' . $conscript['letterNumber'] . '" ' . ($resultNotBeChanged ? "disabled" : "") . '>
                     </div>
                     <div class="col">
                         <label for="protocolNumber" class="form-label"><b>Номер протокола</b></label>
@@ -253,7 +255,7 @@ class ConscriptBuilder
                 <div class="d-flex gap-2" style="flex-wrap: wrap;">
                     <div class="col">
 
-                    ' . ($resultBeChanged ? '<span style="color: black;" data-toggle="tooltip" title="Служебное письмо недоступно без изменения решения призывной комиссии">
+                    ' . ($resultNotBeChanged ? '<span style="color: black;" data-toggle="tooltip" title="Служебное письмо недоступно без изменения решения призывной комиссии">
                     <button type="button" class="btn btn-dark w-100" disabled>Письмо</button>
                     </span>' : '<button type="button" onclick="printLetter(' . $conscript['id'] . ');" class="btn btn-dark w-100">Письмо</button>') . '
 

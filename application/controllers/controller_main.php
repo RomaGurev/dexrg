@@ -3,6 +3,7 @@
 class Controller_Main extends Controller
 {
 
+	//Функция отображения основной страницы с проверкой наличия доступа
 	function action_index()
 	{	
 		if (Profile::$isAuth)
@@ -14,11 +15,6 @@ class Controller_Main extends Controller
 	function action_clown() 
 	{
 		$this->view->generateView('rg_view.php', "Клоун");
-	}
-
-	function getBasesForArchiveMode() 
-	{
-		return 0;
 	}
 	
 }

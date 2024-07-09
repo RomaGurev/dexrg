@@ -2,6 +2,7 @@
 
 class Controller_Return extends Controller
 {
+	//Функция отображения страницы возврата с проверкой наличия доступа
 	function action_index()
 	{	
 		if (Profile::isHavePermission("return")) {

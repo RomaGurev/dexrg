@@ -2,7 +2,7 @@
 
 class Controller_Confirmation extends Controller
 {
-	
+	//Функция отображения страницы документа "Утверждение" с проверкой наличия доступа
 	function action_index()
 	{	
 		if (Profile::isHavePermission("confirmation")) {

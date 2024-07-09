@@ -2,7 +2,7 @@
 
 class Controller_Control extends Controller
 {
-	
+	//Функция отображения страницы документа "Контроль" с проверкой наличия доступа
 	function action_index()
 	{	
 		if (Profile::isHavePermission("control")) {
